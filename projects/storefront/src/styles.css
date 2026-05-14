@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Storefront global tokens.
+ *
+ * Each business-type template (set on <body> via `template-restaurant`,
+ * `template-retail`, `template-service`) overrides these tokens so the same
+ * shared @shared/ui components render with a different visual identity per
+ * template. Shared components MUST reference `var(--token)` exclusively —
+ * never hex literals — so adding a template = redefining tokens only.
+ */
+:root {
+  --surface: #ffffff;
+  --surface-alt: #f9fafb;
+  --surface-elevated: #ffffff;
+  --border: #e5e7eb;
+  --border-strong: #d1d5db;
+  --text: #111827;
+  --text-muted: #4b5563;
+  --text-subtle: #6b7280;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --on-accent: #ffffff;
+  --success: #16a34a;
+  --warning: #f59e0b;
+  --danger: #dc2626;
+  --info: #0ea5e9;
+  --overlay-scrim: rgba(0, 0, 0, 0.55);
+  --radius-card: 12px;
+  --radius-control: 8px;
+  --radius-pill: 999px;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-arabic: 'IBM Plex Arabic', 'Noto Sans Arabic', sans-serif;
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --motion-slow: 320ms;
+}
+
+body.template-restaurant {
+  --surface: #1a0a00;
+  --surface-alt: #221204;
+  --surface-elevated: #2a1808;
+  --border: #3a2510;
+  --border-strong: #54381a;
+  --text: #fff8f1;
+  --text-muted: #c9a988;
+  --text-subtle: #8a6f51;
+  --accent: #f59e0b;
+  --accent-hover: #fbbf24;
+  --on-accent: #1a0a00;
+  --radius-card: 16px;
+  --radius-control: 10px;
+}
+
+body.template-retail {
+  --surface: #ffffff;
+  --surface-alt: #f3f4f6;
+  --surface-elevated: #ffffff;
+  --border: #e5e7eb;
+  --border-strong: #d1d5db;
+  --text: #0f172a;
+  --text-muted: #475569;
+  --text-subtle: #64748b;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --on-accent: #ffffff;
+  --radius-card: 8px;
+  --radius-control: 6px;
+}
+
+body.template-service {
+  --surface: #fafaf9;
+  --surface-alt: #f5f5f4;
+  --surface-elevated: #ffffff;
+  --border: #e7e5e4;
+  --border-strong: #d6d3d1;
+  --text: #1c1917;
+  --text-muted: #57534e;
+  --text-subtle: #78716c;
+  --accent: #14b8a6;
+  --accent-hover: #0d9488;
+  --on-accent: #ffffff;
+  --radius-card: 14px;
+  --radius-control: 10px;
+}
+
+html,
+body {
+  background-color: var(--surface);
+  color: var(--text);
+  font-family: var(--font-sans);
+  min-block-size: 100%;
+}
+
+html[dir='rtl'],
+html[dir='rtl'] body {
+  font-family: var(--font-arabic);
+}
+
+/* Directional icons must mirror under RTL. */
+html[dir='rtl'] .icon-flip-rtl {
+  transform: scaleX(-1);
+}
+
+/* Identifier-like numerics stay LTR even inside Arabic text. */
+.numeric-identifier {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* @shared/ui native form controls.
+ * The directives `uiInput`/`uiTextarea`/`uiSelect` add the `.ui-input` class to
+ * the native element; these rules give them the themed look while letting
+ * Angular's FormsModule/ReactiveFormsModule own the value binding.
+ */
+.ui-input {
+  inline-size: 100%;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--text);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  padding-block: 0.625rem;
+  padding-inline: 0.875rem;
+  transition: border-color var(--motion-base) ease, box-shadow var(--motion-base) ease;
+  outline: none;
+}
+.ui-input::placeholder {
+  color: var(--text-subtle);
+}
+.ui-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.ui-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.ui-input--textarea {
+  min-block-size: 5.5rem;
+  resize: vertical;
+}
+.ui-input--select {
+  padding-inline-end: 2.25rem;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+    linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 1rem) 50%, calc(100% - 0.625rem) 50%;
+  background-size: 0.375rem 0.375rem, 0.375rem 0.375rem;
+  background-repeat: no-repeat;
+}
+[dir='rtl'] .ui-input--select {
+  background-position: 1rem 50%, 0.625rem 50%;
+}
+.ui-field--invalid .ui-input {
+  border-color: var(--danger);
+}
+.ui-field--invalid .ui-input:focus {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 18%, transparent);
+}
+@media (max-width: 640px) {
+  /* Stops iOS Safari from zooming on focus when font-size is below 16px. */
+  .ui-input {
+    font-size: 1rem;
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "/api": {
+    "target": "https://localhost:7201",
+    "secure": false,
+    "changeOrigin": true,
+    "headers": {
+      "Host": "test-tenant.localhost"
+    }
+  }
+}

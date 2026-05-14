@@ -1,0 +1,11 @@
+{
+  "name": "@shared/i18n",
+  "version": "0.1.0",
+  "peerDependencies": {
+    "@angular/common": "^18.2.0",
+    "@angular/core": "^18.2.0",
+    "@ngx-translate/core": "^15.0.0",
+    "rxjs": "~7.8.0"
+  },
+  "sideEffects": false
+}
