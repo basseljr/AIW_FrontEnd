@@ -15,9 +15,9 @@ import { CatalogItem } from '../../../../../core/models/catalog.model';
   imports: [TranslateModule, DecimalPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <article class="sf-menu-card" [class.sf-menu-card--unavailable]="!item.isAvailable">
+    <article class="sf-menu-card" [class.sf-menu-card--unavailable]="item.isAvailable === false">
       <div class="sf-menu-card__image-wrap">
-        @if (item.imageUrl) {
+        @if (item.imageUrl && !imgError) {
           <img
             class="sf-menu-card__image"
             [src]="item.imageUrl"
@@ -25,6 +25,7 @@ import { CatalogItem } from '../../../../../core/models/catalog.model';
             loading="lazy"
             width="400"
             height="192"
+            (error)="imgError = true"
           />
         } @else {
           <div class="sf-menu-card__image-placeholder" aria-hidden="true">
@@ -35,7 +36,7 @@ import { CatalogItem } from '../../../../../core/models/catalog.model';
             </svg>
           </div>
         }
-        @if (!item.isAvailable) {
+        @if (item.isAvailable === false) {
           <span class="sf-menu-card__oos-badge">
             {{ 'catalog.out_of_stock' | translate }}
           </span>
@@ -58,7 +59,7 @@ import { CatalogItem } from '../../../../../core/models/catalog.model';
           <button
             class="sf-menu-card__btn"
             type="button"
-            [disabled]="!item.isAvailable"
+            [disabled]="item.isAvailable === false"
             (click)="viewItem.emit(item)"
           >
             <svg class="sf-menu-card__btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -219,4 +220,5 @@ export class RestaurantMenuItemCardComponent {
   @Input({ required: true }) item!: CatalogItem;
   @Input() lang: 'en' | 'ar' = 'en';
   @Output() viewItem = new EventEmitter<CatalogItem>();
+  imgError = false;
 }

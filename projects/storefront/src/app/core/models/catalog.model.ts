@@ -1,37 +1,43 @@
 export interface Category {
   id: string;
-  slug: string;
+  parentId?: string;
   nameEn: string;
   nameAr: string;
+  imageUrl?: string;
+  sortOrder: number;
+  // Returned by backend catalog endpoints
+  slug?: string;
   descriptionEn?: string;
   descriptionAr?: string;
-  imageUrl?: string;
   itemCount?: number;
-  parentId?: string;
-  sortOrder: number;
 }
 
 export interface CatalogItem {
+  // Fields returned by backend CatalogItemDto
   id: string;
-  slug: string;
-  categoryId: string;
-  categorySlug: string;
-  categoryNameEn: string;
-  categoryNameAr: string;
+  categoryId?: string;
+  categoryNameEn?: string;
+  categoryNameAr?: string;
   nameEn: string;
   nameAr: string;
   descriptionEn?: string;
   descriptionAr?: string;
   price: number;
-  compareAtPrice?: number;
   imageUrl?: string;
+  productType?: string;
+  hasVariants?: boolean;
+  sortOrder?: number;
+  createdAt?: string;
+  // Returned by backend (slug-enabled endpoints); also present on detail responses
+  slug?: string;
+  categorySlug?: string;
+  isAvailable?: boolean;
+  isPublished?: boolean;
+  compareAtPrice?: number;
   images?: ProductImage[];
-  isAvailable: boolean;
-  isPublished: boolean;
   tags?: string[];
-  hasModifiers?: boolean;       // restaurant
-  hasVariants?: boolean;        // retail
-  durationMinutes?: number;     // service
+  hasModifiers?: boolean;
+  durationMinutes?: number;
 }
 
 export interface ProductImage {
@@ -88,17 +94,19 @@ export interface CatalogItemDetail extends CatalogItem {
 export interface CatalogPage {
   items: CatalogItem[];
   nextCursor: string | null;
-  total: number;
+  limit?: number;
+  total?: number;
 }
 
 export interface SearchSuggestion {
   id: string;
-  slug: string;
-  categorySlug: string;
   nameEn: string;
   nameAr: string;
-  imageUrl?: string;
   price: number;
+  imageUrl?: string;
+  // Optional — not returned by backend
+  slug?: string;
+  categorySlug?: string;
 }
 
 export interface CartItem {
@@ -128,6 +136,7 @@ export interface SelectedModifier {
 
 export interface CatalogFilters {
   categorySlug?: string;
+  categoryId?: string;
   minPrice?: number;
   maxPrice?: number;
   inStockOnly?: boolean;

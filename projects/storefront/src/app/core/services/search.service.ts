@@ -1,12 +1,17 @@
 import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
-import { ApiClient } from '@shared/api';
+import { API_BASE_URL } from '@shared/api';
 import { CatalogPage, SearchSuggestion } from '../models/catalog.model';
+
+// Backend search endpoints return raw data (no { data: T } envelope),
+// so this service uses HttpClient directly instead of ApiClient.
 
 export interface SearchParams {
   q: string;
+  categoryId?: string;
   categorySlug?: string;
   cursor?: string;
   inStockOnly?: boolean;
@@ -14,24 +19,36 @@ export interface SearchParams {
 
 @Injectable({ providedIn: 'root' })
 export class SearchService {
-  private readonly api = inject(ApiClient);
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = inject(API_BASE_URL);
 
   getSuggestions(query: string): Observable<SearchSuggestion[]> {
-    return this.api
-      .get<SearchSuggestion[]>('/storefront/search/suggestions', {
-        params: { q: query },
-      })
-      .pipe(catchError(() => of([])));
+    return this.http
+      .get<SearchSuggestion[]>(
+        `${this.baseUrl}/storefront/catalog/search/suggestions`,
+        { params: { q: query }, withCredentials: true },
+      )
+      .pipe(
+        map((data) => data ?? []),
+        catchError(() => of([])),
+      );
   }
 
   search(params: SearchParams): Observable<CatalogPage> {
-    const query: Record<string, string | boolean | undefined> = { q: params.q };
-    if (params.categorySlug != null) query['categorySlug'] = params.categorySlug;
-    if (params.cursor != null) query['cursor'] = params.cursor;
-    if (params.inStockOnly != null) query['inStockOnly'] = params.inStockOnly;
+    let httpParams = new HttpParams().set('q', params.q);
+    if (params.categoryId != null) httpParams = httpParams.set('categoryId', params.categoryId);
+    if (params.cursor != null) httpParams = httpParams.set('cursor', params.cursor);
+    if (params.inStockOnly != null) httpParams = httpParams.set('inStockOnly', String(params.inStockOnly));
 
-    return this.api
-      .get<CatalogPage>('/storefront/search', { params: query })
-      .pipe(catchError(() => of({ items: [], nextCursor: null, total: 0 })));
+    return this.http
+      .get<CatalogPage>(
+        `${this.baseUrl}/storefront/catalog/search`,
+        { params: httpParams, withCredentials: true },
+      )
+      .pipe(
+        map((data) => data ?? { items: [], nextCursor: null }),
+        map((data) => ({ ...data, items: data.items ?? [] })),
+        catchError(() => of({ items: [], nextCursor: null })),
+      );
   }
 }

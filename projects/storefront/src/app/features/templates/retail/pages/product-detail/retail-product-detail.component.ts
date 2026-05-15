@@ -312,8 +312,8 @@ export class RetailProductDetailComponent implements OnInit {
     const variant = it.variants?.find((v) => v.id === this.selectedVariantId());
     const cartItem: CartItem = {
       itemId: it.id,
-      slug: it.slug,
-      categorySlug: it.categorySlug,
+      slug: it.slug ?? it.id,
+      categorySlug: it.categorySlug ?? it.categoryId ?? '',
       nameEn: it.nameEn,
       nameAr: it.nameAr,
       imageUrl: it.imageUrl,

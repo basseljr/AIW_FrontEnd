@@ -15,9 +15,9 @@ import { CatalogItem } from '../../../../../core/models/catalog.model';
   imports: [TranslateModule, DecimalPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <article class="sf-product-card" [class.sf-product-card--unavailable]="!item.isAvailable">
+    <article class="sf-product-card" [class.sf-product-card--unavailable]="item.isAvailable === false">
       <div class="sf-product-card__image-wrap">
-        @if (item.imageUrl) {
+        @if (item.imageUrl && !imgError) {
           <img
             class="sf-product-card__image"
             [src]="item.imageUrl"
@@ -25,6 +25,7 @@ import { CatalogItem } from '../../../../../core/models/catalog.model';
             loading="lazy"
             width="400"
             height="192"
+            (error)="imgError = true"
           />
         } @else {
           <div class="sf-product-card__image-placeholder" aria-hidden="true">
@@ -35,7 +36,7 @@ import { CatalogItem } from '../../../../../core/models/catalog.model';
             </svg>
           </div>
         }
-        @if (!item.isAvailable) {
+        @if (item.isAvailable === false) {
           <span class="sf-product-card__oos-badge">{{ 'catalog.out_of_stock' | translate }}</span>
         }
       </div>
@@ -55,7 +56,7 @@ import { CatalogItem } from '../../../../../core/models/catalog.model';
         <button
           class="sf-product-card__btn"
           type="button"
-          [disabled]="!item.isAvailable"
+          [disabled]="item.isAvailable === false"
           (click)="viewItem.emit(item)"
         >
           <svg class="sf-product-card__btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -184,4 +185,5 @@ export class RetailProductCardComponent {
   @Input({ required: true }) item!: CatalogItem;
   @Input() lang: 'en' | 'ar' = 'en';
   @Output() viewItem = new EventEmitter<CatalogItem>();
+  imgError = false;
 }

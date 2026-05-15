@@ -38,8 +38,8 @@ import { Category, CatalogFilters } from '../../../../../core/models/catalog.mod
                 <label class="sf-filter__category-item">
                   <input
                     type="checkbox"
-                    [checked]="selectedCategories().includes(cat.slug)"
-                    (change)="toggleCategory(cat.slug)"
+                    [checked]="selectedCategories().includes(cat.id)"
+                    (change)="toggleCategory(cat.id)"
                   />
                   {{ lang === 'ar' ? cat.nameAr : cat.nameEn }}
                   @if (cat.itemCount != null) {
@@ -251,7 +251,7 @@ export class RetailFilterSidebarComponent {
   applyFilters(): void {
     const cats = this.selectedCategories();
     this.filtersChanged.emit({
-      categorySlug: cats.length === 1 ? cats[0] : undefined,
+      categoryId: cats.length === 1 ? cats[0] : undefined,
       minPrice: this.minPrice(),
       maxPrice: this.maxPrice(),
       inStockOnly: this.inStockOnly(),

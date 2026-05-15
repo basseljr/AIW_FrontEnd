@@ -210,7 +210,7 @@ export class RetailCatalogComponent implements OnInit {
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('categorySlug');
-    if (slug) this.activeFilters = { categorySlug: slug };
+    if (slug) this.activeFilters = { categoryId: slug };
 
     const q = this.route.snapshot.queryParamMap.get('q');
     if (q) this.activeFilters.q = q;
@@ -229,7 +229,7 @@ export class RetailCatalogComponent implements OnInit {
     this.catalogService.getCatalog({ ...this.activeFilters, limit: 24 }).subscribe({
       next: (page) => {
         this.items.set(page.items);
-        this.total.set(page.total);
+        this.total.set(page.total ?? 0);
         this.nextCursor.set(page.nextCursor);
         this.loading.set(false);
       },

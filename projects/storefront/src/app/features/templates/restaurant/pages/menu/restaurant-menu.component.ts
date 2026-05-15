@@ -123,13 +123,13 @@ interface CategorySection {
         @for (section of sections(); track section.category.id) {
           <section
             class="sf-menu__section"
-            [id]="'category-' + section.category.slug"
-            [attr.aria-labelledby]="'cat-heading-' + section.category.slug"
+            [id]="'category-' + (section.category.slug ?? section.category.id)"
+            [attr.aria-labelledby]="'cat-heading-' + (section.category.slug ?? section.category.id)"
           >
             <div class="sf-menu__section-header">
               <h2
                 class="sf-menu__section-title"
-                [id]="'cat-heading-' + section.category.slug"
+                [id]="'cat-heading-' + (section.category.slug ?? section.category.id)"
               >
                 {{ lang() === 'ar' ? section.category.nameAr : section.category.nameEn }}
               </h2>
@@ -159,7 +159,7 @@ interface CategorySection {
                   <sf-restaurant-menu-item-card
                     [item]="item"
                     [lang]="lang()"
-                    (viewItem)="onViewItem(section.category.slug, item)"
+                    (viewItem)="onViewItem(item)"
                   />
                 }
               </div>
@@ -367,12 +367,12 @@ export class RestaurantMenuComponent implements OnInit {
 
     cats.forEach((cat, idx) => {
       this.catalogService
-        .getCatalog({ categorySlug: cat.slug, limit: 50 })
+        .getCatalog({ categoryId: cat.id, limit: 50 })
         .subscribe({
           next: (page) => {
             this.sections.update((prev) => {
               const updated = [...prev];
-              updated[idx] = { ...updated[idx], items: page.items, loading: false };
+              updated[idx] = { ...updated[idx], items: page.items ?? [], loading: false };
               return updated;
             });
           },
@@ -392,9 +392,9 @@ export class RestaurantMenuComponent implements OnInit {
       this.activeCategorySlug.set(null);
       return;
     }
-    this.activeCategorySlug.set(cat.slug);
+    this.activeCategorySlug.set(cat.slug ?? cat.id);
     if (isPlatformBrowser(this.platformId)) {
-      const el = document.getElementById(`category-${cat.slug}`);
+      const el = document.getElementById(`category-${cat.slug ?? cat.id}`);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
@@ -405,9 +405,9 @@ export class RestaurantMenuComponent implements OnInit {
     });
   }
 
-  onViewItem(categorySlug: string, item: CatalogItem): void {
+  onViewItem(item: CatalogItem): void {
     const lang = this.lang();
-    this.router.navigate(['/', lang, 'menu', categorySlug, item.slug]);
+    this.router.navigate(['/', lang, 'menu', item.categorySlug ?? item.categoryId ?? '', item.slug ?? item.id]);
   }
 
   setView(mode: ViewMode): void {
