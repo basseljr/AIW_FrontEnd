@@ -110,6 +110,6 @@ export class RestaurantCategoryTabsComponent {
   }
 
   selectAll(): void {
-    this.categorySelected.emit({ id: '', slug: '', nameEn: 'All', nameAr: 'الكل', sortOrder: 0 });
+    this.categorySelected.emit({ id: '', nameEn: 'All', nameAr: 'الكل', sortOrder: 0 });
   }
 }

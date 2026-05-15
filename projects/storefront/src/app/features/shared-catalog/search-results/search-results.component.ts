@@ -55,9 +55,9 @@ import { RestaurantMenuItemCardComponent } from '../../templates/restaurant/comp
             @for (cat of categories(); track cat.id) {
               <button
                 class="sf-results__chip"
-                [class.sf-results__chip--active]="activeCategory() === cat.slug"
+                [class.sf-results__chip--active]="activeCategory() === cat.id"
                 type="button"
-                (click)="filterByCategory(cat.slug)"
+                (click)="filterByCategory(cat.id)"
               >
                 {{ lang() === 'ar' ? cat.nameAr : cat.nameEn }}
               </button>
@@ -287,13 +287,13 @@ export class SearchResultsComponent implements OnInit {
     this.searchService
       .search({
         q,
-        categorySlug: this.activeCategory() ?? undefined,
+        categoryId: this.activeCategory() ?? undefined,
         inStockOnly: this.inStockOnly() || undefined,
       })
       .subscribe({
         next: (page) => {
           this.items.set(page.items);
-          this.total.set(page.total);
+          this.total.set(page.total ?? 0);
           this.nextCursor.set(page.nextCursor);
           this.loading.set(false);
         },
@@ -318,7 +318,7 @@ export class SearchResultsComponent implements OnInit {
     this.searchService
       .search({
         q: this.query(),
-        categorySlug: this.activeCategory() ?? undefined,
+        categoryId: this.activeCategory() ?? undefined,
         cursor,
         inStockOnly: this.inStockOnly() || undefined,
       })

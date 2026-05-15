@@ -125,11 +125,11 @@ export class ServiceListComponent implements OnInit {
   }
 
   onCategorySelected(cat: Category): void {
-    this.activeCategorySlug.set(cat.id ? cat.slug : null);
+    this.activeCategorySlug.set(cat.id || null);
     this.loadItems();
   }
 
   onViewItem(item: CatalogItem): void {
-    this.router.navigate(['/', this.lang(), 'services', item.slug]);
+    this.router.navigate(['/', this.lang(), 'services', item.id]);
   }
 }

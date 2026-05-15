@@ -15,9 +15,9 @@ import { CatalogItem } from '../../../../../core/models/catalog.model';
   imports: [TranslateModule, DecimalPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <article class="sf-svc-card" [class.sf-svc-card--unavailable]="!item.isAvailable">
+    <article class="sf-svc-card" [class.sf-svc-card--unavailable]="item.isAvailable === false">
       <div class="sf-svc-card__image-wrap">
-        @if (item.imageUrl) {
+        @if (item.imageUrl && !imgError) {
           <img
             class="sf-svc-card__image"
             [src]="item.imageUrl"
@@ -25,6 +25,7 @@ import { CatalogItem } from '../../../../../core/models/catalog.model';
             loading="lazy"
             width="400"
             height="192"
+            (error)="imgError = true"
           />
         } @else {
           <div class="sf-svc-card__image-placeholder" aria-hidden="true">✂️</div>
@@ -44,7 +45,7 @@ import { CatalogItem } from '../../../../../core/models/catalog.model';
           <span class="sf-svc-card__price">
             {{ item.price | number: '1.3-3' }} {{ 'common.currency' | translate }}
           </span>
-          <button class="sf-svc-card__btn" type="button" [disabled]="!item.isAvailable" (click)="viewItem.emit(item)">
+          <button class="sf-svc-card__btn" type="button" [disabled]="item.isAvailable === false" (click)="viewItem.emit(item)">
             {{ 'home.book_now' | translate }}
           </button>
         </div>
@@ -137,4 +138,5 @@ export class ServiceCardComponent {
   @Input({ required: true }) item!: CatalogItem;
   @Input() lang: 'en' | 'ar' = 'en';
   @Output() viewItem = new EventEmitter<CatalogItem>();
+  imgError = false;
 }

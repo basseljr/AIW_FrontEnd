@@ -15,6 +15,7 @@ import { SkeletonComponent, EmptyStateComponent } from '@shared/ui';
 import { CatalogService } from '../../../../../core/services/catalog.service';
 import { CartService } from '../../../../../core/services/cart.service';
 import {
+  CatalogItem,
   CatalogItemDetail,
   SelectedModifier,
   CartItem,
@@ -96,12 +97,12 @@ import { RestaurantMenuItemCardComponent } from '../../components/menu-item-card
                 <span class="sf-item-detail__price">
                   {{ item()!.price | number: '1.3-3' }} {{ 'common.currency' | translate }}
                 </span>
-                @if (!item()!.isAvailable) {
+                @if (item()!.isAvailable === false) {
                   <span class="sf-item-detail__oos">{{ 'catalog.out_of_stock' | translate }}</span>
                 }
               </div>
 
-              @if (item()!.isAvailable) {
+              @if (item()!.isAvailable !== false) {
                 <button
                   class="sf-item-detail__add-btn"
                   type="button"
@@ -360,8 +361,8 @@ export class RestaurantItemDetailComponent implements OnInit {
 
     const cartItem: CartItem = {
       itemId: it.id,
-      slug: it.slug,
-      categorySlug: it.categorySlug,
+      slug: it.slug ?? it.id,
+      categorySlug: it.categorySlug ?? it.categoryId ?? '',
       nameEn: it.nameEn,
       nameAr: it.nameAr,
       imageUrl: it.imageUrl,
@@ -380,7 +381,7 @@ export class RestaurantItemDetailComponent implements OnInit {
     setTimeout(() => this.toastVisible.set(false), 2500);
   }
 
-  navigateTo(item: { slug: string; categorySlug: string }): void {
-    this.router.navigate(['/', this.lang(), 'menu', item.categorySlug, item.slug]);
+  navigateTo(item: CatalogItem): void {
+    this.router.navigate(['/', this.lang(), 'menu', item.categorySlug ?? item.categoryId ?? '', item.slug ?? item.id]);
   }
 }
