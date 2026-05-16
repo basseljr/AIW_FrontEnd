@@ -264,15 +264,12 @@ import { CartService } from '../../../../core/services/cart.service';
       }
 
       .sf-nav {
-        background: rgba(255, 248, 241, 0.4);
-        backdrop-filter: saturate(180%) blur(24px);
-        -webkit-backdrop-filter: saturate(180%) blur(24px);
-        border-block-end: 1px solid var(--color-outline-variant, rgba(0, 0, 0, 0.08));
-        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        background: var(--color-header-footer, #1e1b17);
+        border-block-end: 1px solid rgba(255, 255, 255, 0.08);
+        transition: box-shadow 0.3s ease;
       }
       .sf-nav--scrolled {
-        background: rgba(255, 248, 241, 0.92);
-        box-shadow: 0 1px 12px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
       }
 
       .sf-nav__inner {
@@ -302,7 +299,7 @@ import { CartService } from '../../../../core/services/cart.service';
         font-size: 1.5rem;
         font-weight: 800;
         letter-spacing: -0.04em;
-        color: var(--color-primary);
+        color: var(--color-on-header-footer, #ffffff);
         line-height: 1;
       }
 
@@ -322,7 +319,7 @@ import { CartService } from '../../../../core/services/cart.service';
       }
 
       .sf-nav__link {
-        color: var(--color-on-surface-variant, #514534);
+        color: var(--color-on-header-footer, rgba(255, 255, 255, 0.8));
         font-size: 0.9375rem;
         font-weight: 500;
         text-decoration: none;
@@ -355,18 +352,18 @@ import { CartService } from '../../../../core/services/cart.service';
         min-inline-size: 2.25rem;
         block-size: 2rem;
         padding-inline: 0.625rem;
-        border: 1.5px solid var(--color-outline-variant, #d6c4ad);
+        border: 1.5px solid rgba(255, 255, 255, 0.3);
         border-radius: var(--border-radius-full, 9999px);
         background: transparent;
         cursor: pointer;
-        color: var(--color-primary);
+        color: var(--color-on-header-footer, #ffffff);
         font-size: 0.8125rem;
         font-weight: 700;
         transition: background-color 0.2s, border-color 0.2s;
         font-family: inherit;
       }
       .sf-nav__lang-pill:hover {
-        background: var(--color-surface-container, rgba(0, 0, 0, 0.04));
+        background: rgba(255, 255, 255, 0.1);
         border-color: var(--color-primary);
       }
 
@@ -376,7 +373,7 @@ import { CartService } from '../../../../core/services/cart.service';
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        color: var(--color-primary);
+        color: var(--color-on-header-footer, #ffffff);
         text-decoration: none;
         transition: color 0.2s;
         padding: 0.25rem;
@@ -440,7 +437,7 @@ import { CartService } from '../../../../core/services/cart.service';
         background: transparent;
         border: none;
         cursor: pointer;
-        color: var(--color-primary);
+        color: var(--color-on-header-footer, #ffffff);
         padding: 0;
         border-radius: 0.5rem;
         transition: color 0.2s;
