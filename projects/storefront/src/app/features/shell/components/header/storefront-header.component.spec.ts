@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 
 import { LanguageToggleService, SupportedLang } from '@shared/i18n';
 import { TenantConfigService } from '../../../../core/services/tenant-cconfig.service';
+import { CartService } from '../../../../core/services/cart.service';
 import { DEFAULT_DEV_TENANT } from '../../../../core/models/tenant-config.model';
 import { StorefrontHeaderComponent } from './storefront-header.component';
 
@@ -28,9 +29,10 @@ class MockTranslateLoader implements TranslateLoader {
   }
 }
 
-function buildFixture() {
+function buildFixture(cartCountVal = 0) {
   const mockLang = signal<SupportedLang>('en');
   const mockConfig = signal(DEFAULT_DEV_TENANT);
+  const mockCartCount = signal(cartCountVal);
 
   const mockLangToggle = {
     current: mockLang.asReadonly(),
@@ -49,6 +51,17 @@ function buildFixture() {
     isReady: signal(true).asReadonly(),
   };
 
+  const mockCartService = {
+    count: mockCartCount.asReadonly(),
+    items: signal([]).asReadonly(),
+    total: signal(0).asReadonly(),
+    loading: signal(false).asReadonly(),
+    addItem: jasmine.createSpy('addItem'),
+    removeItem: jasmine.createSpy('removeItem'),
+    updateQuantity: jasmine.createSpy('updateQuantity'),
+    clear: jasmine.createSpy('clear'),
+  };
+
   TestBed.configureTestingModule({
     imports: [
       StorefrontHeaderComponent,
@@ -60,6 +73,7 @@ function buildFixture() {
       provideRouter([]),
       { provide: LanguageToggleService, useValue: mockLangToggle },
       { provide: TenantConfigService, useValue: mockTenantConfig },
+      { provide: CartService, useValue: mockCartService },
     ],
   });
 
@@ -67,6 +81,7 @@ function buildFixture() {
     fixture: TestBed.createComponent(StorefrontHeaderComponent),
     mockLang,
     mockLangToggle,
+    mockCartCount,
   };
 }
 
@@ -126,8 +141,7 @@ describe('StorefrontHeaderComponent', () => {
   });
 
   it('shows cart badge when cartCount > 0', () => {
-    const { fixture } = buildFixture();
-    fixture.componentInstance.cartCount.set(3);
+    const { fixture } = buildFixture(3);
     fixture.detectChanges();
 
     const badge = fixture.nativeElement.querySelector('.sf-nav__cart-badge');

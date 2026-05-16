@@ -14,6 +14,7 @@ import { NgClass } from '@angular/common';
 import { LanguageToggleService } from '@shared/i18n';
 import { TenantConfigService } from '../../../../core/services/tenant-cconfig.service';
 import { TenantConfig } from '../../../../core/models/tenant-cconfig.model';
+import { CartService } from '../../../../core/services/cart.service';
 
 /**
  * Storefront header — matches the restaurant prototype exactly.
@@ -583,12 +584,13 @@ import { TenantConfig } from '../../../../core/models/tenant-cconfig.model';
 export class StorefrontHeaderComponent implements OnInit {
   private readonly langToggle = inject(LanguageToggleService);
   private readonly tenantCconfig = inject(TenantConfigService);
+  private readonly cartService = inject(CartService);
 
   readonly activeLang = this.langToggle.current;
   readonly isRtl = this.langToggle.isRtl;
   readonly menuOpen = signal(false);
   readonly isScrolled = signal(false);
-  readonly cartCount = signal(0);
+  readonly cartCount = this.cartService.count;
 
   readonly config = computed<TenantConfig | null>(() => this.tenantCconfig.config());
   readonly businessName = computed(() => {
@@ -599,9 +601,7 @@ export class StorefrontHeaderComponent implements OnInit {
   readonly logoUrl = computed(() => this.config()?.branding.logoUrl ?? null);
   readonly navLinks = computed(() => this.config()?.navLinks ?? []);
 
-  ngOnInit(): void {
-    // cartCount will be driven by CartService in M34
-  }
+  ngOnInit(): void {}
 
   toggleLanguage(): void {
     this.langToggle.toggle();

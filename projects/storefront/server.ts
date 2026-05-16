@@ -158,6 +158,12 @@ export function app(): express.Express {
         return res.redirect(302, `/${tenantConfig.defaultLanguage}/`);
       }
 
+      // Order-tracking requires a JWT token in the URL and real-time SignalR data —
+      // serve as CSR (client-side only) so SSR never attempts to connect to the hub.
+      if (/\/order-tracking\//.test(req.path)) {
+        return res.send(document);
+      }
+
       const lang = extractLangFromUrl(req.originalUrl) ?? tenantConfig.defaultLanguage;
 
       const rawHtml = await renderApplication(bootstrap, {

@@ -1,8 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { signal } from '@angular/core';
+import { PLATFORM_ID, signal } from '@angular/core';
 import { of } from 'rxjs';
+import { API_BASE_URL } from '@shared/api';
 
 import { LanguageToggleService, SupportedLang } from '@shared/i18n';
 import { TenantConfigService } from '../../../../../core/services/tenant-config.service';
@@ -70,10 +72,13 @@ function buildFixture(featuredItems = mockItems) {
   TestBed.configureTestingModule({
     imports: [
       RestaurantHomeComponent,
+      HttpClientTestingModule,
       TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: MockLoader } }),
     ],
     providers: [
       provideRouter([]),
+      { provide: PLATFORM_ID, useValue: 'server' },
+      { provide: API_BASE_URL, useValue: 'http://localhost' },
       { provide: TenantConfigService, useValue: { config: mockConfig.asReadonly(), isReady: signal(true).asReadonly() } },
       { provide: LanguageToggleService, useValue: { current: mockLang.asReadonly(), isRtl: signal(false).asReadonly() } },
       { provide: SeoService, useValue: mockSeo },
