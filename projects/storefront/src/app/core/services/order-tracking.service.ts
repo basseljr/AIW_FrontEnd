@@ -39,8 +39,9 @@ export class OrderTrackingService {
         this.ngZone.run(() => this._status.next(update));
       });
 
-      // Acknowledge server reconnect policy without action (withAutomaticReconnect handles it)
-      this.connection.on('ReconnectPolicy', () => { /* no-op */ });
+      // Acknowledge server-pushed events to suppress "no client method" warnings
+      this.connection.on('NewOrder', () => { /* no-op on tracking page */ });
+      this.connection.on('ReconnectPolicy', () => { /* handled by withAutomaticReconnect */ });
 
       this.connection.on('error', (message: string) => {
         console.warn('SignalR error from server:', message);

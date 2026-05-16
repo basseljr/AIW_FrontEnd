@@ -208,7 +208,7 @@ import { OrderConfirmation } from '../../../core/models/checkout.model';
       justify-content: center;
       flex-shrink: 0;
     }
-    .sf-confirm__check-circle svg { inline-size: 1.75rem; block-size: 1.75rem; color: #16a34a; }
+    .sf-confirm__check-circle svg { inline-size: 1.75rem; block-size: 1.75rem; color: var(--color-success, #16a34a); }
     .sf-confirm__title { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; color: var(--color-primary, #805600); margin: 0; }
     .sf-confirm__sub { font-size: 0.9375rem; color: var(--color-on-surface-variant, #514534); margin: 0.25rem 0 0; }
 
@@ -282,7 +282,7 @@ import { OrderConfirmation } from '../../../core/models/checkout.model';
       font-size: 0.875rem;
       color: var(--color-on-surface, #1e1b17);
     }
-    .sf-confirm__notice svg { inline-size: 1.125rem; block-size: 1.125rem; color: #16a34a; flex-shrink: 0; margin-block-start: 0.0625rem; }
+    .sf-confirm__notice svg { inline-size: 1.125rem; block-size: 1.125rem; color: var(--color-success, #16a34a); flex-shrink: 0; margin-block-start: 0.0625rem; }
 
     /* Summary */
     .sf-confirm__summary {
@@ -307,7 +307,7 @@ import { OrderConfirmation } from '../../../core/models/checkout.model';
     .sf-confirm__summary-item-price { font-weight: 700; font-size: 0.875rem; color: var(--color-primary-container, #f2a922); white-space: nowrap; }
     .sf-confirm__summary-rows { display: flex; flex-direction: column; gap: 0.5rem; }
     .sf-confirm__summary-row { display: flex; justify-content: space-between; font-size: 0.875rem; color: var(--color-on-surface-variant, #514534); }
-    .sf-confirm__summary-row--discount { color: #16a34a; }
+    .sf-confirm__summary-row--discount { color: var(--color-success, #16a34a); }
     .sf-confirm__summary-divider { block-size: 1px; background: var(--color-outline-variant, #d6c4ad); }
     .sf-confirm__summary-total { display: flex; justify-content: space-between; font-size: 1.125rem; font-weight: 900; color: var(--color-primary, #805600); }
 

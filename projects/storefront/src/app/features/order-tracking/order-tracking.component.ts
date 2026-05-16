@@ -159,7 +159,7 @@ const STATUS_ICONS: Record<string, string> = {
     }
     .sf-tracking__reconnecting {
       background: rgba(245,158,11,0.1);
-      color: #b45309;
+      color: var(--color-warning, #b45309);
       border: 1px solid rgba(245,158,11,0.3);
     }
     .sf-tracking__offline {
@@ -172,7 +172,7 @@ const STATUS_ICONS: Record<string, string> = {
       inline-size: 1rem;
       block-size: 1rem;
       border: 2px solid rgba(180,83,9,0.3);
-      border-block-start-color: #b45309;
+      border-block-start-color: var(--color-warning, #b45309);
       border-radius: 50%;
       animation: sf-spin 0.7s linear infinite;
     }
