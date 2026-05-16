@@ -24,6 +24,15 @@ export const routes: Routes = [
     redirectTo: 'en',
   },
 
+  // 404 must appear BEFORE :lang so /404 never hits the param guard
+  {
+    path: '404',
+    loadComponent: () =>
+      import('./features/error-pages/not-found/not-found.component').then(
+        (m) => m.NotFoundComponent,
+      ),
+  },
+
   // Language shell: /en/ and /ar/
   {
     path: ':lang',
@@ -68,6 +77,38 @@ export const routes: Routes = [
             './features/shared-catalog/search-results/search-results.component'
           ).then((m) => m.SearchResultsComponent),
       },
+      // Cart (shared across all business types)
+      {
+        path: 'cart',
+        loadComponent: () =>
+          import('./features/cart/cart-page.component').then(
+            (m) => m.CartPageComponent,
+          ),
+      },
+      // Checkout flow
+      {
+        path: 'checkout',
+        loadComponent: () =>
+          import('./features/checkout/checkout-page.component').then(
+            (m) => m.CheckoutPageComponent,
+          ),
+      },
+      // Order confirmation (after payment)
+      {
+        path: 'order-confirmation/:orderId',
+        loadComponent: () =>
+          import('./features/checkout/order-confirmation/order-confirmation.component').then(
+            (m) => m.OrderConfirmationComponent,
+          ),
+      },
+      // Order tracking (real-time SignalR)
+      {
+        path: 'order-tracking/:orderId',
+        loadComponent: () =>
+          import('./features/order-tracking/order-tracking.component').then(
+            (m) => m.OrderTrackingComponent,
+          ),
+      },
       // Maintenance route — rendered by SSR server for suspended tenants
       {
         path: 'maintenance',
@@ -76,18 +117,14 @@ export const routes: Routes = [
             './features/error-pages/maintenance/maintenance.component'
           ).then((m) => m.MaintenanceComponent),
       },
-      // Fallback for unknown routes within a language — use /404, never / (that would loop)
+      // Placeholder routes — redirect to home until full pages are built
+      { path: 'login', redirectTo: '' },
+      { path: 'account', redirectTo: '' },
+      { path: 'privacy', redirectTo: '' },
+      { path: 'terms', redirectTo: '' },
+      // Fallback for unknown routes within a language
       { path: '**', redirectTo: '/404' },
     ],
-  },
-
-  // 404 — used by the SSR server for unresolvable domains
-  {
-    path: '404',
-    loadComponent: () =>
-      import('./features/error-pages/not-found/not-found.component').then(
-        (m) => m.NotFoundComponent,
-      ),
   },
 
   // Catch-all

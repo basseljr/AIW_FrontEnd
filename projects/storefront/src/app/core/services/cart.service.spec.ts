@@ -1,6 +1,9 @@
 import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { PLATFORM_ID } from '@angular/core';
 import { CartService } from './cart.service';
 import { CartItem } from '../models/catalog.model';
+import { API_BASE_URL } from '@shared/api';
 
 function makeItem(overrides: Partial<CartItem> = {}): CartItem {
   return {
@@ -15,11 +18,18 @@ function makeItem(overrides: Partial<CartItem> = {}): CartItem {
   };
 }
 
-describe('CartService', () => {
+describe('CartService (server-side, no HTTP calls)', () => {
   let service: CartService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [CartService] });
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [
+        CartService,
+        { provide: PLATFORM_ID, useValue: 'server' },
+        { provide: API_BASE_URL, useValue: 'http://localhost' },
+      ],
+    });
     service = TestBed.inject(CartService);
   });
 
@@ -92,5 +102,59 @@ describe('CartService', () => {
     expect(service.count()).toBe(0);
     expect(service.items().length).toBe(0);
     expect(service.total()).toBe(0);
+  });
+});
+
+describe('CartService (browser-side, loads from API)', () => {
+  let service: CartService;
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [
+        CartService,
+        { provide: PLATFORM_ID, useValue: 'browser' },
+        { provide: API_BASE_URL, useValue: 'http://localhost' },
+      ],
+    });
+    service = TestBed.inject(CartService);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpMock.verify();
+  });
+
+  it('loads cart from API on init', () => {
+    const req = httpMock.expectOne('http://localhost/storefront/cart');
+    expect(req.request.method).toBe('GET');
+    req.flush({
+      cartId: 'cart-1',
+      items: [{
+        cartItemId: 'ci-1',
+        productId: 'item-1',
+        variantId: null,
+        name: 'Shawarma',
+        nameAr: 'شاورما',
+        quantity: 2,
+        unitPrice: 2.5,
+        totalPrice: 5,
+        modifiersJson: null,
+        notes: null,
+      }],
+      subtotal: 5,
+      deliveryFee: null,
+      discount: 0,
+      total: 5,
+    });
+    expect(service.count()).toBe(2);
+    expect(service.cartId()).toBe('cart-1');
+  });
+
+  it('handles API failure gracefully on init', () => {
+    const req = httpMock.expectOne('http://localhost/storefront/cart');
+    req.error(new ProgressEvent('network error'));
+    expect(service.count()).toBe(0);
   });
 });

@@ -122,6 +122,8 @@ export interface CartItem {
   selectedVariantId?: string;
   variantLabel?: string;
   specialInstructions?: string;
+  /** Assigned by the backend when the item is saved to the server cart. Used for PUT/DELETE. */
+  cartItemId?: string;
 }
 
 export interface SelectedModifier {

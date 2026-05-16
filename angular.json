@@ -50,7 +50,10 @@
                 "output": "/assets/i18n"
               }
             ],
-            "styles": ["projects/storefront/src/styles.css"],
+            "styles": [
+              "projects/storefront/src/styles.css",
+              "node_modules/leaflet/dist/leaflet.css"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -67,7 +70,7 @@
                   "maximumError": "20kb"
                 }
               ],
-              "allowedCommonJsDependencies": ["compression"],
+              "allowedCommonJsDependencies": ["compression", "@microsoft/signalr", "leaflet"],
               "fileReplacements": [
                 {
                   "replace": "projects/storefront/src/environments/environment.ts",
@@ -118,7 +121,10 @@
                 "output": "/assets/i18n"
               }
             ],
-            "styles": ["projects/storefront/src/styles.css"],
+            "styles": [
+              "projects/storefront/src/styles.css",
+              "node_modules/leaflet/dist/leaflet.css"
+            ],
             "scripts": []
           }
         },

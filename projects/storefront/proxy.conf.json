@@ -1,8 +1,17 @@
 {
   "/api": {
-    "target": "https://localhost:7201",
+    "target": "http://localhost:5182",
     "secure": false,
     "changeOrigin": true,
+    "headers": {
+      "Host": "test-tenant.localhost"
+    }
+  },
+  "/hubs": {
+    "target": "http://localhost:5182",
+    "secure": false,
+    "changeOrigin": true,
+    "ws": true,
     "headers": {
       "Host": "test-tenant.localhost"
     }
