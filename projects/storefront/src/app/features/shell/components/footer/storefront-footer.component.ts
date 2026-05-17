@@ -118,7 +118,11 @@ import { TenantConfig } from '../../../../core/models/tenant-cconfig.model';
 
           <!-- Contact -->
           <address class="sf-footer__col sf-footer__contact">
-            <h3 class="sf-footer__col-title">{{ 'shell.footer.contact' | translate }}</h3>
+            <h3 class="sf-footer__col-title">
+              <a class="sf-footer__col-title-link" [routerLink]="['/', activeLang(), 'contact']">
+                {{ 'shell.footer.contact' | translate }}
+              </a>
+            </h3>
             <ul class="sf-footer__contact-list" role="list">
               @if (config()?.contact?.phone) {
                 <li class="sf-footer__contact-item">
@@ -252,6 +256,14 @@ import { TenantConfig } from '../../../../core/models/tenant-cconfig.model';
         letter-spacing: 0.08em;
         color: rgba(255, 255, 255, 0.35);
         margin: 0 0 0.25rem;
+      }
+      .sf-footer__col-title-link {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .sf-footer__col-title-link:hover {
+        color: rgba(255, 255, 255, 0.7);
       }
 
       .sf-footer__link-list {

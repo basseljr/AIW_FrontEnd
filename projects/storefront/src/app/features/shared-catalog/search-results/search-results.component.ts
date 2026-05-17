@@ -37,7 +37,7 @@ import { RestaurantMenuItemCardComponent } from '../../templates/restaurant/comp
             }
           </h1>
           @if (!loading() && total() > 0) {
-            <p class="sf-results__count">{{ total() }} results</p>
+            <p class="sf-results__count">{{ 'search.results_count' | translate: { count: total() } }}</p>
           }
         </div>
 

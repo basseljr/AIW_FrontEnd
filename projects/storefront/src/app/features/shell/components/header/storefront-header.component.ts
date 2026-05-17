@@ -7,7 +7,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgClass } from '@angular/common';
 
@@ -15,6 +15,7 @@ import { LanguageToggleService } from '@shared/i18n';
 import { TenantConfigService } from '../../../../core/services/tenant-cconfig.service';
 import { TenantConfig } from '../../../../core/models/tenant-cconfig.model';
 import { CartService } from '../../../../core/services/cart.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 /**
  * Storefront header — matches the restaurant prototype exactly.
@@ -58,7 +59,7 @@ import { CartService } from '../../../../core/services/cart.service';
           <!-- Logo -->
           <a
             class="sf-nav__logo"
-            [routerLink]="['/', activeLang(), '']"
+            [routerLink]="['/', activeLang()]"
             [attr.aria-label]="businessName()"
           >
             @if (logoUrl()) {
@@ -81,7 +82,7 @@ import { CartService } from '../../../../core/services/cart.service';
               <li>
                 <a
                   class="sf-nav__link"
-                  [routerLink]="['/', activeLang(), link.path]"
+                  [routerLink]="link.path ? ['/', activeLang(), link.path] : ['/', activeLang()]"
                   routerLinkActive="sf-nav__link--active"
                   [routerLinkActiveOptions]="{ exact: link.path === '' }"
                 >
@@ -133,12 +134,62 @@ import { CartService } from '../../../../core/services/cart.service';
             </a>
 
             <!-- Login / Account button -->
-            <a
-              class="sf-nav__cta"
-              [routerLink]="['/', activeLang(), 'account']"
-            >
-              {{ 'shell.header.login' | translate }}
-            </a>
+            @if (currentUser()) {
+              <div class="sf-nav__account-wrap" [class.sf-nav__account-wrap--open]="dropdownOpen()">
+                <button
+                  class="sf-nav__account-btn"
+                  type="button"
+                  [attr.aria-expanded]="dropdownOpen()"
+                  aria-haspopup="true"
+                  (click)="toggleDropdown()"
+                >
+                  <span class="sf-nav__account-avatar" aria-hidden="true">{{ initials() }}</span>
+                  <span class="sf-nav__account-name">{{ currentUser()!.fullName }}</span>
+                  <svg class="sf-nav__account-chevron" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                  </svg>
+                </button>
+                @if (dropdownOpen()) {
+                  <div class="sf-nav__dropdown" role="menu">
+                    <a
+                      class="sf-nav__dropdown-item"
+                      [routerLink]="['/', activeLang(), 'account']"
+                      role="menuitem"
+                      (click)="dropdownOpen.set(false)"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                      {{ 'account.my_account' | translate }}
+                    </a>
+                    <a
+                      class="sf-nav__dropdown-item"
+                      [routerLink]="['/', activeLang(), 'account', 'orders']"
+                      role="menuitem"
+                      (click)="dropdownOpen.set(false)"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+                      {{ 'account.orders_section' | translate }}
+                    </a>
+                    <div class="sf-nav__dropdown-divider" role="separator"></div>
+                    <button
+                      class="sf-nav__dropdown-item sf-nav__dropdown-item--danger"
+                      type="button"
+                      role="menuitem"
+                      (click)="signOut()"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                      {{ 'account.sign_out' | translate }}
+                    </button>
+                  </div>
+                }
+              </div>
+            } @else {
+              <a
+                class="sf-nav__cta"
+                [routerLink]="['/', activeLang(), 'login']"
+              >
+                {{ 'shell.header.login' | translate }}
+              </a>
+            }
 
             <!-- Mobile hamburger -->
             <button
@@ -210,7 +261,7 @@ import { CartService } from '../../../../core/services/cart.service';
                 <li>
                   <a
                     class="sf-mobile-drawer__link"
-                    [routerLink]="['/', activeLang(), link.path]"
+                    [routerLink]="link.path ? ['/', activeLang(), link.path] : ['/', activeLang()]"
                     routerLinkActive="sf-mobile-drawer__link--active"
                     (click)="closeMenu()"
                   >
@@ -402,6 +453,135 @@ import { CartService } from '../../../../core/services/cart.service';
         line-height: 1;
       }
 
+      /* Account dropdown */
+      .sf-nav__account-wrap {
+        display: none;
+        position: relative;
+      }
+      @media (min-width: 640px) {
+        .sf-nav__account-wrap {
+          display: block;
+        }
+      }
+
+      .sf-nav__account-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        padding: 0.25rem 0;
+        transition: opacity 0.2s;
+      }
+      .sf-nav__account-btn:hover {
+        opacity: 0.85;
+      }
+
+      .sf-nav__account-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 2rem;
+        block-size: 2rem;
+        border-radius: 50%;
+        background: var(--color-primary);
+        color: var(--color-on-primary, #fff);
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        flex-shrink: 0;
+      }
+
+      .sf-nav__account-name {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--color-on-header-footer, #fff);
+        max-inline-size: 8rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .sf-nav__account-chevron {
+        inline-size: 1rem;
+        block-size: 1rem;
+        color: var(--color-on-header-footer, #fff);
+        opacity: 0.7;
+        flex-shrink: 0;
+        transition: transform 0.2s;
+      }
+      .sf-nav__account-wrap--open .sf-nav__account-chevron {
+        transform: rotate(180deg);
+      }
+
+      .sf-nav__dropdown {
+        position: absolute;
+        inset-block-start: calc(100% + 0.5rem);
+        inset-inline-end: 0;
+        inline-size: 14rem;
+        background: #fff;
+        border: 1px solid var(--color-outline-variant, #d6c4ad);
+        border-radius: var(--border-radius-md, 8px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        z-index: 100;
+        overflow: hidden;
+        animation: sf-dropdown-in 0.15s ease;
+      }
+      @keyframes sf-dropdown-in {
+        from { opacity: 0; transform: translateY(-4px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      .sf-nav__dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        padding-block: 0.75rem;
+        padding-inline: 1rem;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        color: var(--color-on-surface, #1e1b17);
+        text-decoration: none;
+        background: transparent;
+        border: none;
+        inline-size: 100%;
+        cursor: pointer;
+        font-family: inherit;
+        text-align: start;
+        transition: background-color 0.15s;
+      }
+      .sf-nav__dropdown-item svg {
+        inline-size: 1rem;
+        block-size: 1rem;
+        flex-shrink: 0;
+        color: var(--color-on-surface-variant, #514534);
+      }
+      .sf-nav__dropdown-item:hover {
+        background: var(--color-surface-container, #f4ede5);
+        color: var(--color-primary);
+      }
+      .sf-nav__dropdown-item:hover svg {
+        color: var(--color-primary);
+      }
+      .sf-nav__dropdown-item--danger {
+        color: var(--color-error, #dc2626);
+      }
+      .sf-nav__dropdown-item--danger svg {
+        color: var(--color-error, #dc2626);
+      }
+      .sf-nav__dropdown-item--danger:hover {
+        background: #fef2f2;
+        color: var(--color-error, #dc2626);
+      }
+
+      .sf-nav__dropdown-divider {
+        block-size: 1px;
+        background: var(--color-outline-variant, #d6c4ad);
+        margin-block: 0.25rem;
+      }
+
       /* CTA button */
       .sf-nav__cta {
         display: none;
@@ -582,12 +762,16 @@ export class StorefrontHeaderComponent implements OnInit {
   private readonly langToggle = inject(LanguageToggleService);
   private readonly tenantCconfig = inject(TenantConfigService);
   private readonly cartService = inject(CartService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   readonly activeLang = this.langToggle.current;
   readonly isRtl = this.langToggle.isRtl;
   readonly menuOpen = signal(false);
+  readonly dropdownOpen = signal(false);
   readonly isScrolled = signal(false);
   readonly cartCount = this.cartService.count;
+  readonly currentUser = this.authService.currentUser;
 
   readonly config = computed<TenantConfig | null>(() => this.tenantCconfig.config());
   readonly businessName = computed(() => {
@@ -597,6 +781,15 @@ export class StorefrontHeaderComponent implements OnInit {
   });
   readonly logoUrl = computed(() => this.config()?.branding.logoUrl ?? null);
   readonly navLinks = computed(() => this.config()?.navLinks ?? []);
+
+  readonly initials = computed(() => {
+    const user = this.currentUser();
+    if (!user) return '';
+    const parts = user.fullName.trim().split(/\s+/);
+    const first = parts[0]?.[0] ?? '';
+    const last = parts.length > 1 ? (parts[parts.length - 1]?.[0] ?? '') : '';
+    return (first + last).toUpperCase();
+  });
 
   ngOnInit(): void {}
 
@@ -612,8 +805,28 @@ export class StorefrontHeaderComponent implements OnInit {
     this.menuOpen.set(false);
   }
 
+  toggleDropdown(): void {
+    this.dropdownOpen.update((v) => !v);
+  }
+
+  signOut(): void {
+    this.dropdownOpen.set(false);
+    this.authService.logout().subscribe({
+      next: () => this.router.navigate(['/', this.activeLang()]),
+      error: () => this.router.navigate(['/', this.activeLang()]),
+    });
+  }
+
   @HostListener('window:scroll')
   onScroll(): void {
     this.isScrolled.set(window.scrollY > 16);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.sf-nav__account-wrap')) {
+      this.dropdownOpen.set(false);
+    }
   }
 }

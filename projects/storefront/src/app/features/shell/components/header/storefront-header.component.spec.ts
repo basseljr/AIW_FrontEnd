@@ -8,6 +8,7 @@ import { of } from 'rxjs';
 import { LanguageToggleService, SupportedLang } from '@shared/i18n';
 import { TenantConfigService } from '../../../../core/services/tenant-cconfig.service';
 import { CartService } from '../../../../core/services/cart.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { DEFAULT_DEV_TENANT } from '../../../../core/models/tenant-config.model';
 import { StorefrontHeaderComponent } from './storefront-header.component';
 
@@ -25,6 +26,7 @@ class MockTranslateLoader implements TranslateLoader {
         },
       },
       nav: { open_menu: 'Open' },
+      account: { my_account: 'My Account', orders_section: 'My Orders', sign_out: 'Sign Out' },
     });
   }
 }
@@ -74,6 +76,7 @@ function buildFixture(cartCountVal = 0) {
       { provide: LanguageToggleService, useValue: mockLangToggle },
       { provide: TenantConfigService, useValue: mockTenantConfig },
       { provide: CartService, useValue: mockCartService },
+      { provide: AuthService, useValue: { currentUser: signal(null), isAuthenticated: signal(false), logout: jasmine.createSpy('logout').and.returnValue(of({})) } },
     ],
   });
 

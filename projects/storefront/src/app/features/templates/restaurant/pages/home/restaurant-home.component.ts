@@ -6,7 +6,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { DecimalPipe } from '@angular/common';
 
@@ -125,6 +125,32 @@ import { RestaurantMenuItemCardComponent } from '../../components/menu-item-card
       </div>
     </section>
 
+    <!-- ─── Business Info Bar ───────────────────────────────── -->
+    @if (phone() || address() || workingHours()) {
+      <section class="sf-home-info-bar">
+        <div class="sf-home-info-bar__inner">
+          @if (workingHours()) {
+            <div class="sf-home-info-bar__item">
+              <svg class="sf-home-info-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>{{ workingHours() }}</span>
+            </div>
+          }
+          @if (address()) {
+            <div class="sf-home-info-bar__item">
+              <svg class="sf-home-info-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+              <span>{{ address() }}</span>
+            </div>
+          }
+          @if (phone()) {
+            <div class="sf-home-info-bar__item">
+              <svg class="sf-home-info-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 4.9 2 2 0 0 1 3.59 2.72h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.09a16 16 0 0 0 6 6l.91-.93a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.46 17.46z"/></svg>
+              <a [href]="'tel:' + phone()" class="sf-home-info-bar__link">{{ phone() }}</a>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
     <!-- ─── Features Section ─────────────────────────────────── -->
     <section class="sf-home-features">
       <div class="sf-home-section">
@@ -162,6 +188,42 @@ import { RestaurantMenuItemCardComponent } from '../../components/menu-item-card
         </div>
       </div>
     </section>
+
+    <!-- ─── Social Links ─────────────────────────────────────── -->
+    @if (hasSocialLinks()) {
+      <section class="sf-home-social">
+        <div class="sf-home-section">
+          <p class="sf-home-social__label">{{ 'home.follow_us' | translate }}</p>
+          <div class="sf-home-social__list">
+            @if (instagram()) {
+              <a [href]="instagram()" class="sf-home-social__link" target="_blank" rel="noopener" aria-label="Instagram">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              </a>
+            }
+            @if (twitter()) {
+              <a [href]="twitter()" class="sf-home-social__link" target="_blank" rel="noopener" aria-label="Twitter/X">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.261 5.633L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+              </a>
+            }
+            @if (facebook()) {
+              <a [href]="facebook()" class="sf-home-social__link" target="_blank" rel="noopener" aria-label="Facebook">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              </a>
+            }
+            @if (whatsapp()) {
+              <a [href]="'https://wa.me/' + whatsapp()" class="sf-home-social__link sf-home-social__link--whatsapp" target="_blank" rel="noopener" aria-label="WhatsApp">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+              </a>
+            }
+            @if (tiktok()) {
+              <a [href]="tiktok()" class="sf-home-social__link" target="_blank" rel="noopener" aria-label="TikTok">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/></svg>
+              </a>
+            }
+          </div>
+        </div>
+      </section>
+    }
   `,
   styles: [
     `
@@ -426,6 +488,89 @@ import { RestaurantMenuItemCardComponent } from '../../components/menu-item-card
         line-height: 1.6;
         margin: 0;
       }
+
+      /* ─── Info Bar ───────────────────────────────── */
+      .sf-home-info-bar {
+        background: var(--color-surface-container, #f4ede5);
+        border-block: 1px solid var(--color-outline-variant, #d6c4ad);
+        padding-block: 0.875rem;
+        padding-inline: 1.5rem;
+      }
+      .sf-home-info-bar__inner {
+        max-inline-size: 80rem;
+        margin-inline: auto;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .sf-home-info-bar__item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: var(--color-on-surface-variant, #514534);
+      }
+      .sf-home-info-bar__icon {
+        inline-size: 1rem;
+        block-size: 1rem;
+        flex-shrink: 0;
+        color: var(--color-primary, #805600);
+      }
+      .sf-home-info-bar__link {
+        color: var(--color-primary, #805600);
+        text-decoration: none;
+      }
+      .sf-home-info-bar__link:hover { text-decoration: underline; }
+
+      /* ─── Social Links ───────────────────────────── */
+      .sf-home-social {
+        padding-block: 2.5rem;
+        background: var(--color-background, #fff8f1);
+        border-block-start: 1px solid var(--color-outline-variant, #d6c4ad);
+      }
+      .sf-home-social__label {
+        text-align: center;
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: var(--color-on-surface-variant, #514534);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 0 0 1rem;
+      }
+      .sf-home-social__list {
+        display: flex;
+        justify-content: center;
+        gap: 0.875rem;
+        flex-wrap: wrap;
+      }
+      .sf-home-social__link {
+        inline-size: 2.75rem;
+        block-size: 2.75rem;
+        border-radius: 50%;
+        background: var(--color-surface-container, #f4ede5);
+        color: var(--color-on-surface-variant, #514534);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: background-color 0.2s, color 0.2s;
+        border: 1px solid var(--color-outline-variant, #d6c4ad);
+      }
+      .sf-home-social__link:hover {
+        background: var(--color-primary-container, #f2a922);
+        color: var(--color-on-primary-container, #634100);
+        border-color: transparent;
+      }
+      .sf-home-social__link--whatsapp:hover {
+        background: #25d366;
+        color: #fff;
+      }
+      .sf-home-social__link svg {
+        inline-size: 1.125rem;
+        block-size: 1.125rem;
+      }
     `,
   ],
 })
@@ -434,6 +579,7 @@ export class RestaurantHomeComponent implements OnInit {
   private readonly seo = inject(SeoService);
   private readonly catalogService = inject(CatalogService);
   private readonly langToggle = inject(LanguageToggleService);
+  private readonly router = inject(Router);
   readonly cartService = inject(CartService);
 
   readonly lang = this.langToggle.current;
@@ -456,6 +602,21 @@ export class RestaurantHomeComponent implements OnInit {
       ? (c.contact.workingHoursAr ?? c.contact.workingHours ?? '')
       : (c.contact.workingHours ?? '');
   });
+
+  readonly phone = computed(() => this.config()?.contact.phone ?? null);
+  readonly address = computed(() => {
+    const c = this.config();
+    if (!c) return null;
+    return this.lang() === 'ar' ? (c.contact.addressAr ?? c.contact.address) : c.contact.address;
+  });
+  readonly instagram = computed(() => this.config()?.socialLinks.instagram ?? null);
+  readonly twitter = computed(() => this.config()?.socialLinks.twitter ?? null);
+  readonly facebook = computed(() => this.config()?.socialLinks.facebook ?? null);
+  readonly whatsapp = computed(() => this.config()?.socialLinks.whatsapp ?? null);
+  readonly tiktok = computed(() => this.config()?.socialLinks.tiktok ?? null);
+  readonly hasSocialLinks = computed(() =>
+    !!(this.instagram() || this.twitter() || this.facebook() || this.whatsapp() || this.tiktok())
+  );
 
   readonly loading = signal(true);
   readonly featuredItems = signal<CatalogItem[]>([]);
@@ -487,6 +648,10 @@ export class RestaurantHomeComponent implements OnInit {
   }
 
   onViewItem(item: CatalogItem): void {
-    // Navigation is handled by routerLink in the card for item-detail page
+    if (item.categorySlug && item.slug) {
+      this.router.navigate(['/', this.lang(), 'menu', item.categorySlug, item.slug]);
+    } else {
+      this.router.navigate(['/', this.lang(), 'menu']);
+    }
   }
 }

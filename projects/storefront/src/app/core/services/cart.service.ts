@@ -95,6 +95,13 @@ export class CartService {
       });
   }
 
+  /** Reloads cart from the API (e.g. after login to merge guest cart). */
+  reload(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadFromApi();
+    }
+  }
+
   addItem(item: CartItem): void {
     // Optimistic local update
     this._items.update((current) => {
