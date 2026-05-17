@@ -100,9 +100,9 @@ export const DEFAULT_DEV_TENANT: TenantConfig = {
     tiktok: null,
   },
   navLinks: [
-    { labelEn: 'Home', labelAr: 'الرئيسية', path: 'home' },
+    { labelEn: 'Home', labelAr: 'الرئيسية', path: '' },
     { labelEn: 'Menu', labelAr: 'القائمة', path: 'menu' },
-    { labelEn: 'About', labelAr: 'عنّا', path: 'about' },
+    { labelEn: 'About', labelAr: 'من نحن', path: 'about' },
     { labelEn: 'Contact', labelAr: 'اتصل بنا', path: 'contact' },
   ],
   contact: {
@@ -175,6 +175,19 @@ export interface ApiTenantConfigResponse {
   featureFlags: Record<string, boolean>;
 }
 
+function defaultNavLinks(businessType: string): TenantNavLink[] {
+  const home: TenantNavLink = { labelEn: 'Home', labelAr: 'الرئيسية', path: '' };
+  const about: TenantNavLink = { labelEn: 'About', labelAr: 'من نحن', path: 'about' };
+  const contact: TenantNavLink = { labelEn: 'Contact', labelAr: 'اتصل بنا', path: 'contact' };
+  if (businessType === 'retail') {
+    return [home, { labelEn: 'Shop', labelAr: 'تسوق', path: 'shop' }, about, contact];
+  }
+  if (businessType === 'service') {
+    return [home, { labelEn: 'Services', labelAr: 'الخدمات', path: 'services' }, about, contact];
+  }
+  return [home, { labelEn: 'Menu', labelAr: 'القائمة', path: 'menu' }, about, contact];
+}
+
 /** Maps the raw API response to the frontend TenantConfig shape. */
 export function mapApiTenantConfig(r: ApiTenantConfigResponse): TenantConfig {
   return {
@@ -208,7 +221,7 @@ export function mapApiTenantConfig(r: ApiTenantConfigResponse): TenantConfig {
       whatsapp: r.socialLinks.whatsApp,
       tiktok: r.socialLinks.tikTok,
     },
-    navLinks: [],
+    navLinks: defaultNavLinks(r.businessType),
     contact: {
       phone: null,
       email: null,

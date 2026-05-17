@@ -5,6 +5,7 @@ import {
   isRetailTenant,
   isServiceTenant,
 } from './core/guards/business-type.guard';
+import { authGuard } from './core/guards/auth.guard';
 
 /**
  * M33 routing — template-dispatched routes under /:lang.
@@ -117,11 +118,109 @@ export const routes: Routes = [
             './features/error-pages/maintenance/maintenance.component'
           ).then((m) => m.MaintenanceComponent),
       },
-      // Placeholder routes — redirect to home until full pages are built
-      { path: 'login', redirectTo: '' },
-      { path: 'account', redirectTo: '' },
-      { path: 'privacy', redirectTo: '' },
-      { path: 'terms', redirectTo: '' },
+      // Auth pages
+      {
+        path: 'login',
+        loadComponent: () =>
+          import('./features/auth/login/login.component').then(
+            (m) => m.LoginComponent,
+          ),
+      },
+      {
+        path: 'register',
+        loadComponent: () =>
+          import('./features/auth/register/register.component').then(
+            (m) => m.RegisterComponent,
+          ),
+      },
+      // Customer account (guarded)
+      {
+        path: 'account',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/account/account-shell.component').then(
+            (m) => m.AccountShellComponent,
+          ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./features/account/overview/account-overview.component').then(
+                (m) => m.AccountOverviewComponent,
+              ),
+          },
+          {
+            path: 'orders',
+            loadComponent: () =>
+              import('./features/account/orders/account-orders.component').then(
+                (m) => m.AccountOrdersComponent,
+              ),
+          },
+          {
+            path: 'addresses',
+            loadComponent: () =>
+              import('./features/account/addresses/account-addresses.component').then(
+                (m) => m.AccountAddressesComponent,
+              ),
+          },
+          {
+            path: 'wishlist',
+            loadComponent: () =>
+              import('./features/account/wishlist/account-wishlist.component').then(
+                (m) => m.AccountWishlistComponent,
+              ),
+          },
+          {
+            path: 'settings',
+            loadComponent: () =>
+              import('./features/account/settings/account-settings.component').then(
+                (m) => m.AccountSettingsComponent,
+              ),
+          },
+          {
+            path: 'loyalty',
+            loadComponent: () =>
+              import('./features/account/loyalty/account-loyalty.component').then(
+                (m) => m.AccountLoyaltyComponent,
+              ),
+          },
+          {
+            path: 'data',
+            loadComponent: () =>
+              import('./features/account/data/account-data.component').then(
+                (m) => m.AccountDataComponent,
+              ),
+          },
+        ],
+      },
+      {
+        path: 'about',
+        loadComponent: () =>
+          import('./features/static-pages/about/about.component').then(
+            (m) => m.AboutComponent,
+          ),
+      },
+      {
+        path: 'contact',
+        loadComponent: () =>
+          import('./features/static-pages/contact/contact.component').then(
+            (m) => m.ContactComponent,
+          ),
+      },
+      {
+        path: 'terms',
+        loadComponent: () =>
+          import('./features/static-pages/terms/terms.component').then(
+            (m) => m.TermsComponent,
+          ),
+      },
+      {
+        path: 'privacy',
+        loadComponent: () =>
+          import('./features/static-pages/privacy/privacy.component').then(
+            (m) => m.PrivacyComponent,
+          ),
+      },
       // Fallback for unknown routes within a language
       { path: '**', redirectTo: '/404' },
     ],
