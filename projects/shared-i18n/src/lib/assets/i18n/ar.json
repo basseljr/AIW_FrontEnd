@@ -60,7 +60,18 @@
     "loyalty": "الولاء",
     "notifications": "الإشعارات",
     "open_menu": "فتح القائمة",
-    "close_menu": "إغلاق القائمة"
+    "close_menu": "إغلاق القائمة",
+    "overview": "نظرة عامة",
+    "kitchen": "شاشة المطبخ",
+    "reservations": "الحجوزات",
+    "appointments": "المواعيد",
+    "services_catalog": "الخدمات",
+    "open_sidebar": "فتح القائمة",
+    "close_sidebar": "إغلاق القائمة",
+    "section_restaurant": "المطعم",
+    "section_retail": "التجزئة",
+    "section_service": "الخدمة",
+    "section_management": "الإدارة"
   },
   "errors": {
     "generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
@@ -112,7 +123,22 @@
     "password_strength_strong": "قوية",
     "account_locked": "حسابك مقفل مؤقتاً بسبب محاولات دخول فاشلة كثيرة.",
     "invalid_credentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة. يرجى المحاولة مجدداً.",
-    "email_already_exists": "يوجد حساب بهذا البريد الإلكتروني. جرّب تسجيل الدخول بدلاً من ذلك."
+    "email_already_exists": "يوجد حساب بهذا البريد الإلكتروني. جرّب تسجيل الدخول بدلاً من ذلك.",
+    "login": {
+      "title": "تسجيل الدخول إلى لوحة التحكم",
+      "subtitle": "أدِر أعمالك من مكان واحد",
+      "tenant_id_label": "معرِف المؤسسة",
+      "tenant_id_placeholder": "أدخل معرِف مؤسستك",
+      "email_label": "البريد الإلكتروني",
+      "email_placeholder": "you@company.com",
+      "password_label": "كلمة المرور",
+      "password_placeholder": "••••••••",
+      "submit": "تسجيل الدخول",
+      "signing_in": "جارس تسجيل الدخول…",
+      "invalid_credentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+      "account_locked": "حسابك موقوف. يرجى التواصل مع المسؤول.",
+      "generic_error": "حدث خطأ. يرجى المحاولة مجدداً."
+    }
   },
   "catalog": {
     "our_menu": "قائمتنا",
@@ -493,5 +519,28 @@
     "rights_text": "يحق لك الوصول إلى بياناتك الشخصية أو تصحيحها أو حذفها في أي وقت. يمكنك تنزيل بياناتك أو طلب حذف الحساب من قسم الخصوصية والبيانات في حسابك.",
     "contact": "5. التواصل",
     "contact_text": "إذا كانت لديك أسئلة حول سياسة الخصوصية هذه أو تريد ممارسة حقوقك المتعلقة بالبيانات، يرجى التواصل معنا عبر صفحة الاتصال."
+  },
+  "topbar": {
+    "notifications": "الإشعارات",
+    "no_notifications": "لا توجد إشعارات جديدة",
+    "mark_all_read": "تحديد الكل كمقروء",
+    "language_toggle": "تغيير اللغة",
+    "switch_to_en": "EN",
+    "switch_to_ar": "عربي",
+    "user_menu": "قائمة المستخدم",
+    "profile": "ملفي الشخصي",
+    "sign_out": "تسجيل الخروج"
+  },
+  "overview": {
+    "title": "نظرة عامة",
+    "todays_orders": "طلبات اليوم",
+    "todays_revenue": "إيرادات اليوم",
+    "new_customers": "عملاء جدد",
+    "pending_orders": "الطلبات المعلّقة",
+    "loading": "جارس تحميل البيانات…",
+    "error": "فشل تحميل البيانات.",
+    "retry": "إعادة المحاولة",
+    "as_of": "اعتبارًا من {{time}}",
+    "currency": "د.ك."
   }
 }
