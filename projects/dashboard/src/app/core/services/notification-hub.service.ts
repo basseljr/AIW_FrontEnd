@@ -2,6 +2,7 @@ import { Injectable, OnDestroy, inject, signal } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 
 import { API_BASE_URL } from '@shared/api';
+import { DashboardAuthService } from '../services/dashboard-auth.service';
 
 export interface DashboardNotification {
   id: string;
@@ -17,6 +18,7 @@ export interface DashboardNotification {
 @Injectable({ providedIn: 'root' })
 export class NotificationHubService implements OnDestroy {
   private readonly baseUrl = inject(API_BASE_URL);
+  private readonly auth = inject(DashboardAuthService);
   private connection: signalR.HubConnection | null = null;
 
   readonly unreadCount = signal(0);
@@ -31,7 +33,7 @@ export class NotificationHubService implements OnDestroy {
     this.connection = new signalR.HubConnectionBuilder()
       .withUrl(hubUrl, {
         withCredentials: true,
-        transport: signalR.HttpTransportType.WebSockets,
+        accessTokenFactory: () => this.auth.getToken(),
       })
       .withAutomaticReconnect()
       .configureLogging(signalR.LogLevel.Warning)
