@@ -18,6 +18,7 @@ export interface LoginResponse {
   userId: string;
   tenantId: string;
   role: DashboardRole;
+  accessToken: string;
   accessTokenExpiresAt: string;
   cartId: string | null;
 }

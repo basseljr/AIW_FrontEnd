@@ -26,7 +26,27 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/overview/overview.component').then((m) => m.OverviewComponent),
       },
+      {
+        path: 'orders',
+        loadComponent: () =>
+          import('./features/orders/orders-list/orders-list.component').then(
+            (m) => m.OrdersListComponent,
+          ),
+      },
+      {
+        path: 'orders/:id',
+        loadComponent: () =>
+          import('./features/orders/order-detail/order-detail.component').then(
+            (m) => m.OrderDetailComponent,
+          ),
+      },
     ],
+  },
+  {
+    path: 'kds',
+    loadComponent: () =>
+      import('./features/kds/kds.component').then((m) => m.KdsComponent),
+    canActivate: [authGuard],
   },
   {
     path: '**',

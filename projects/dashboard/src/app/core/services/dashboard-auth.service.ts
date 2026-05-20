@@ -8,18 +8,20 @@ import { AuthEventsService } from '@shared/api';
 import { DashboardUser, LoginRequest, LoginResponse } from '../models/dashboard-user.model';
 
 const SESSION_KEY = 'db_user';
+const TOKEN_KEY   = 'db_access_token';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardAuthService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = inject(API_BASE_URL);
+  readonly baseUrl = inject(API_BASE_URL);          // readonly, used by interceptor
   private readonly router = inject(Router);
   private readonly authEvents = inject(AuthEventsService);
 
-  private readonly _currentUser = signal<DashboardUser | null>(this.hydrateSession());
+  private readonly _currentUser  = signal<DashboardUser | null>(this.hydrateSession());
+  private readonly _accessToken  = signal<string>(this.hydrateToken());
 
-  readonly currentUser = this._currentUser.asReadonly();
-  readonly isAuthenticated = computed(() => this._currentUser() !== null);
+  readonly currentUser      = this._currentUser.asReadonly();
+  readonly isAuthenticated  = computed(() => this._currentUser() !== null);
 
   constructor() {
     this.authEvents.stream$.pipe(
@@ -45,6 +47,7 @@ export class DashboardAuthService {
           };
           this._currentUser.set(user);
           sessionStorage.setItem(SESSION_KEY, JSON.stringify(user));
+          this.updateToken(res.accessToken);
         }),
       );
   }
@@ -59,9 +62,22 @@ export class DashboardAuthService {
       });
   }
 
+  /** Returns the stored access token (empty string if not authenticated). */
+  getToken(): string {
+    return this._accessToken();
+  }
+
+  /** Called by the auth interceptor after a successful silent refresh. */
+  updateToken(token: string): void {
+    this._accessToken.set(token);
+    sessionStorage.setItem(TOKEN_KEY, token);
+  }
+
   private clearSession(): void {
     sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(TOKEN_KEY);
     this._currentUser.set(null);
+    this._accessToken.set('');
   }
 
   private hydrateSession(): DashboardUser | null {
@@ -71,5 +87,9 @@ export class DashboardAuthService {
     } catch {
       return null;
     }
+  }
+
+  private hydrateToken(): string {
+    return sessionStorage.getItem(TOKEN_KEY) ?? '';
   }
 }

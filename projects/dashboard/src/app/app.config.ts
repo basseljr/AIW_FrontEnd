@@ -5,7 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-import { authInterceptor, errorInterceptor, provideApiBaseUrl } from '@shared/api';
+import { errorInterceptor, provideApiBaseUrl } from '@shared/api';
+import { dashboardAuthInterceptor } from './core/interceptors/dashboard-auth.interceptor';
 import { provideI18n } from '@shared/i18n';
 
 import { environment } from '../environments/environment';
@@ -19,7 +20,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withComponentInputBinding()),
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor, errorInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([dashboardAuthInterceptor, errorInterceptor])),
     provideApiBaseUrl(environment.apiBaseUrl),
     importProvidersFrom(
       TranslateModule.forRoot({

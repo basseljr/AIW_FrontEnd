@@ -69,7 +69,7 @@ const NAV_SECTIONS: NavSection[] = [
       },
       {
         labelKey: 'nav.kitchen',
-        route: '/kitchen',
+        route: '/kds',
         icon: '👨‍🍳',
         roles: ['owner', 'manager', 'kitchen'],
         businessTypes: ['restaurant'],
