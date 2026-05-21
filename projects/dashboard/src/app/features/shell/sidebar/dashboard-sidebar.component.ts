@@ -75,6 +75,13 @@ const NAV_SECTIONS: NavSection[] = [
         businessTypes: ['restaurant'],
       },
       {
+        labelKey: 'nav.modifiers',
+        route: '/modifiers',
+        icon: '🧩',
+        roles: ['owner', 'manager'],
+        businessTypes: ['restaurant'],
+      },
+      {
         labelKey: 'nav.reservations',
         route: '/reservations',
         icon: '📅',
@@ -126,6 +133,12 @@ const NAV_SECTIONS: NavSection[] = [
   {
     titleKey: 'nav.section_management',
     items: [
+      {
+        labelKey: 'nav.categories',
+        route: '/categories',
+        icon: '🗂️',
+        roles: ['owner', 'manager'],
+      },
       {
         labelKey: 'nav.staff',
         route: '/staff',

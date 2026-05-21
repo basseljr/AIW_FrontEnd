@@ -40,6 +40,31 @@ export const routes: Routes = [
             (m) => m.OrderDetailComponent,
           ),
       },
+      {
+        path: 'menu',
+        loadComponent: () =>
+          import('./features/menu/menu.component').then((m) => m.MenuComponent),
+      },
+      {
+        path: 'modifiers',
+        loadComponent: () =>
+          import('./features/modifiers/modifiers.component').then((m) => m.ModifiersComponent),
+      },
+      {
+        path: 'products',
+        loadComponent: () =>
+          import('./features/products/products.component').then((m) => m.ProductsComponent),
+      },
+      {
+        path: 'inventory',
+        loadComponent: () =>
+          import('./features/inventory/inventory.component').then((m) => m.InventoryComponent),
+      },
+      {
+        path: 'categories',
+        loadComponent: () =>
+          import('./features/categories/categories.component').then((m) => m.CategoriesComponent),
+      },
     ],
   },
   {
