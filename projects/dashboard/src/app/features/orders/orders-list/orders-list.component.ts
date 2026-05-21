@@ -51,11 +51,12 @@ const SHIMMER_ROWS = [1, 2, 3, 4, 5];
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
           </svg>
           <input
+            #searchEl
             class="db-ol__input db-ol__search"
             type="search"
             [placeholder]="'orders.search_placeholder' | translate"
-            [ngModel]="searchInput()"
-            (ngModelChange)="onSearchChange($event)"
+            [value]="searchInput()"
+            (input)="onSearchChange(searchEl.value)"
             [attr.aria-label]="'orders.search_placeholder' | translate"
           />
         </div>
