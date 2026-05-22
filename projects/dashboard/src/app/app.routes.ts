@@ -65,6 +65,38 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/categories/categories.component').then((m) => m.CategoriesComponent),
       },
+      {
+        path: 'customers',
+        loadComponent: () =>
+          import('./features/customers/customers.component').then((m) => m.CustomersComponent),
+      },
+      {
+        path: 'customers/blacklist',
+        loadComponent: () =>
+          import('./features/customers/blacklist/blacklist.component').then((m) => m.BlacklistComponent),
+      },
+      {
+        path: 'customers/:id',
+        loadComponent: () =>
+          import('./features/customers/customer-profile/customer-profile.component').then(
+            (m) => m.CustomerProfileComponent,
+          ),
+      },
+      {
+        path: 'coupons',
+        loadComponent: () =>
+          import('./features/coupons/coupons.component').then((m) => m.CouponsComponent),
+      },
+      {
+        path: 'loyalty',
+        loadComponent: () =>
+          import('./features/loyalty/loyalty.component').then((m) => m.LoyaltyComponent),
+      },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('./features/settings/settings.component').then((m) => m.SettingsComponent),
+      },
     ],
   },
   {

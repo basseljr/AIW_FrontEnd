@@ -43,12 +43,6 @@ const NAV_SECTIONS: NavSection[] = [
         roles: ['owner', 'manager', 'staff', 'kitchen'],
       },
       {
-        labelKey: 'nav.customers',
-        route: '/customers',
-        icon: '👥',
-        roles: ['owner', 'manager'],
-      },
-      {
         labelKey: 'nav.analytics',
         route: '/analytics',
         icon: '📊',
@@ -137,6 +131,24 @@ const NAV_SECTIONS: NavSection[] = [
         labelKey: 'nav.categories',
         route: '/categories',
         icon: '🗂️',
+        roles: ['owner', 'manager'],
+      },
+      {
+        labelKey: 'nav.customers',
+        route: '/customers',
+        icon: '👥',
+        roles: ['owner', 'manager'],
+      },
+      {
+        labelKey: 'nav.coupons',
+        route: '/coupons',
+        icon: '🎟️',
+        roles: ['owner', 'manager'],
+      },
+      {
+        labelKey: 'nav.loyalty',
+        route: '/loyalty',
+        icon: '⭐',
         roles: ['owner', 'manager'],
       },
       {
