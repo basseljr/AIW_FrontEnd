@@ -165,6 +165,17 @@ const NAV_SECTIONS: NavSection[] = [
       },
     ],
   },
+  {
+    titleKey: 'nav.section_finance',
+    items: [
+      {
+        labelKey: 'nav.billing',
+        route: '/billing',
+        icon: '💳',
+        roles: ['owner'],
+      },
+    ],
+  },
 ];
 
 @Component({

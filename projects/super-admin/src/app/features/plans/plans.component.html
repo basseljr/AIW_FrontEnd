@@ -1,0 +1,178 @@
+<div class="sa-plans">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'plans.title' | translate }}</h1>
+      <p>{{ 'plans.subtitle' | translate }}</p>
+    </div>
+    <button class="sa-btn sa-btn--primary" type="button" (click)="openCreate()">
+      + {{ 'plans.create' | translate }}
+    </button>
+  </div>
+
+  @if (loading()) {
+    <span class="sa-skel" style="display: block; block-size: 6rem; inline-size: 100%;"></span>
+  } @else {
+    <div class="sa-table-wrap">
+      <table class="sa-table">
+        <thead>
+          <tr>
+            <th>{{ 'plans.col.name' | translate }}</th>
+            <th class="sa-table__num">{{ 'plans.col.monthly' | translate }}</th>
+            <th class="sa-table__num">{{ 'plans.col.annual' | translate }}</th>
+            <th class="sa-table__num">{{ 'plans.col.commission' | translate }}</th>
+            <th class="sa-table__num">{{ 'plans.col.tenants' | translate }}</th>
+            <th>{{ 'plans.col.visibility' | translate }}</th>
+            <th>{{ 'plans.col.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of plans(); track p.id) {
+            <tr>
+              <td>
+                <div class="sa-plans__name">
+                  {{ p.name }}
+                  @if (p.isHighlighted) {
+                    <span class="sa-badge sa-badge--accent">★ Popular</span>
+                  }
+                </div>
+                @if (p.description) {
+                  <div class="sa-plans__desc">{{ p.description }}</div>
+                }
+              </td>
+              <td class="sa-table__num">{{ formatPrice(p, 'monthly') }}</td>
+              <td class="sa-table__num">{{ formatPrice(p, 'annual') }}</td>
+              <td class="sa-table__num">
+                {{ p.commissionRate != null ? ((p.commissionRate * 100) | number: '1.0-2') + '%' : '—' }}
+              </td>
+              <td class="sa-table__num">{{ p.tenantCount ?? 0 }}</td>
+              <td>
+                <span class="sa-badge" [class]="p.isVisible ? 'sa-badge sa-badge--success' : 'sa-badge sa-badge--neutral'">
+                  {{ p.isVisible ? 'Visible' : 'Hidden' }}
+                </span>
+              </td>
+              <td>
+                <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button" (click)="openEdit(p)">
+                  {{ 'plans.actions.edit' | translate }}
+                </button>
+                <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button" (click)="archive(p)">
+                  {{ 'plans.actions.archive' | translate }}
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="7" class="sa-plans__empty">{{ 'plans.none' | translate }}</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (showForm()) {
+    <div class="sa-modal-scrim" (click)="showForm.set(false)"></div>
+    <div class="sa-modal sa-modal--wide" role="dialog">
+      <h2>{{ editing() ? ('plans.edit_title' | translate) : ('plans.create_title' | translate) }}</h2>
+      <div class="sa-plans__form">
+        <div class="sa-plans__grid">
+          <label>
+            {{ 'plans.form.name' | translate }}
+            <input class="sa-input" type="text" [value]="form().name"
+              (input)="updateForm('name', $any($event.target).value)" />
+          </label>
+          <label>
+            {{ 'plans.form.currency' | translate }}
+            <input class="sa-input" type="text" [value]="form().currency"
+              (input)="updateForm('currency', $any($event.target).value)" />
+          </label>
+          <label class="sa-plans__grid-full">
+            {{ 'plans.form.description' | translate }}
+            <textarea class="sa-input sa-input--textarea" rows="2" [value]="form().description"
+              (input)="updateForm('description', $any($event.target).value)"></textarea>
+          </label>
+          <label>
+            {{ 'plans.form.billing_model' | translate }}
+            <select class="sa-input sa-input--select" [value]="form().billingModel"
+              (change)="updateForm('billingModel', $any($event.target).value)">
+              <option value="flat">Flat</option>
+              <option value="commission">Commission</option>
+              <option value="hybrid">Hybrid</option>
+            </select>
+          </label>
+          <label>
+            {{ 'plans.form.trial' | translate }}
+            <input class="sa-input" type="number" min="0" [value]="form().trialDays"
+              (input)="updateForm('trialDays', +$any($event.target).value)" />
+          </label>
+          <label>
+            {{ 'plans.form.monthly' | translate }}
+            <input class="sa-input" type="number" min="0" step="0.001" [value]="form().monthlyPrice"
+              (input)="updateForm('monthlyPrice', +$any($event.target).value)" />
+          </label>
+          <label>
+            {{ 'plans.form.annual' | translate }}
+            <input class="sa-input" type="number" min="0" step="0.001" [value]="form().annualPrice"
+              (input)="updateForm('annualPrice', +$any($event.target).value)" />
+          </label>
+          <label>
+            {{ 'plans.form.commission_rate' | translate }}
+            <input class="sa-input" type="number" min="0" max="1" step="0.001" [value]="form().commissionRate"
+              (input)="updateForm('commissionRate', +$any($event.target).value)" />
+          </label>
+          <label>
+            {{ 'plans.form.commission_threshold' | translate }}
+            <input class="sa-input" type="number" min="0" step="0.001" [value]="form().commissionThreshold"
+              (input)="updateForm('commissionThreshold', +$any($event.target).value)" />
+          </label>
+          <label>
+            {{ 'plans.form.max_branches' | translate }}
+            <input class="sa-input" type="number" min="0" [value]="form().maxBranches"
+              (input)="updateForm('maxBranches', +$any($event.target).value)" />
+          </label>
+          <label>
+            {{ 'plans.form.max_staff' | translate }}
+            <input class="sa-input" type="number" min="0" [value]="form().maxStaffUsers"
+              (input)="updateForm('maxStaffUsers', +$any($event.target).value)" />
+          </label>
+          <label>
+            {{ 'plans.form.max_products' | translate }}
+            <input class="sa-input" type="number" min="0" [value]="form().maxProducts"
+              (input)="updateForm('maxProducts', +$any($event.target).value)" />
+          </label>
+        </div>
+        <div class="sa-plans__toggles">
+          <label class="sa-plans__toggle">
+            <input type="checkbox" [checked]="form().isVisible"
+              (change)="updateForm('isVisible', $any($event.target).checked)" />
+            {{ 'plans.form.visible' | translate }}
+          </label>
+          <label class="sa-plans__toggle">
+            <input type="checkbox" [checked]="form().isHighlighted"
+              (change)="updateForm('isHighlighted', $any($event.target).checked)" />
+            {{ 'plans.form.highlight' | translate }}
+          </label>
+        </div>
+
+        <fieldset class="sa-plans__flags">
+          <legend>{{ 'plans.form.flags' | translate }}</legend>
+          @for (f of allFlags(); track f.key) {
+            <label class="sa-plans__flag">
+              <input type="checkbox" [checked]="flagEnabled(f.key)"
+                (change)="toggleFlag(f.key, $any($event.target).checked)" />
+              <div>
+                <span class="sa-plans__flag-key">{{ f.key }}</span>
+                <span class="sa-plans__flag-desc">{{ f.label }}</span>
+              </div>
+            </label>
+          }
+        </fieldset>
+      </div>
+      <div class="sa-plans__modal-actions">
+        <button class="sa-btn sa-btn--secondary" type="button" (click)="showForm.set(false)">
+          {{ 'plans.cancel' | translate }}
+        </button>
+        <button class="sa-btn sa-btn--primary" type="button" (click)="save()">
+          {{ 'plans.save' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+</div>

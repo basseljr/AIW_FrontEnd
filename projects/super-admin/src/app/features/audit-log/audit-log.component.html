@@ -1,0 +1,92 @@
+<div class="sa-audit">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'audit.title' | translate }}</h1>
+      <p>{{ 'audit.subtitle' | translate }}</p>
+    </div>
+    <button class="sa-btn sa-btn--secondary" type="button" (click)="exportCsv()">
+      📥 {{ 'audit.export' | translate }}
+    </button>
+  </div>
+
+  <div class="sa-card">
+    <div class="sa-audit__filters">
+      <label>
+        <span>{{ 'audit.from' | translate }}</span>
+        <input class="sa-input" type="date" [ngModel]="fromDate()" (ngModelChange)="fromDate.set($event)" />
+      </label>
+      <label>
+        <span>{{ 'audit.to' | translate }}</span>
+        <input class="sa-input" type="date" [ngModel]="toDate()" (ngModelChange)="toDate.set($event)" />
+      </label>
+      <label>
+        <span>{{ 'audit.actor' | translate }}</span>
+        <input class="sa-input" type="text" [ngModel]="actorSearch()" (ngModelChange)="actorSearch.set($event)" />
+      </label>
+      <label>
+        <span>{{ 'audit.action' | translate }}</span>
+        <input class="sa-input" type="text" [ngModel]="actionFilter()" (ngModelChange)="actionFilter.set($event)"
+          placeholder="e.g. billing.subscription" />
+      </label>
+      <label>
+        <span>{{ 'audit.tenant' | translate }}</span>
+        <input class="sa-input" type="text" [ngModel]="tenantFilter()" (ngModelChange)="tenantFilter.set($event)" />
+      </label>
+      <button class="sa-btn sa-btn--primary" type="button" (click)="applyFilters()">
+        {{ 'audit.apply' | translate }}
+      </button>
+    </div>
+
+    @if (loading()) {
+      <span class="sa-skel" style="display: block; block-size: 6rem;"></span>
+    } @else {
+      <div class="sa-table-wrap">
+        <table class="sa-table">
+          <thead>
+            <tr>
+              <th>{{ 'audit.col.time' | translate }}</th>
+              <th>{{ 'audit.col.actor' | translate }}</th>
+              <th>{{ 'audit.col.action' | translate }}</th>
+              <th>{{ 'audit.col.target' | translate }}</th>
+              <th>{{ 'audit.col.ip' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (e of entries(); track e.id) {
+              <tr class="sa-audit__row" (click)="toggle(e.id)">
+                <td>{{ e.timestamp | date: 'short' }}</td>
+                <td>
+                  <div class="sa-audit__actor">{{ e.actorName ?? '—' }}</div>
+                  <div class="sa-audit__actor-sub">{{ e.actorEmail ?? e.actorType }}</div>
+                </td>
+                <td><code class="sa-audit__action">{{ e.action }}</code></td>
+                <td>
+                  {{ e.targetName ?? (e.entityType + (e.entityId ? ' #' + e.entityId.substring(0, 8) : '')) }}
+                  @if (e.tenantName) { <div class="sa-audit__tenant">{{ e.tenantName }}</div> }
+                </td>
+                <td><span class="numeric-identifier">{{ e.ipAddress ?? '—' }}</span></td>
+              </tr>
+              @if (expandedId() === e.id) {
+                <tr>
+                  <td colspan="5" class="sa-audit__details">
+                    <pre>{{ e.detailsJson }}</pre>
+                  </td>
+                </tr>
+              }
+            } @empty {
+              <tr><td colspan="5" class="sa-audit__empty">{{ 'audit.no_events' | translate }}</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="sa-audit__pager">
+        <span>{{ 'audit.page_of' | translate: { page: page(), total: totalPages() } }} · {{ totalCount() }} {{ 'audit.events' | translate }}</span>
+        <div class="sa-audit__pager-btns">
+          <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button" [disabled]="page() <= 1" (click)="prevPage()">←</button>
+          <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button" [disabled]="page() * pageSize >= totalCount()" (click)="nextPage()">→</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

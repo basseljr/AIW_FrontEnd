@@ -1,0 +1,78 @@
+<div class="sa-health">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'health.title' | translate }}</h1>
+      <p>{{ 'health.subtitle' | translate }}</p>
+    </div>
+    @if (health()) {
+      <p class="sa-health__checked">
+        {{ 'health.checked_at' | translate }}: {{ health()!.checkedAt | date: 'mediumTime' }}
+      </p>
+    }
+  </div>
+
+  @if (loading()) {
+    <span class="sa-skel" style="display: block; block-size: 8rem;"></span>
+  }
+  @if (!loading() && health(); as h) {
+    <div class="sa-card">
+      <h3>{{ 'health.services_title' | translate }}</h3>
+      <div class="sa-health__grid">
+        @for (s of h.services; track s.service) {
+          <div class="sa-health__svc">
+            <span class="sa-health__status" [title]="s.status">{{ statusLabel(s.status) }}</span>
+            <div class="sa-health__svc-info">
+              <p class="sa-health__svc-name">{{ s.service }}</p>
+              <p class="sa-health__svc-meta">
+                {{ s.uptime30d != null ? ((s.uptime30d * 100) | number: '1.0-2') + '% uptime' : '—' }}
+                @if (s.lastIncident) {
+                  · last incident {{ s.lastIncident | date: 'mediumDate' }}
+                }
+              </p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="sa-health__perf-grid">
+      <div class="sa-card">
+        <h3>{{ 'health.perf_title' | translate }}</h3>
+        <dl class="sa-health__metrics">
+          <dt>{{ 'health.perf.api_p50' | translate }}</dt><dd>{{ h.performance.apiP50 | number }} ms</dd>
+          <dt>{{ 'health.perf.api_p95' | translate }}</dt><dd>{{ h.performance.apiP95 | number }} ms</dd>
+          <dt>{{ 'health.perf.api_p99' | translate }}</dt><dd>{{ h.performance.apiP99 | number }} ms</dd>
+          <dt>{{ 'health.perf.rpm' | translate }}</dt><dd>{{ h.performance.requestsPerMinute | number }}</dd>
+          <dt>{{ 'health.perf.error_rate' | translate }}</dt><dd>{{ h.performance.errorRate | number: '1.0-2' }}%</dd>
+          <dt>{{ 'health.perf.signalr' | translate }}</dt><dd>{{ h.performance.activeConnections | number }}</dd>
+          <dt>{{ 'health.perf.redis_hit' | translate }}</dt><dd>{{ h.performance.redisHitRate | number: '1.0-1' }}%</dd>
+          <dt>{{ 'health.perf.db_pool' | translate }}</dt><dd>{{ h.performance.dbConnectionUtilization | number: '1.0-1' }}%</dd>
+        </dl>
+      </div>
+      <div class="sa-card">
+        <h3>{{ 'health.jobs_title' | translate }}</h3>
+        <div class="sa-health__jobs">
+          <div class="sa-health__job-stat">
+            <span class="sa-health__job-num">{{ h.jobs.enqueued }}</span>
+            <span class="sa-health__job-label">{{ 'health.jobs.queued' | translate }}</span>
+          </div>
+          <div class="sa-health__job-stat">
+            <span class="sa-health__job-num">{{ h.jobs.processing }}</span>
+            <span class="sa-health__job-label">{{ 'health.jobs.processing' | translate }}</span>
+          </div>
+          <div class="sa-health__job-stat sa-health__job-stat--success">
+            <span class="sa-health__job-num">{{ h.jobs.succeeded }}</span>
+            <span class="sa-health__job-label">{{ 'health.jobs.succeeded' | translate }}</span>
+          </div>
+          <div class="sa-health__job-stat sa-health__job-stat--danger">
+            <span class="sa-health__job-num">{{ h.jobs.failed }}</span>
+            <span class="sa-health__job-label">{{ 'health.jobs.failed' | translate }}</span>
+          </div>
+        </div>
+        <a routerLink="/jobs" class="sa-btn sa-btn--secondary sa-btn--sm sa-health__view-jobs">
+          {{ 'health.jobs.view_all' | translate }} →
+        </a>
+      </div>
+    </div>
+  }
+</div>

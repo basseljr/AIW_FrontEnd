@@ -1,0 +1,41 @@
+<div class="sa-pg">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'gateways.title' | translate }}</h1>
+      <p>{{ 'gateways.subtitle' | translate }}</p>
+    </div>
+  </div>
+  @if (loading()) {
+    <span class="sa-skel" style="display: block; block-size: 6rem;"></span>
+  } @else {
+    <div class="sa-pg__grid">
+      @for (g of gateways(); track g.key) {
+        <div class="sa-card sa-pg__card">
+          <div class="sa-pg__header">
+            <h3>💳 {{ g.name }}</h3>
+            <span class="sa-badge" [class]="'sa-badge ' + statusBadge(g.status)">{{ g.status }}</span>
+          </div>
+          <p class="sa-pg__key">{{ g.key }}</p>
+          <p class="sa-pg__meta">
+            <strong>{{ g.tenantCount }}</strong> {{ 'gateways.tenants_using' | translate }}
+          </p>
+          <div class="sa-pg__methods">
+            @for (m of g.supportedMethods; track m) {
+              <span class="sa-badge sa-badge--accent">{{ m }}</span>
+            }
+          </div>
+          <button
+            class="sa-pg__toggle"
+            [class.sa-pg__toggle--on]="g.isEnabled"
+            type="button"
+            (click)="toggle(g)"
+          >
+            {{ g.isEnabled ? ('gateways.enabled' | translate) : ('gateways.disabled' | translate) }}
+          </button>
+        </div>
+      } @empty {
+        <p class="sa-pg__empty">{{ 'gateways.none' | translate }}</p>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,209 @@
+<div class="sa-billing">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'billing.title' | translate }}</h1>
+      <p>{{ 'billing.subtitle' | translate }}</p>
+    </div>
+    <button class="sa-btn sa-btn--primary" type="button" (click)="showCreate.set(true)">
+      + {{ 'billing.create_invoice' | translate }}
+    </button>
+  </div>
+
+  @if (summary(); as s) {
+    <div class="sa-billing__summary">
+      <div class="sa-card sa-billing__metric">
+        <p class="sa-billing__metric-label">{{ 'billing.metric.sub_revenue' | translate }}</p>
+        <p class="sa-billing__metric-value">KD {{ s.subscriptionRevenue | number: '1.0-0' }}</p>
+      </div>
+      <div class="sa-card sa-billing__metric">
+        <p class="sa-billing__metric-label">{{ 'billing.metric.comm_revenue' | translate }}</p>
+        <p class="sa-billing__metric-value">KD {{ s.commissionRevenue | number: '1.0-0' }}</p>
+      </div>
+      <div class="sa-card sa-billing__metric">
+        <p class="sa-billing__metric-label">{{ 'billing.metric.total' | translate }}</p>
+        <p class="sa-billing__metric-value">KD {{ s.totalRevenue | number: '1.0-0' }}</p>
+      </div>
+      <div class="sa-card sa-billing__metric">
+        <p class="sa-billing__metric-label">{{ 'billing.metric.collected' | translate }}</p>
+        <p class="sa-billing__metric-value sa-billing__metric--success">KD {{ s.collectedRevenue | number: '1.0-0' }}</p>
+      </div>
+      <div class="sa-card sa-billing__metric">
+        <p class="sa-billing__metric-label">{{ 'billing.metric.outstanding' | translate }}</p>
+        <p class="sa-billing__metric-value sa-billing__metric--warning">KD {{ s.outstandingRevenue | number: '1.0-0' }}</p>
+      </div>
+      <div class="sa-card sa-billing__metric">
+        <p class="sa-billing__metric-label">{{ 'billing.metric.overdue' | translate }}</p>
+        <p class="sa-billing__metric-value sa-billing__metric--danger">KD {{ s.overdueRevenue | number: '1.0-0' }}</p>
+      </div>
+    </div>
+  }
+
+  @if (pastDue().length > 0) {
+    <div class="sa-card sa-billing__past-due">
+      <h3>⚠ {{ 'billing.past_due_title' | translate }}</h3>
+      <table class="sa-table">
+        <thead>
+          <tr>
+            <th>{{ 'billing.past_due.tenant' | translate }}</th>
+            <th>{{ 'billing.past_due.plan' | translate }}</th>
+            <th class="sa-table__num">{{ 'billing.past_due.amount' | translate }}</th>
+            <th class="sa-table__num">{{ 'billing.past_due.invoices' | translate }}</th>
+            <th>{{ 'billing.past_due.oldest' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of pastDue(); track p.tenantId) {
+            <tr>
+              <td><a class="sa-billing__link" [routerLink]="['/tenants', p.tenantId]">{{ p.businessNameEn }}</a></td>
+              <td>{{ p.planName }}</td>
+              <td class="sa-table__num">KD {{ p.amountDue | number: '1.0-3' }}</td>
+              <td class="sa-table__num">{{ p.pastDueInvoices }}</td>
+              <td>{{ p.oldestDueDate ? (p.oldestDueDate | date: 'mediumDate') : '—' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <div class="sa-card">
+    <div class="sa-billing__filters">
+      <input
+        class="sa-input"
+        type="search"
+        [ngModel]="tenantSearch()"
+        (ngModelChange)="tenantSearch.set($event)"
+        [placeholder]="'billing.search_placeholder' | translate"
+      />
+      <select class="sa-input sa-input--select"
+        [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event); applyFilters()">
+        <option value="">{{ 'billing.filter.all_status' | translate }}</option>
+        <option value="paid">Paid</option>
+        <option value="pending">Pending</option>
+        <option value="overdue">Overdue</option>
+        <option value="written_off">Written off</option>
+        <option value="void">Void</option>
+      </select>
+      <select class="sa-input sa-input--select"
+        [ngModel]="typeFilter()" (ngModelChange)="typeFilter.set($event); applyFilters()">
+        <option value="">{{ 'billing.filter.all_types' | translate }}</option>
+        <option value="subscription">Subscription</option>
+        <option value="commission">Commission</option>
+        <option value="setup_fee">Setup fee</option>
+        <option value="custom">Custom</option>
+      </select>
+    </div>
+
+    @if (loading()) {
+      <span class="sa-skel" style="display: block; block-size: 6rem; inline-size: 100%;"></span>
+    } @else {
+      <div class="sa-table-wrap">
+        <table class="sa-table">
+          <thead>
+            <tr>
+              <th>{{ 'invoices.col.number' | translate }}</th>
+              <th>{{ 'invoices.col.tenant' | translate }}</th>
+              <th>{{ 'invoices.col.type' | translate }}</th>
+              <th>{{ 'invoices.col.period' | translate }}</th>
+              <th class="sa-table__num">{{ 'invoices.col.amount' | translate }}</th>
+              <th>{{ 'invoices.col.due' | translate }}</th>
+              <th>{{ 'invoices.col.status' | translate }}</th>
+              <th>{{ 'invoices.col.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (inv of filteredInvoices(); track inv.id) {
+              <tr>
+                <td>{{ inv.invoiceNumber }}</td>
+                <td><a class="sa-billing__link" [routerLink]="['/tenants', inv.tenantId]">{{ inv.tenantName }}</a></td>
+                <td>{{ inv.type }}</td>
+                <td>{{ inv.periodStart | date: 'mediumDate' }} – {{ inv.periodEnd | date: 'mediumDate' }}</td>
+                <td class="sa-table__num">KD {{ inv.total | number: '1.0-3' }}</td>
+                <td>{{ inv.dueDate | date: 'mediumDate' }}</td>
+                <td><span class="sa-badge" [class]="'sa-badge ' + badgeForStatus(inv.status)">{{ inv.status }}</span></td>
+                <td>
+                  <div class="sa-billing__actions">
+                    @if (inv.pdfUrl) {
+                      <a class="sa-btn sa-btn--ghost sa-btn--sm" [href]="inv.pdfUrl" target="_blank" rel="noopener">PDF</a>
+                    }
+                    @if (inv.status === 'pending' || inv.status === 'overdue') {
+                      <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button" (click)="markPaid(inv)">
+                        {{ 'invoices.actions.mark_paid' | translate }}
+                      </button>
+                      <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button" (click)="writeOff(inv)">
+                        {{ 'invoices.actions.write_off' | translate }}
+                      </button>
+                      <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button" (click)="voidInvoice(inv)">
+                        {{ 'invoices.actions.void' | translate }}
+                      </button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="8" class="sa-billing__empty">{{ 'invoices.no_invoices' | translate }}</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  @if (showCreate()) {
+    <div class="sa-modal-scrim" (click)="showCreate.set(false)"></div>
+    <div class="sa-modal sa-modal--wide" role="dialog">
+      <h2>{{ 'billing.create_invoice' | translate }}</h2>
+      <div class="sa-billing__form">
+        <label>
+          {{ 'billing.form.tenant_id' | translate }}
+          <input class="sa-input" type="text"
+            [ngModel]="newTenantId()" (ngModelChange)="newTenantId.set($event)" />
+        </label>
+        <label>
+          {{ 'billing.form.type' | translate }}
+          <select class="sa-input sa-input--select"
+            [ngModel]="newType()" (ngModelChange)="newType.set($event)">
+            <option value="subscription">Subscription</option>
+            <option value="commission">Commission</option>
+            <option value="setup_fee">Setup fee</option>
+            <option value="custom">Custom</option>
+          </select>
+        </label>
+        <label>
+          {{ 'billing.form.due_date' | translate }}
+          <input class="sa-input" type="date"
+            [ngModel]="newDueDate()" (ngModelChange)="newDueDate.set($event)" />
+        </label>
+        <div class="sa-billing__line-items">
+          <h4>{{ 'billing.form.line_items' | translate }}</h4>
+          @for (li of newLineItems(); track $index; let i = $index) {
+            <div class="sa-billing__line-row">
+              <input class="sa-input" type="text" placeholder="Description"
+                [value]="li.description" (input)="updateLineItem(i, 'description', $any($event.target).value)" />
+              <input class="sa-input" type="number" min="1" step="1"
+                [value]="li.quantity" (input)="updateLineItem(i, 'quantity', +$any($event.target).value)" />
+              <input class="sa-input" type="number" min="0" step="0.001"
+                [value]="li.unitPrice" (input)="updateLineItem(i, 'unitPrice', +$any($event.target).value)" />
+              <button type="button" class="sa-btn sa-btn--ghost sa-btn--sm" (click)="removeLineItem(i)">×</button>
+            </div>
+          }
+          <button type="button" class="sa-btn sa-btn--secondary sa-btn--sm" (click)="addLineItem()">+ Item</button>
+        </div>
+        <label>
+          {{ 'billing.form.tax' | translate }}
+          <input class="sa-input" type="number" min="0" step="0.001"
+            [ngModel]="newTaxAmount()" (ngModelChange)="newTaxAmount.set($event)" />
+        </label>
+        <p class="sa-billing__total">{{ 'billing.form.total' | translate }}: <strong>KD {{ invoiceTotal() | number: '1.0-3' }}</strong></p>
+      </div>
+      <div class="sa-billing__modal-actions">
+        <button class="sa-btn sa-btn--secondary" type="button" (click)="showCreate.set(false)">
+          {{ 'billing.cancel' | translate }}
+        </button>
+        <button class="sa-btn sa-btn--primary" type="button" (click)="createInvoice()">
+          {{ 'billing.generate' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,49 @@
+:host { display: block; }
+
+.sa-tenants { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.sa-tenants__filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 0.625rem;
+}
+@media (max-width: 1024px) {
+  .sa-tenants__filters { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .sa-tenants__filters { grid-template-columns: 1fr; }
+}
+
+.sa-tenants__error {
+  background: var(--danger-bg);
+  color: var(--danger);
+  padding: 1rem;
+  border-radius: var(--radius-card);
+}
+
+.sa-tenants__name-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+.sa-tenants__name-link:hover { text-decoration: underline; }
+
+.sa-tenants__slug {
+  color: var(--text-subtle);
+  font-size: 0.75rem;
+  font-family: 'ui-monospace', 'Menlo', monospace;
+}
+
+.sa-tenants__row-actions {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.sa-tenants__empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-subtle);
+}
+
+.sa-table__num { text-align: end; }

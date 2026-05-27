@@ -1,0 +1,114 @@
+<div class="sa-tenants">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'tenants.title' | translate }}</h1>
+      <p>{{ 'tenants.subtitle' | translate }}</p>
+    </div>
+  </div>
+
+  <div class="sa-tenants__filters">
+    <input
+      class="sa-input"
+      type="search"
+      (input)="onSearchChange($any($event.target).value)"
+      [placeholder]="'tenants.search_placeholder' | translate"
+    />
+    <select class="sa-input sa-input--select"
+      [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event)">
+      <option value="">{{ 'tenants.filter.all_status' | translate }}</option>
+      <option value="active">Active</option>
+      <option value="trial">Trial</option>
+      <option value="suspended">Suspended</option>
+      <option value="cancelled">Cancelled</option>
+    </select>
+    <select class="sa-input sa-input--select"
+      [ngModel]="typeFilter()" (ngModelChange)="typeFilter.set($event)">
+      <option value="">{{ 'tenants.filter.all_types' | translate }}</option>
+      <option value="restaurant">Restaurant</option>
+      <option value="retail">Retail</option>
+      <option value="service">Service</option>
+    </select>
+    <select class="sa-input sa-input--select"
+      [ngModel]="planFilter()" (ngModelChange)="planFilter.set($event)">
+      <option value="">{{ 'tenants.filter.all_plans' | translate }}</option>
+      @for (p of availablePlans(); track p) { <option [value]="p">{{ p }}</option> }
+    </select>
+    <select class="sa-input sa-input--select"
+      [ngModel]="countryFilter()" (ngModelChange)="countryFilter.set($event)">
+      <option value="">{{ 'tenants.filter.all_countries' | translate }}</option>
+      @for (c of availableCountries(); track c) { <option [value]="c">{{ c }}</option> }
+    </select>
+  </div>
+
+  @if (loading()) {
+    <div class="sa-table-wrap">
+      <table class="sa-table">
+        <tbody>
+          @for (_ of [1,2,3,4,5,6]; track $index) {
+            <tr><td colspan="9"><span class="sa-skel" style="block-size: 1.25rem; inline-size: 100%;"></span></td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else if (error()) {
+    <div class="sa-tenants__error">⚠ {{ 'tenants.load_error' | translate }}</div>
+  } @else {
+    <div class="sa-table-wrap">
+      <table class="sa-table">
+        <thead>
+          <tr>
+            <th>{{ 'tenants.col.business' | translate }}</th>
+            <th>{{ 'tenants.col.subdomain' | translate }}</th>
+            <th>{{ 'tenants.col.type' | translate }}</th>
+            <th>{{ 'tenants.col.plan' | translate }}</th>
+            <th>{{ 'tenants.col.status' | translate }}</th>
+            <th class="sa-table__num">{{ 'tenants.col.gmv' | translate }}</th>
+            <th class="sa-table__num">{{ 'tenants.col.orders' | translate }}</th>
+            <th>{{ 'tenants.col.created' | translate }}</th>
+            <th>{{ 'tenants.col.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (t of filtered(); track t.id) {
+            <tr>
+              <td>
+                <a class="sa-tenants__name-link" [routerLink]="['/tenants', t.id]">{{ t.businessNameEn }}</a>
+              </td>
+              <td><span class="sa-tenants__slug numeric-identifier">{{ t.slug }}.ourplatform.com</span></td>
+              <td><span class="sa-badge sa-badge--accent">{{ t.businessType }}</span></td>
+              <td>{{ t.planName ?? '—' }}</td>
+              <td><span class="sa-badge" [class]="'sa-badge ' + badgeForStatus(t.status)">{{ t.status }}</span></td>
+              <td class="sa-table__num">KD {{ t.gmvThisMonth | number: '1.0-0' }}</td>
+              <td class="sa-table__num">{{ t.ordersThisMonth | number }}</td>
+              <td>{{ t.createdAt | date: 'mediumDate' }}</td>
+              <td>
+                <div class="sa-tenants__row-actions">
+                  <a class="sa-btn sa-btn--ghost sa-btn--sm" [routerLink]="['/tenants', t.id]">
+                    {{ 'tenants.actions.view' | translate }}
+                  </a>
+                  <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button"
+                    (click)="impersonate(t, $event)">
+                    {{ 'tenants.actions.impersonate' | translate }}
+                  </button>
+                  @if (t.status === 'suspended') {
+                    <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button"
+                      (click)="reactivate(t, $event)">
+                      {{ 'tenants.actions.reactivate' | translate }}
+                    </button>
+                  } @else {
+                    <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button"
+                      (click)="suspend(t, $event)">
+                      {{ 'tenants.actions.suspend' | translate }}
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="9" class="sa-tenants__empty">{{ 'tenants.no_tenants' | translate }}</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

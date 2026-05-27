@@ -1,0 +1,36 @@
+<div class="sa-cp">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'comms.title' | translate }}</h1>
+      <p>{{ 'comms.subtitle' | translate }}</p>
+    </div>
+  </div>
+  @if (loading()) {
+    <span class="sa-skel" style="display: block; block-size: 6rem;"></span>
+  } @else {
+    <div class="sa-cp__list">
+      @for (p of providers(); track p.key) {
+        <div class="sa-card sa-cp__row">
+          <div class="sa-cp__info">
+            <h3>{{ iconForType(p.type) }} {{ p.name }}</h3>
+            <p class="sa-cp__meta">
+              <span class="sa-badge sa-badge--accent">{{ p.type }}</span>
+              <span class="sa-badge sa-badge--neutral">{{ p.key }}</span>
+              <span>· {{ p.monthlyVolume | number }} {{ 'comms.monthly_volume' | translate }}</span>
+            </p>
+          </div>
+          <button
+            class="sa-cp__toggle"
+            [class.sa-cp__toggle--on]="p.isEnabled"
+            type="button"
+            (click)="toggle(p)"
+          >
+            {{ p.isEnabled ? ('comms.enabled' | translate) : ('comms.disabled' | translate) }}
+          </button>
+        </div>
+      } @empty {
+        <p class="sa-cp__empty">{{ 'comms.none' | translate }}</p>
+      }
+    </div>
+  }
+</div>

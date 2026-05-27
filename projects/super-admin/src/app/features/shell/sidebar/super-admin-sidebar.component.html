@@ -1,0 +1,67 @@
+<aside
+  class="sa-sidebar"
+  [class.sa-sidebar--open]="mobileOpen"
+  [attr.aria-hidden]="!mobileOpen && isMobileViewport ? 'true' : null"
+>
+  <div class="sa-sidebar__inner">
+    <div class="sa-sidebar__brand">
+      <div class="sa-sidebar__logo" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4z" />
+          <path d="M9 12l2 2 4-4" />
+        </svg>
+      </div>
+      <div class="sa-sidebar__brand-text">
+        <span class="sa-sidebar__wordmark">Aiw</span>
+        <span class="sa-sidebar__chip">SUPER ADMIN</span>
+      </div>
+      <button
+        class="sa-sidebar__close-btn"
+        type="button"
+        [attr.aria-label]="'nav.close_sidebar' | translate"
+        (click)="closeMobile.emit()"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="sa-sidebar__nav" [attr.aria-label]="'nav.open_sidebar' | translate">
+      @for (section of visibleSections(); track section.titleKey) {
+        <div class="sa-sidebar__section">
+          <p class="sa-sidebar__section-title">{{ section.titleKey | translate }}</p>
+          @for (item of section.items; track item.route) {
+            <a
+              class="sa-sidebar__link"
+              routerLinkActive="sa-sidebar__link--active"
+              [routerLink]="item.route"
+              (click)="closeMobile.emit()"
+            >
+              <span class="sa-sidebar__link-icon" aria-hidden="true">{{ item.icon }}</span>
+              <span class="sa-sidebar__link-label">{{ item.labelKey | translate }}</span>
+            </a>
+          }
+        </div>
+      }
+    </nav>
+
+    <div class="sa-sidebar__footer">
+      @if (currentUser()) {
+        <div class="sa-sidebar__user">
+          <div class="sa-sidebar__user-avatar" aria-hidden="true">
+            {{ currentUser()!.email.charAt(0).toUpperCase() }}
+          </div>
+          <div class="sa-sidebar__user-info">
+            <p class="sa-sidebar__user-name">{{ currentUser()!.name || currentUser()!.email }}</p>
+            <p class="sa-sidebar__user-role">{{ 'role.' + currentUser()!.role | translate }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</aside>
+
+@if (mobileOpen) {
+  <div class="sa-sidebar__scrim" (click)="closeMobile.emit()" aria-hidden="true"></div>
+}

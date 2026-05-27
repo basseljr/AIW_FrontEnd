@@ -1,0 +1,230 @@
+<div class="sa-settings">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'settings.title' | translate }}</h1>
+      <p>{{ 'settings.subtitle' | translate }}</p>
+    </div>
+  </div>
+
+  <div class="sa-settings__tabs">
+    <button class="sa-settings__tab" [class.sa-settings__tab--active]="section() === 'general'"
+      type="button" (click)="setSection('general')">{{ 'settings.tab.general' | translate }}</button>
+    <button class="sa-settings__tab" [class.sa-settings__tab--active]="section() === 'email'"
+      type="button" (click)="setSection('email')">{{ 'settings.tab.email' | translate }}</button>
+    <button class="sa-settings__tab" [class.sa-settings__tab--active]="section() === 'sms'"
+      type="button" (click)="setSection('sms')">{{ 'settings.tab.sms' | translate }}</button>
+    <button class="sa-settings__tab" [class.sa-settings__tab--active]="section() === 'broadcast'"
+      type="button" (click)="setSection('broadcast')">{{ 'settings.tab.broadcast' | translate }}</button>
+  </div>
+
+  @if (loading()) {
+    <span class="sa-skel" style="display: block; block-size: 8rem;"></span>
+  } @else {
+    @switch (section()) {
+      @case ('general') {
+        @if (settings(); as s) {
+          <div class="sa-card">
+            <h3>{{ 'settings.general_title' | translate }}</h3>
+            <div class="sa-settings__form">
+              <label>
+                {{ 'settings.field.platform_name' | translate }}
+                <input class="sa-input" type="text" [value]="s.platformName"
+                  (input)="updateSettings('platformName', $any($event.target).value)" />
+              </label>
+              <label>
+                {{ 'settings.field.support_email' | translate }}
+                <input class="sa-input" type="email" [value]="s.supportEmail"
+                  (input)="updateSettings('supportEmail', $any($event.target).value)" />
+              </label>
+              <label>
+                {{ 'settings.field.support_whatsapp' | translate }}
+                <input class="sa-input" type="tel" [value]="s.supportWhatsapp ?? ''"
+                  (input)="updateSettings('supportWhatsapp', $any($event.target).value)" />
+              </label>
+              <label>
+                {{ 'settings.field.currency' | translate }}
+                <input class="sa-input" type="text" [value]="s.defaultCurrency"
+                  (input)="updateSettings('defaultCurrency', $any($event.target).value)" />
+              </label>
+              <label>
+                {{ 'settings.field.timezone' | translate }}
+                <input class="sa-input" type="text" [value]="s.defaultTimezone"
+                  (input)="updateSettings('defaultTimezone', $any($event.target).value)" />
+              </label>
+              <label class="sa-settings__check">
+                <input type="checkbox" [checked]="s.maintenanceMode"
+                  (change)="updateSettings('maintenanceMode', $any($event.target).checked)" />
+                <div>
+                  <span>{{ 'settings.field.maintenance' | translate }}</span>
+                  <small>{{ 'settings.field.maintenance_hint' | translate }}</small>
+                </div>
+              </label>
+            </div>
+            <div class="sa-settings__save-bar">
+              @if (saved()) {
+                <span class="sa-badge sa-badge--success">✓ {{ 'settings.saved' | translate }}</span>
+              }
+              <button class="sa-btn sa-btn--primary" type="button" (click)="saveSettings()">
+                {{ 'settings.save' | translate }}
+              </button>
+            </div>
+          </div>
+        }
+      }
+      @case ('email') {
+        <div class="sa-card">
+          <h3>{{ 'settings.email_title' | translate }}</h3>
+          @for (t of emailTemplates(); track t.key) {
+            <div class="sa-settings__tpl">
+              <div>
+                <p class="sa-settings__tpl-name">{{ t.name }}</p>
+                <p class="sa-settings__tpl-key">{{ t.key }}</p>
+              </div>
+              <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button" (click)="openEmail(t)">
+                {{ 'settings.edit' | translate }}
+              </button>
+            </div>
+          } @empty {
+            <p class="sa-settings__empty">{{ 'settings.no_templates' | translate }}</p>
+          }
+        </div>
+      }
+      @case ('sms') {
+        <div class="sa-card">
+          <h3>{{ 'settings.sms_title' | translate }}</h3>
+          @for (t of smsTemplates(); track t.key) {
+            <div class="sa-settings__tpl">
+              <div>
+                <p class="sa-settings__tpl-name">{{ t.name }}</p>
+                <p class="sa-settings__tpl-key">{{ t.key }}</p>
+              </div>
+              <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button" (click)="openSms(t)">
+                {{ 'settings.edit' | translate }}
+              </button>
+            </div>
+          } @empty {
+            <p class="sa-settings__empty">{{ 'settings.no_templates' | translate }}</p>
+          }
+        </div>
+      }
+      @case ('broadcast') {
+        <div class="sa-card">
+          <h3>{{ 'settings.broadcast_title' | translate }}</h3>
+          <p class="sa-settings__hint">{{ 'settings.broadcast_hint' | translate }}</p>
+          <div class="sa-settings__form">
+            <label>
+              {{ 'settings.broadcast.subject_en' | translate }}
+              <input class="sa-input" type="text" [value]="broadcast().subjectEn"
+                (input)="updateBroadcast('subjectEn', $any($event.target).value)" />
+            </label>
+            <label>
+              {{ 'settings.broadcast.subject_ar' | translate }}
+              <input class="sa-input" type="text" [value]="broadcast().subjectAr" dir="rtl"
+                (input)="updateBroadcast('subjectAr', $any($event.target).value)" />
+            </label>
+            <label>
+              {{ 'settings.broadcast.body_en' | translate }}
+              <textarea class="sa-input sa-input--textarea" rows="4" [value]="broadcast().bodyEn"
+                (input)="updateBroadcast('bodyEn', $any($event.target).value)"></textarea>
+            </label>
+            <label>
+              {{ 'settings.broadcast.body_ar' | translate }}
+              <textarea class="sa-input sa-input--textarea" rows="4" [value]="broadcast().bodyAr" dir="rtl"
+                (input)="updateBroadcast('bodyAr', $any($event.target).value)"></textarea>
+            </label>
+            <fieldset class="sa-settings__channels">
+              <legend>{{ 'settings.broadcast.channels' | translate }}</legend>
+              <label>
+                <input type="checkbox" [checked]="broadcast().channels.includes('email')"
+                  (change)="toggleChannel('email')" />
+                {{ 'settings.broadcast.email' | translate }}
+              </label>
+              <label>
+                <input type="checkbox" [checked]="broadcast().channels.includes('dashboard')"
+                  (change)="toggleChannel('dashboard')" />
+                {{ 'settings.broadcast.dashboard' | translate }}
+              </label>
+            </fieldset>
+            <label>
+              {{ 'settings.broadcast.audience' | translate }}
+              <select class="sa-input sa-input--select" [value]="broadcast().audience"
+                (change)="updateBroadcast('audience', $any($event.target).value)">
+                <option value="all">All tenants</option>
+                <option value="planIds">Tenants on specific plans</option>
+              </select>
+            </label>
+          </div>
+          <div class="sa-settings__save-bar">
+            <button class="sa-btn sa-btn--primary" type="button" (click)="sendBroadcast()">
+              {{ 'settings.broadcast.send' | translate }}
+            </button>
+          </div>
+        </div>
+      }
+    }
+  }
+
+  @if (editingEmail(); as t) {
+    <div class="sa-modal-scrim" (click)="editingEmail.set(null)"></div>
+    <div class="sa-modal sa-modal--wide" role="dialog">
+      <h2>{{ t.name }}</h2>
+      <div class="sa-settings__form">
+        <label>
+          {{ 'settings.email.subject_en' | translate }}
+          <input class="sa-input" type="text" [value]="t.subjectEn"
+            (input)="updateEmail('subjectEn', $any($event.target).value)" />
+        </label>
+        <label>
+          {{ 'settings.email.subject_ar' | translate }}
+          <input class="sa-input" type="text" [value]="t.subjectAr" dir="rtl"
+            (input)="updateEmail('subjectAr', $any($event.target).value)" />
+        </label>
+        <label>
+          {{ 'settings.email.body_en' | translate }}
+          <textarea class="sa-input sa-input--textarea" rows="8" [value]="t.bodyEn"
+            (input)="updateEmail('bodyEn', $any($event.target).value)"></textarea>
+        </label>
+        <label>
+          {{ 'settings.email.body_ar' | translate }}
+          <textarea class="sa-input sa-input--textarea" rows="8" [value]="t.bodyAr" dir="rtl"
+            (input)="updateEmail('bodyAr', $any($event.target).value)"></textarea>
+        </label>
+      </div>
+      <div class="sa-settings__modal-actions">
+        <button class="sa-btn sa-btn--secondary" type="button" (click)="editingEmail.set(null)">
+          {{ 'settings.cancel' | translate }}
+        </button>
+        <button class="sa-btn sa-btn--primary" type="button" (click)="saveEmail()">
+          {{ 'settings.save' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (editingSms(); as t) {
+    <div class="sa-modal-scrim" (click)="editingSms.set(null)"></div>
+    <div class="sa-modal" role="dialog">
+      <h2>{{ t.name }}</h2>
+      <div class="sa-settings__form">
+        <label>
+          {{ 'settings.sms.body_en' | translate }}
+          <textarea class="sa-input sa-input--textarea" rows="4" [value]="t.bodyEn"
+            (input)="updateSms('bodyEn', $any($event.target).value)"></textarea>
+        </label>
+        <label>
+          {{ 'settings.sms.body_ar' | translate }}
+          <textarea class="sa-input sa-input--textarea" rows="4" [value]="t.bodyAr" dir="rtl"
+            (input)="updateSms('bodyAr', $any($event.target).value)"></textarea>
+        </label>
+      </div>
+      <div class="sa-settings__modal-actions">
+        <button class="sa-btn sa-btn--secondary" type="button" (click)="editingSms.set(null)">
+          {{ 'settings.cancel' | translate }}
+        </button>
+        <button class="sa-btn sa-btn--primary" type="button" (click)="saveSms()">
+          {{ 'settings.save' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+</div>

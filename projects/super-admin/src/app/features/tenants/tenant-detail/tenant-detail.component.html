@@ -1,0 +1,324 @@
+<div class="sa-tenant-detail">
+  <a class="sa-tenant-detail__back" routerLink="/tenants">← {{ 'tenant.back' | translate }}</a>
+
+  @if (loading()) {
+    <div class="sa-card"><span class="sa-skel" style="block-size: 2rem; inline-size: 50%;"></span></div>
+  } @else if (error()) {
+    <div class="sa-card sa-tenant-detail__error">⚠ {{ 'tenant.load_error' | translate }}</div>
+  }
+  @if (!loading() && !error() && tenant(); as t) {
+    <header class="sa-card sa-tenant-detail__header">
+      <div class="sa-tenant-detail__title">
+        <h1>{{ t.businessNameEn }}</h1>
+        <p class="sa-tenant-detail__meta">
+          <a class="sa-tenant-detail__link numeric-identifier" [href]="'https://' + t.slug + '.ourplatform.com'" target="_blank" rel="noopener">
+            {{ t.slug }}.ourplatform.com ↗
+          </a>
+        </p>
+      </div>
+      <div class="sa-tenant-detail__badges">
+        <span class="sa-badge" [class]="'sa-badge ' + badgeForStatus(t.status)">{{ t.status }}</span>
+        <span class="sa-badge sa-badge--accent">{{ t.businessType }}</span>
+        @if (t.planName) {
+          <span class="sa-badge sa-badge--info">{{ t.planName }}</span>
+        }
+      </div>
+    </header>
+
+    <nav class="sa-tenant-detail__tabs" role="tablist">
+      @for (tab of tabs; track tab.key) {
+        <button
+          class="sa-tenant-detail__tab"
+          [class.sa-tenant-detail__tab--active]="activeTab() === tab.key"
+          type="button"
+          role="tab"
+          (click)="setTab(tab.key)"
+        >
+          {{ tab.labelKey | translate }}
+        </button>
+      }
+    </nav>
+
+    @switch (activeTab()) {
+      @case ('overview') {
+        @if (overviewKpis(); as k) {
+          <div class="sa-tenant-detail__kpis">
+            <div class="sa-card sa-tenant-detail__kpi">
+              <p class="sa-tenant-detail__kpi-label">{{ 'tenant.kpi.gmv_all' | translate }}</p>
+              <p class="sa-tenant-detail__kpi-value">KD {{ k.gmvAllTime | number: '1.0-0' }}</p>
+            </div>
+            <div class="sa-card sa-tenant-detail__kpi">
+              <p class="sa-tenant-detail__kpi-label">{{ 'tenant.kpi.gmv_month' | translate }}</p>
+              <p class="sa-tenant-detail__kpi-value">KD {{ k.gmvThisMonth | number: '1.0-0' }}</p>
+            </div>
+            <div class="sa-card sa-tenant-detail__kpi">
+              <p class="sa-tenant-detail__kpi-label">{{ 'tenant.kpi.orders_all' | translate }}</p>
+              <p class="sa-tenant-detail__kpi-value">{{ k.ordersAllTime | number }}</p>
+            </div>
+            <div class="sa-card sa-tenant-detail__kpi">
+              <p class="sa-tenant-detail__kpi-label">{{ 'tenant.kpi.orders_month' | translate }}</p>
+              <p class="sa-tenant-detail__kpi-value">{{ k.ordersThisMonth | number }}</p>
+            </div>
+            <div class="sa-card sa-tenant-detail__kpi">
+              <p class="sa-tenant-detail__kpi-label">{{ 'tenant.kpi.customers' | translate }}</p>
+              <p class="sa-tenant-detail__kpi-value">{{ k.customerCount | number }}</p>
+            </div>
+            <div class="sa-card sa-tenant-detail__kpi">
+              <p class="sa-tenant-detail__kpi-label">{{ 'tenant.kpi.staff' | translate }}</p>
+              <p class="sa-tenant-detail__kpi-value">{{ k.activeStaffCount | number }}</p>
+            </div>
+          </div>
+        }
+        <div class="sa-card">
+          <h3>{{ 'tenant.revenue_chart' | translate }}</h3>
+          <div class="sa-tenant-detail__bars">
+            @for (point of revenueTrend(); track $index) {
+              <div class="sa-tenant-detail__bar-col">
+                <div class="sa-tenant-detail__bar" [style.block-size.%]="(point.revenue / 100) * 100" [title]="'KD ' + (point.revenue | number)"></div>
+                <span class="sa-tenant-detail__bar-label">{{ point.periodStart | date: 'MMM' }}</span>
+              </div>
+            } @empty {
+              <p class="sa-tenant-detail__empty">{{ 'tenant.no_revenue_data' | translate }}</p>
+            }
+          </div>
+        </div>
+      }
+
+      @case ('config') {
+        <div class="sa-card">
+          <h3>{{ 'tenant.config_title' | translate }}</h3>
+          <dl class="sa-tenant-detail__dl">
+            <dt>{{ 'tenant.field.subdomain' | translate }}</dt><dd>{{ t.slug }}</dd>
+            <dt>{{ 'tenant.field.business_name_en' | translate }}</dt><dd>{{ t.businessNameEn }}</dd>
+            <dt>{{ 'tenant.field.business_name_ar' | translate }}</dt><dd>{{ t.businessNameAr }}</dd>
+            <dt>{{ 'tenant.field.business_type' | translate }}</dt><dd>{{ t.businessType }}</dd>
+            <dt>{{ 'tenant.field.timezone' | translate }}</dt><dd>{{ t.timezone }}</dd>
+            <dt>{{ 'tenant.field.currency' | translate }}</dt><dd>{{ t.defaultCurrency }}</dd>
+            <dt>{{ 'tenant.field.language' | translate }}</dt><dd>{{ t.defaultLanguage }}</dd>
+            <dt>{{ 'tenant.field.tax_rate' | translate }}</dt><dd>{{ (t.taxRate * 100) | number: '1.0-2' }}%</dd>
+            <dt>{{ 'tenant.field.tax_inclusive' | translate }}</dt><dd>{{ t.taxInclusive ? 'Yes' : 'No' }}</dd>
+            <dt>{{ 'tenant.field.owner' | translate }}</dt><dd>{{ t.ownerName ?? '—' }} {{ t.ownerEmail ? '(' + t.ownerEmail + ')' : '' }}</dd>
+            <dt>{{ 'tenant.field.created' | translate }}</dt><dd>{{ t.createdAt | date: 'medium' }}</dd>
+          </dl>
+        </div>
+      }
+
+      @case ('flags') {
+        <div class="sa-card">
+          <h3>{{ 'tenant.flags_title' | translate }}</h3>
+          <p class="sa-tenant-detail__hint">{{ 'tenant.flags_hint' | translate }}</p>
+          <div class="sa-table-wrap">
+            <table class="sa-table">
+              <thead>
+                <tr>
+                  <th>{{ 'tenant.flag.key' | translate }}</th>
+                  <th>{{ 'tenant.flag.category' | translate }}</th>
+                  <th>{{ 'tenant.flag.default' | translate }}</th>
+                  <th>{{ 'tenant.flag.resolved' | translate }}</th>
+                  <th>{{ 'tenant.flag.override' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (f of flags(); track f.key) {
+                  <tr>
+                    <td>
+                      <div class="sa-tenant-detail__flag-key">{{ f.key }}</div>
+                      <div class="sa-tenant-detail__flag-desc">{{ f.description }}</div>
+                    </td>
+                    <td>{{ f.category }}</td>
+                    <td>
+                      <span class="sa-badge" [class]="f.defaultValue ? 'sa-badge sa-badge--success' : 'sa-badge sa-badge--neutral'">
+                        {{ f.defaultValue ? 'On' : 'Off' }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="sa-badge" [class]="f.resolvedValue ? 'sa-badge sa-badge--success' : 'sa-badge sa-badge--neutral'">
+                        {{ f.resolvedValue ? 'On' : 'Off' }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="sa-tenant-detail__flag-toggle">
+                        <button type="button"
+                          class="sa-tenant-detail__flag-btn"
+                          [class.sa-tenant-detail__flag-btn--active]="flagOverrideMode(f) === 'default'"
+                          (click)="toggleFlag(f, 'default')">
+                          {{ 'tenant.flag.platform_default' | translate }}
+                        </button>
+                        <button type="button"
+                          class="sa-tenant-detail__flag-btn"
+                          [class.sa-tenant-detail__flag-btn--active]="flagOverrideMode(f) === 'on'"
+                          (click)="toggleFlag(f, 'on')">
+                          {{ 'tenant.flag.force_on' | translate }}
+                        </button>
+                        <button type="button"
+                          class="sa-tenant-detail__flag-btn"
+                          [class.sa-tenant-detail__flag-btn--active]="flagOverrideMode(f) === 'off'"
+                          (click)="toggleFlag(f, 'off')">
+                          {{ 'tenant.flag.force_off' | translate }}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr><td colspan="5" class="sa-tenant-detail__empty">{{ 'tenant.no_flags' | translate }}</td></tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+      @case ('subscription') {
+        @if (subscription(); as s) {
+          <div class="sa-card">
+            <h3>{{ 'tenant.sub_title' | translate }}</h3>
+            <dl class="sa-tenant-detail__dl">
+              <dt>{{ 'tenant.sub.plan' | translate }}</dt><dd>{{ s.planName }}</dd>
+              <dt>{{ 'tenant.sub.status' | translate }}</dt><dd>{{ s.status }}</dd>
+              <dt>{{ 'tenant.sub.cycle' | translate }}</dt><dd>{{ s.billingCycle }}</dd>
+              <dt>{{ 'tenant.sub.amount' | translate }}</dt><dd>KD {{ s.monthlyAmount | number: '1.0-3' }}</dd>
+              <dt>{{ 'tenant.sub.period_end' | translate }}</dt><dd>{{ s.currentPeriodEnd | date: 'mediumDate' }}</dd>
+              <dt>{{ 'tenant.sub.trial_end' | translate }}</dt><dd>{{ s.trialEndsAt ? (s.trialEndsAt | date: 'mediumDate') : '—' }}</dd>
+            </dl>
+            <div class="sa-tenant-detail__actions">
+              <button class="sa-btn sa-btn--primary" type="button">{{ 'tenant.sub.change_plan' | translate }}</button>
+              <button class="sa-btn sa-btn--danger" type="button">{{ 'tenant.sub.cancel' | translate }}</button>
+            </div>
+          </div>
+        } @else {
+          <div class="sa-card">
+            <p>{{ 'tenant.no_subscription' | translate }}</p>
+          </div>
+        }
+      }
+
+      @case ('billing') {
+        <div class="sa-card">
+          <div class="sa-tenant-detail__actions sa-tenant-detail__actions--right">
+            <button class="sa-btn sa-btn--primary" type="button">{{ 'tenant.create_invoice' | translate }}</button>
+          </div>
+          <div class="sa-table-wrap">
+            <table class="sa-table">
+              <thead>
+                <tr>
+                  <th>{{ 'invoices.col.number' | translate }}</th>
+                  <th>{{ 'invoices.col.period' | translate }}</th>
+                  <th>{{ 'invoices.col.amount' | translate }}</th>
+                  <th>{{ 'invoices.col.status' | translate }}</th>
+                  <th>{{ 'invoices.col.actions' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (inv of invoices(); track inv.id) {
+                  <tr>
+                    <td>{{ inv.invoiceNumber }}</td>
+                    <td>{{ inv.periodStart | date: 'mediumDate' }} – {{ inv.periodEnd | date: 'mediumDate' }}</td>
+                    <td>KD {{ inv.total | number: '1.0-3' }}</td>
+                    <td><span class="sa-badge" [class]="'sa-badge ' + badgeForStatus(inv.status)">{{ inv.status }}</span></td>
+                    <td>
+                      @if (inv.pdfUrl) {
+                        <a class="sa-btn sa-btn--ghost sa-btn--sm" [href]="inv.pdfUrl" target="_blank" rel="noopener">PDF</a>
+                      } @else { — }
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr><td colspan="5" class="sa-tenant-detail__empty">{{ 'tenant.no_invoices' | translate }}</td></tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+      @case ('users') {
+        <div class="sa-card">
+          <div class="sa-table-wrap">
+            <table class="sa-table">
+              <thead>
+                <tr>
+                  <th>{{ 'tenant.users.name' | translate }}</th>
+                  <th>{{ 'tenant.users.email' | translate }}</th>
+                  <th>{{ 'tenant.users.role' | translate }}</th>
+                  <th>{{ 'tenant.users.last_login' | translate }}</th>
+                  <th>{{ 'tenant.users.status' | translate }}</th>
+                  <th>{{ 'tenant.users.actions' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (u of users(); track u.id) {
+                  <tr>
+                    <td>{{ u.name }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.role }}</td>
+                    <td>{{ u.lastLoginAt ? (u.lastLoginAt | date: 'short') : '—' }}</td>
+                    <td><span class="sa-badge" [class]="u.isActive ? 'sa-badge sa-badge--success' : 'sa-badge sa-badge--danger'">{{ u.isActive ? 'Active' : 'Inactive' }}</span></td>
+                    <td>
+                      <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button">{{ 'tenant.users.reset_pw' | translate }}</button>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr><td colspan="6" class="sa-tenant-detail__empty">{{ 'tenant.no_users' | translate }}</td></tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+      @case ('customers') {
+        <div class="sa-card">
+          <div class="sa-table-wrap">
+            <table class="sa-table">
+              <thead>
+                <tr>
+                  <th>{{ 'tenant.customers.name' | translate }}</th>
+                  <th>{{ 'tenant.customers.email' | translate }}</th>
+                  <th>{{ 'tenant.customers.phone' | translate }}</th>
+                  <th class="sa-table__num">{{ 'tenant.customers.orders' | translate }}</th>
+                  <th class="sa-table__num">{{ 'tenant.customers.spent' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (c of customers(); track c.id) {
+                  <tr>
+                    <td>{{ c.name }}</td>
+                    <td>{{ c.email }}</td>
+                    <td>{{ c.phone ?? '—' }}</td>
+                    <td class="sa-table__num">{{ c.orderCount }}</td>
+                    <td class="sa-table__num">KD {{ c.totalSpent | number: '1.0-3' }}</td>
+                  </tr>
+                } @empty {
+                  <tr><td colspan="5" class="sa-tenant-detail__empty">{{ 'tenant.no_customers' | translate }}</td></tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+      @case ('domains') {
+        <div class="sa-card">
+          @for (d of domains(); track d.domain) {
+            <div class="sa-tenant-detail__domain">
+              <div>
+                <p class="sa-tenant-detail__domain-name numeric-identifier">{{ d.domain }}</p>
+                <p class="sa-tenant-detail__domain-type">{{ d.domainType }}</p>
+              </div>
+              <div class="sa-tenant-detail__domain-status">
+                <span class="sa-badge" [class]="d.isVerified ? 'sa-badge sa-badge--success' : 'sa-badge sa-badge--warning'">
+                  {{ d.isVerified ? ('tenant.domain.verified' | translate) : ('tenant.domain.pending' | translate) }}
+                </span>
+                <span class="sa-badge" [class]="d.sslIssued ? 'sa-badge sa-badge--success' : 'sa-badge sa-badge--warning'">
+                  SSL {{ d.sslIssued ? '✓' : '✗' }}
+                </span>
+                <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button">{{ 'tenant.domain.re_verify' | translate }}</button>
+              </div>
+            </div>
+          } @empty {
+            <p class="sa-tenant-detail__empty">{{ 'tenant.no_domains' | translate }}</p>
+          }
+        </div>
+      }
+    }
+  }
+</div>

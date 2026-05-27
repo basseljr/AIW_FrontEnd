@@ -1,0 +1,182 @@
+<div class="sa-lead-detail">
+  <a class="sa-lead-detail__back" routerLink="/leads">← {{ 'lead.back' | translate }}</a>
+
+  @if (loading()) {
+    <div class="sa-card"><span class="sa-skel" style="block-size: 2rem; inline-size: 50%;"></span></div>
+  } @else if (error()) {
+    <div class="sa-card sa-lead-detail__error">⚠ {{ error()! | translate }}</div>
+  }
+  @if (!loading() && !error() && lead(); as l) {
+    <div class="sa-card sa-lead-detail__header">
+      <div class="sa-lead-detail__title-block">
+        <h1>{{ l.businessName }}</h1>
+        <span class="sa-badge sa-badge--accent">{{ l.businessType }}</span>
+        <span class="sa-badge sa-badge--neutral">{{ stageLabels[l.status] | translate }}</span>
+      </div>
+      <div class="sa-lead-detail__actions">
+        <button class="sa-btn sa-btn--secondary" type="button">
+          {{ 'lead.schedule_demo' | translate }}
+        </button>
+        @if (l.status !== 'live' && l.status !== 'lost') {
+          <button class="sa-btn sa-btn--primary" type="button" (click)="markWon()">
+            {{ 'lead.mark_won' | translate }}
+          </button>
+          <button class="sa-btn sa-btn--danger" type="button" (click)="markLost()">
+            {{ 'lead.mark_lost' | translate }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="sa-lead-detail__grid">
+      <div class="sa-card">
+        <h3>{{ 'lead.contact' | translate }}</h3>
+        <dl class="sa-lead-detail__dl">
+          <dt>{{ 'lead.field.name' | translate }}</dt><dd>{{ l.name }}</dd>
+          <dt>{{ 'lead.field.email' | translate }}</dt><dd>{{ l.email }}</dd>
+          <dt>{{ 'lead.field.phone' | translate }}</dt><dd>{{ l.phone || '—' }}</dd>
+          <dt>{{ 'lead.field.source' | translate }}</dt><dd>{{ l.source }}</dd>
+          <dt>{{ 'lead.field.assigned' | translate }}</dt><dd>{{ l.assignedToName || '—' }}</dd>
+          <dt>{{ 'lead.field.created' | translate }}</dt><dd>{{ l.createdAt | date: 'medium' }}</dd>
+        </dl>
+        @if (l.notes) {
+          <h4>{{ 'lead.intake_notes' | translate }}</h4>
+          <p class="sa-lead-detail__intake">{{ l.notes }}</p>
+        }
+      </div>
+
+      <div class="sa-card">
+        <h3>{{ 'lead.advance_stage' | translate }}</h3>
+        <div class="sa-lead-detail__stage-buttons">
+          @for (s of stages; track s) {
+            <button
+              class="sa-btn sa-btn--secondary sa-btn--sm"
+              type="button"
+              [disabled]="s === l.status"
+              (click)="transition(s)"
+            >
+              {{ stageLabels[s] | translate }}
+            </button>
+          }
+        </div>
+
+        <h3 class="sa-lead-detail__section">{{ 'lead.stage_history' | translate }}</h3>
+        <ol class="sa-lead-detail__timeline">
+          @for (h of l.stageHistory; track $index) {
+            <li>
+              <span class="sa-lead-detail__timeline-dot"></span>
+              <div>
+                <p class="sa-lead-detail__timeline-text">
+                  {{ stageLabels[h.toStage] | translate }}
+                  @if (h.fromStage) {
+                    <small>· {{ 'lead.from' | translate }} {{ stageLabels[h.fromStage] | translate }}</small>
+                  }
+                </p>
+                <p class="sa-lead-detail__timeline-meta">{{ h.changedBy }} · {{ h.changedAt | date: 'short' }}</p>
+              </div>
+            </li>
+          } @empty {
+            <li><p class="sa-lead-detail__timeline-meta">{{ 'lead.no_history' | translate }}</p></li>
+          }
+        </ol>
+      </div>
+
+      <div class="sa-card sa-lead-detail__notes">
+        <h3>{{ 'lead.notes' | translate }}</h3>
+        <div class="sa-lead-detail__note-input">
+          <textarea
+            class="sa-input sa-input--textarea"
+            [ngModel]="newNote()"
+            (ngModelChange)="newNote.set($event)"
+            [placeholder]="'lead.add_note_placeholder' | translate"
+            rows="3"
+          ></textarea>
+          <button
+            class="sa-btn sa-btn--primary"
+            type="button"
+            [disabled]="addingNote() || !newNote().trim()"
+            (click)="addNote()"
+          >
+            {{ addingNote() ? ('lead.adding' | translate) : ('lead.add_note' | translate) }}
+          </button>
+        </div>
+        <ul class="sa-lead-detail__note-list">
+          @for (n of l.notesList; track n.id) {
+            <li>
+              <p class="sa-lead-detail__note-text">{{ n.text }}</p>
+              <p class="sa-lead-detail__note-meta">{{ n.authorName }} · {{ n.createdAt | date: 'short' }}</p>
+            </li>
+          } @empty {
+            <li class="sa-lead-detail__note-empty">{{ 'lead.no_notes' | translate }}</li>
+          }
+        </ul>
+      </div>
+    </div>
+  }
+
+  @if (showConvertDialog()) {
+    <div class="sa-modal-scrim" (click)="showConvertDialog.set(false)"></div>
+    <div class="sa-modal" role="dialog">
+      <h2>{{ 'lead.convert_title' | translate }}</h2>
+      <p>{{ 'lead.convert_subtitle' | translate }}</p>
+      <div class="sa-lead-detail__field">
+        <label>{{ 'lead.convert.subdomain' | translate }}</label>
+        <input class="sa-input" type="text"
+          [ngModel]="convertSubdomain()" (ngModelChange)="convertSubdomain.set($event)" />
+      </div>
+      <div class="sa-lead-detail__field">
+        <label>{{ 'lead.convert.plan' | translate }}</label>
+        <select class="sa-input sa-input--select"
+          [ngModel]="convertPlanId()" (ngModelChange)="convertPlanId.set($event)">
+          <option value="">{{ 'lead.convert.choose_plan' | translate }}</option>
+          <option value="starter">Starter</option>
+          <option value="growth">Growth</option>
+          <option value="professional">Professional</option>
+        </select>
+      </div>
+      <div class="sa-lead-detail__field">
+        <label>{{ 'lead.convert.business_type' | translate }}</label>
+        <input class="sa-input" type="text" [value]="lead()?.businessType" disabled />
+      </div>
+      <div class="sa-lead-detail__modal-actions">
+        <button class="sa-btn sa-btn--secondary" type="button" (click)="showConvertDialog.set(false)">
+          {{ 'lead.cancel' | translate }}
+        </button>
+        <button
+          class="sa-btn sa-btn--primary"
+          type="button"
+          [disabled]="converting() || !convertSubdomain() || !convertPlanId()"
+          (click)="confirmConvert()"
+        >
+          {{ converting() ? ('lead.converting' | translate) : ('lead.convert' | translate) }}
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (showLostDialog()) {
+    <div class="sa-modal-scrim" (click)="showLostDialog.set(false)"></div>
+    <div class="sa-modal" role="dialog">
+      <h2>{{ 'lead.lost_title' | translate }}</h2>
+      <p>{{ 'lead.lost_subtitle' | translate }}</p>
+      <div class="sa-lead-detail__field">
+        <label>{{ 'lead.lost_reason' | translate }}</label>
+        <select class="sa-input sa-input--select"
+          [ngModel]="lostReason()" (ngModelChange)="lostReason.set($event)">
+          <option value="">{{ 'lead.choose_reason' | translate }}</option>
+          @for (r of lostReasons; track r) {
+            <option [value]="r">{{ 'lead.reason.' + r | translate }}</option>
+          }
+        </select>
+      </div>
+      <div class="sa-lead-detail__modal-actions">
+        <button class="sa-btn sa-btn--secondary" type="button" (click)="showLostDialog.set(false)">
+          {{ 'lead.cancel' | translate }}
+        </button>
+        <button class="sa-btn sa-btn--danger" type="button" [disabled]="!lostReason()" (click)="confirmLost()">
+          {{ 'lead.confirm_lost' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+</div>

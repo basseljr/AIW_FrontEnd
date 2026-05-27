@@ -1,0 +1,84 @@
+<div class="sa-comm">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'commission.title' | translate }}</h1>
+      <p>{{ 'commission.subtitle' | translate }}</p>
+    </div>
+    <div class="sa-comm__period">
+      <label>{{ 'commission.period' | translate }}</label>
+      <input class="sa-input" type="month"
+        [value]="periodMonth().substring(0, 7)"
+        (change)="changePeriod($any($event.target).value + '-01')" />
+    </div>
+  </div>
+
+  @if (summary(); as s) {
+    <div class="sa-comm__summary">
+      <div class="sa-card sa-comm__metric">
+        <p class="sa-comm__label">{{ 'commission.metric.gmv' | translate }}</p>
+        <p class="sa-comm__value">KD {{ s.totalGmv | number: '1.0-0' }}</p>
+      </div>
+      <div class="sa-card sa-comm__metric">
+        <p class="sa-comm__label">{{ 'commission.metric.earned' | translate }}</p>
+        <p class="sa-comm__value">KD {{ s.totalCommissionEarned | number: '1.0-3' }}</p>
+      </div>
+      <div class="sa-card sa-comm__metric">
+        <p class="sa-comm__label">{{ 'commission.metric.collected' | translate }}</p>
+        <p class="sa-comm__value sa-comm__value--success">KD {{ s.collected | number: '1.0-3' }}</p>
+      </div>
+      <div class="sa-card sa-comm__metric">
+        <p class="sa-comm__label">{{ 'commission.metric.pending' | translate }}</p>
+        <p class="sa-comm__value sa-comm__value--warn">KD {{ s.pending | number: '1.0-3' }}</p>
+      </div>
+    </div>
+  }
+
+  <div class="sa-card">
+    <div class="sa-comm__actions">
+      <h3>{{ 'commission.by_tenant' | translate }}</h3>
+      <button class="sa-btn sa-btn--primary" type="button" [disabled]="generating()" (click)="generateInvoices()">
+        @if (generating()) { {{ 'commission.generating' | translate }} } @else {
+          {{ 'commission.generate_invoices' | translate }}
+        }
+      </button>
+    </div>
+    @if (loading()) {
+      <span class="sa-skel" style="display: block; block-size: 4rem;"></span>
+    } @else {
+      <div class="sa-table-wrap">
+        <table class="sa-table">
+          <thead>
+            <tr>
+              <th>{{ 'commission.col.tenant' | translate }}</th>
+              <th>{{ 'commission.col.plan' | translate }}</th>
+              <th class="sa-table__num">{{ 'commission.col.gmv' | translate }}</th>
+              <th class="sa-table__num">{{ 'commission.col.rate' | translate }}</th>
+              <th class="sa-table__num">{{ 'commission.col.amount' | translate }}</th>
+              <th>{{ 'commission.col.status' | translate }}</th>
+              <th>{{ 'commission.col.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of rows(); track r.tenantId) {
+              <tr>
+                <td><a class="sa-comm__link" [routerLink]="['/tenants', r.tenantId]">{{ r.tenantName }}</a></td>
+                <td>{{ r.planName }}</td>
+                <td class="sa-table__num">KD {{ r.gmvThisMonth | number: '1.0-0' }}</td>
+                <td class="sa-table__num">{{ (r.commissionRate * 100) | number: '1.0-2' }}%</td>
+                <td class="sa-table__num">KD {{ r.commissionAmount | number: '1.0-3' }}</td>
+                <td><span class="sa-badge" [class]="'sa-badge ' + badgeForStatus(r.status)">{{ r.status }}</span></td>
+                <td>
+                  @if (r.status === 'pending') {
+                    <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button">{{ 'commission.actions.generate' | translate }}</button>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="7" class="sa-comm__empty">{{ 'commission.no_rows' | translate }}</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,230 @@
+:host { display: block; }
+
+.sa-leads { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.sa-leads__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.sa-leads__view-toggle {
+  display: inline-flex;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  padding: 0.1875rem;
+}
+
+.sa-leads__view-btn {
+  padding: 0.375rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 6px;
+  font-family: inherit;
+}
+
+.sa-leads__view-btn--active {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.sa-leads__filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 0.625rem;
+}
+@media (max-width: 768px) {
+  .sa-leads__filters {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sa-leads__loading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sa-leads__error {
+  background: var(--danger-bg);
+  color: var(--danger);
+  padding: 1rem;
+  border-radius: var(--radius-card);
+}
+
+.sa-leads__kanban {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(220px, 1fr));
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-block-end: 0.5rem;
+}
+
+@media (max-width: 1400px) {
+  .sa-leads__kanban {
+    grid-template-columns: repeat(8, 220px);
+  }
+}
+
+.sa-leads__col {
+  background: var(--surface-alt);
+  border-radius: var(--radius-card);
+  padding: 0.625rem;
+  min-block-size: 480px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sa-leads__col-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 0.5rem;
+  padding-inline: 0.375rem;
+  margin-block-end: 0.5rem;
+  border-block-end: 1px solid var(--border);
+}
+
+.sa-leads__col-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sa-leads__col-count {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--surface);
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-pill);
+  min-inline-size: 1.5rem;
+  text-align: center;
+}
+
+.sa-leads__col-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-block-size: 200px;
+}
+
+.sa-leads__col-empty {
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+  text-align: center;
+  padding: 1.5rem 0;
+  margin: 0;
+}
+
+.sa-leads__card {
+  display: block;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  padding: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  cursor: grab;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow var(--motion-fast), transform var(--motion-fast);
+}
+
+.sa-leads__card:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.sa-leads__card:active { cursor: grabbing; }
+
+.sa-leads__card.cdk-drag-preview {
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.2);
+}
+
+.sa-leads__card.cdk-drag-placeholder {
+  opacity: 0.4;
+}
+
+.sa-leads__card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-block-end: 0.375rem;
+}
+
+.sa-leads__card-type {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.sa-leads__card-business {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sa-leads__card-contact {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0 0 0.5rem;
+}
+
+.sa-leads__card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.375rem;
+}
+
+.sa-leads__card-days {
+  font-size: 0.6875rem;
+  color: var(--text-subtle);
+  font-weight: 600;
+}
+
+.sa-leads__card-agent {
+  font-size: 0.6875rem;
+  color: var(--text-subtle);
+  margin: 0.375rem 0 0;
+}
+
+.sa-leads__row-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+.sa-leads__row-link:hover { text-decoration: underline; }
+
+.sa-leads__row-sub {
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+}
+
+.sa-leads__empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-subtle);
+}
+
+.sa-leads__success {
+  background: var(--success-bg);
+  color: var(--success);
+  border-radius: var(--radius-control);
+  padding-block: 0.625rem;
+  padding-inline: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}

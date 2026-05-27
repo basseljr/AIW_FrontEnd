@@ -1,0 +1,146 @@
+<div class="sa-login">
+  <div class="sa-login__card">
+    <div class="sa-login__brand">
+      <div class="sa-login__shield" aria-hidden="true">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4z" />
+          <path d="M9 12l2 2 4-4" />
+        </svg>
+      </div>
+      <div class="sa-login__brand-text">
+        <span class="sa-login__wordmark">Aiw</span>
+        <span class="sa-login__tagline">Super Admin Panel</span>
+      </div>
+    </div>
+
+    <div class="sa-login__warning" role="alert">
+      <span class="sa-login__warning-dot" aria-hidden="true">●</span>
+      {{ 'auth.login.internal_warning' | translate }}
+    </div>
+
+    <h1 class="sa-login__title">
+      @if (step() === 'credentials') {
+        {{ 'auth.login.title' | translate }}
+      } @else {
+        {{ 'auth.login.mfa_title' | translate }}
+      }
+    </h1>
+    <p class="sa-login__subtitle">
+      @if (step() === 'credentials') {
+        {{ 'auth.login.subtitle' | translate }}
+      } @else {
+        {{ 'auth.login.mfa_subtitle' | translate }}
+      }
+    </p>
+
+    @if (step() === 'credentials') {
+      <form class="sa-login__form" (ngSubmit)="submitCredentials()" #credForm="ngForm" novalidate>
+        <div class="sa-login__field">
+          <label class="sa-login__label" for="email">{{ 'auth.login.email_label' | translate }}</label>
+          <input
+            id="email"
+            name="email"
+            class="sa-login__input"
+            type="email"
+            autocomplete="email"
+            [placeholder]="'auth.login.email_placeholder' | translate"
+            [class.sa-login__input--error]="submitted() && !email()"
+            [ngModel]="email()"
+            (ngModelChange)="email.set($event)"
+            required
+          />
+        </div>
+
+        <div class="sa-login__field">
+          <label class="sa-login__label" for="password">{{ 'auth.login.password_label' | translate }}</label>
+          <input
+            id="password"
+            name="password"
+            class="sa-login__input"
+            type="password"
+            autocomplete="current-password"
+            [placeholder]="'auth.login.password_placeholder' | translate"
+            [class.sa-login__input--error]="submitted() && !password()"
+            [ngModel]="password()"
+            (ngModelChange)="password.set($event)"
+            required
+          />
+        </div>
+
+        <label class="sa-login__check">
+          <input
+            type="checkbox"
+            name="rememberDevice"
+            [ngModel]="rememberDevice()"
+            (ngModelChange)="rememberDevice.set($event)"
+          />
+          <span>{{ 'auth.login.remember_device' | translate }}</span>
+        </label>
+
+        @if (errorKey()) {
+          <p class="sa-login__error" role="alert">{{ errorKey()! | translate }}</p>
+        }
+
+        @if (failedAttempts() >= 3) {
+          <p class="sa-login__attempts" role="status">
+            {{ 'auth.login.failed_attempts' | translate: { count: failedAttempts() } }}
+          </p>
+        }
+
+        <button class="sa-login__submit" type="submit" [disabled]="loading()">
+          @if (loading()) {
+            {{ 'auth.login.signing_in' | translate }}
+          } @else {
+            {{ 'auth.login.submit' | translate }}
+          }
+        </button>
+      </form>
+    } @else {
+      <form class="sa-login__form" (ngSubmit)="submitMfa()" #mfaForm="ngForm" novalidate>
+        <div class="sa-login__field">
+          <label class="sa-login__label" for="mfaCode">{{ 'auth.login.mfa_code_label' | translate }}</label>
+          <input
+            id="mfaCode"
+            name="mfaCode"
+            class="sa-login__input sa-login__input--mfa"
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            maxlength="6"
+            autocomplete="one-time-code"
+            placeholder="000000"
+            [class.sa-login__input--error]="submitted() && mfaCode().length !== 6"
+            [ngModel]="mfaCode()"
+            (ngModelChange)="mfaCode.set($event)"
+            required
+          />
+        </div>
+
+        <label class="sa-login__check">
+          <input
+            type="checkbox"
+            name="rememberDeviceMfa"
+            [ngModel]="rememberDevice()"
+            (ngModelChange)="rememberDevice.set($event)"
+          />
+          <span>{{ 'auth.login.remember_device_30d' | translate }}</span>
+        </label>
+
+        @if (errorKey()) {
+          <p class="sa-login__error" role="alert">{{ errorKey()! | translate }}</p>
+        }
+
+        <button class="sa-login__submit" type="submit" [disabled]="loading()">
+          @if (loading()) {
+            {{ 'auth.login.verifying' | translate }}
+          } @else {
+            {{ 'auth.login.verify_mfa' | translate }}
+          }
+        </button>
+        <button class="sa-login__back" type="button" (click)="backToCredentials()">
+          {{ 'auth.login.back' | translate }}
+        </button>
+      </form>
+    }
+  </div>
+</div>

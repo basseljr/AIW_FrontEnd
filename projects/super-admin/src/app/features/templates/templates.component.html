@@ -1,0 +1,73 @@
+<div class="sa-tpl">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'templates.title' | translate }}</h1>
+      <p>{{ 'templates.subtitle' | translate }}</p>
+    </div>
+  </div>
+  @if (loading()) {
+    <span class="sa-skel" style="display: block; block-size: 6rem;"></span>
+  } @else {
+    <div class="sa-tpl__grid">
+      @for (t of templates(); track t.id) {
+        <button class="sa-tpl__card" type="button" (click)="open(t)">
+          <div class="sa-tpl__thumb" [style.background-image]="t.thumbnailUrl ? 'url(' + t.thumbnailUrl + ')' : ''">
+            @if (!t.thumbnailUrl) { <span>🎨</span> }
+          </div>
+          <div class="sa-tpl__body">
+            <div class="sa-tpl__row">
+              <h3>{{ t.name }}</h3>
+              <span class="sa-badge" [class]="'sa-badge ' + badgeForStatus(t.status)">{{ t.status }}</span>
+            </div>
+            <p class="sa-tpl__desc">{{ t.description }}</p>
+            <div class="sa-tpl__meta">
+              <span>{{ t.activeTenantCount }} {{ 'templates.tenants' | translate }}</span>
+              <span>·</span>
+              <span>v{{ t.version }}</span>
+            </div>
+            <div class="sa-tpl__types">
+              @for (b of t.businessTypes; track b) {
+                <span class="sa-badge sa-badge--accent">{{ b }}</span>
+              }
+            </div>
+          </div>
+        </button>
+      } @empty {
+        <p class="sa-tpl__empty">{{ 'templates.none' | translate }}</p>
+      }
+    </div>
+  }
+
+  @if (selected(); as d) {
+    <div class="sa-modal-scrim" (click)="selected.set(null)"></div>
+    <div class="sa-modal sa-modal--wide" role="dialog">
+      <div class="sa-tpl__detail-header">
+        <div>
+          <h2>{{ d.name }} · v{{ d.version }}</h2>
+          <p>{{ d.description }}</p>
+        </div>
+        <button class="sa-btn sa-btn--ghost" type="button" (click)="selected.set(null)">×</button>
+      </div>
+      <h3>{{ 'templates.screenshots' | translate }}</h3>
+      <div class="sa-tpl__screens">
+        @for (url of d.screenshots; track url) {
+          <img [src]="url" alt="" />
+        } @empty {
+          <p class="sa-tpl__empty">{{ 'templates.no_screens' | translate }}</p>
+        }
+      </div>
+      <h3>{{ 'templates.changelog' | translate }}</h3>
+      <ul class="sa-tpl__changelog">
+        @for (c of d.changelog; track c.version) {
+          <li>
+            <strong>v{{ c.version }}</strong>
+            <span class="sa-tpl__changelog-date">{{ c.releasedAt | date: 'mediumDate' }}</span>
+            <p>{{ c.notes }}</p>
+          </li>
+        } @empty {
+          <li><p class="sa-tpl__empty">{{ 'templates.no_changelog' | translate }}</p></li>
+        }
+      </ul>
+    </div>
+  }
+</div>

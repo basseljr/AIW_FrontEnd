@@ -1,0 +1,209 @@
+<div class="sa-overview">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'overview.title' | translate }}</h1>
+      <p>{{ 'overview.subtitle' | translate }}</p>
+    </div>
+    <div class="sa-overview__scope">
+      <button
+        class="sa-overview__scope-btn"
+        [class.sa-overview__scope-btn--active]="scope() === 'this_month'"
+        type="button"
+        (click)="setScope('this_month')"
+      >
+        {{ 'overview.this_month' | translate }}
+      </button>
+      <button
+        class="sa-overview__scope-btn"
+        [class.sa-overview__scope-btn--active]="scope() === 'all_time'"
+        type="button"
+        (click)="setScope('all_time')"
+      >
+        {{ 'overview.all_time' | translate }}
+      </button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="sa-overview__kpi-grid">
+      @for (n of [1,2,3,4,5,6,7,8]; track n) {
+        <div class="sa-overview__kpi">
+          <span class="sa-skel" style="block-size: 0.875rem; inline-size: 60%;"></span>
+          <span class="sa-skel" style="block-size: 1.75rem; inline-size: 80%; margin-block-start: 0.5rem;"></span>
+        </div>
+      }
+    </div>
+  } @else if (error()) {
+    <div class="sa-overview__error">
+      <span>⚠</span> {{ 'overview.load_error' | translate }}
+    </div>
+  }
+  @if (!loading() && !error() && data(); as d) {
+    <div class="sa-overview__kpi-grid">
+      <div class="sa-overview__kpi">
+        <p class="sa-overview__kpi-label">{{ 'overview.kpi.total_tenants' | translate }}</p>
+        <p class="sa-overview__kpi-value">{{ formatNumber(d.kpis.totalTenants) }}</p>
+        <p class="sa-overview__kpi-sub">
+          <span class="sa-badge sa-badge--success">{{ d.kpis.totalTenantsActive }} active</span>
+          <span class="sa-badge sa-badge--warning">{{ d.kpis.totalTenantsTrial }} trial</span>
+          <span class="sa-badge sa-badge--danger">{{ d.kpis.totalTenantsSuspended }} suspended</span>
+        </p>
+      </div>
+      <div class="sa-overview__kpi">
+        <p class="sa-overview__kpi-label">{{ 'overview.kpi.new_this_month' | translate }}</p>
+        <p class="sa-overview__kpi-value">{{ formatNumber(d.kpis.newTenantsThisMonth) }}</p>
+        @if (trendVsLastMonth(); as t) {
+          <p class="sa-overview__kpi-sub">
+            <span
+              class="sa-overview__delta"
+              [class.sa-overview__delta--up]="t.positive"
+              [class.sa-overview__delta--down]="!t.positive"
+            >
+              {{ t.positive ? '↑' : '↓' }} {{ t.delta | number: '1.0-1' }}%
+            </span>
+            <span class="sa-overview__delta-meta">{{ 'overview.vs_last_month' | translate }}</span>
+          </p>
+        }
+      </div>
+      <div class="sa-overview__kpi">
+        <p class="sa-overview__kpi-label">{{ 'overview.kpi.gmv' | translate }}</p>
+        <p class="sa-overview__kpi-value">
+          KD {{ formatKwd(scope() === 'this_month' ? d.kpis.totalGmvThisMonth : d.kpis.totalGmv) }}
+        </p>
+        <p class="sa-overview__kpi-sub sa-overview__kpi-sub--muted">
+          {{ 'overview.gmv_meta' | translate }}
+        </p>
+      </div>
+      <div class="sa-overview__kpi">
+        <p class="sa-overview__kpi-label">{{ 'overview.kpi.mrr' | translate }}</p>
+        <p class="sa-overview__kpi-value">KD {{ formatKwd(d.kpis.mrr) }}</p>
+        <p class="sa-overview__kpi-sub sa-overview__kpi-sub--muted">
+          {{ 'overview.mrr_meta' | translate }}
+        </p>
+      </div>
+      <div class="sa-overview__kpi">
+        <p class="sa-overview__kpi-label">{{ 'overview.kpi.commission' | translate }}</p>
+        <p class="sa-overview__kpi-value">KD {{ formatKwd(d.kpis.commissionEarnedThisMonth) }}</p>
+        <p class="sa-overview__kpi-sub sa-overview__kpi-sub--muted">
+          {{ 'overview.commission_meta' | translate }}
+        </p>
+      </div>
+      <div class="sa-overview__kpi">
+        <p class="sa-overview__kpi-label">{{ 'overview.kpi.customers' | translate }}</p>
+        <p class="sa-overview__kpi-value">{{ formatNumber(d.kpis.totalEndCustomers) }}</p>
+        <p class="sa-overview__kpi-sub sa-overview__kpi-sub--muted">
+          {{ 'overview.customers_meta' | translate }}
+        </p>
+      </div>
+      <div class="sa-overview__kpi">
+        <p class="sa-overview__kpi-label">{{ 'overview.kpi.orders' | translate }}</p>
+        <p class="sa-overview__kpi-value">{{ formatNumber(d.kpis.totalOrdersProcessed) }}</p>
+        <p class="sa-overview__kpi-sub sa-overview__kpi-sub--muted">
+          {{ 'overview.orders_meta' | translate }}
+        </p>
+      </div>
+      <div class="sa-overview__kpi">
+        <p class="sa-overview__kpi-label">{{ 'overview.kpi.active_tenants' | translate }}</p>
+        <p class="sa-overview__kpi-value">{{ formatNumber(d.kpis.activeTenantsLast30Days) }}</p>
+        <p class="sa-overview__kpi-sub sa-overview__kpi-sub--muted">
+          {{ 'overview.active_meta' | translate }}
+        </p>
+      </div>
+    </div>
+
+    <div class="sa-overview__charts">
+      <div class="sa-card sa-overview__chart-card sa-overview__chart-card--wide">
+        <div class="sa-overview__chart-header">
+          <div>
+            <h3>{{ 'overview.chart.trend' | translate }}</h3>
+            <p>{{ 'overview.chart.trend_sub' | translate }}</p>
+          </div>
+          <div class="sa-overview__metric-toggle">
+            <button
+              class="sa-overview__metric-btn"
+              [class.sa-overview__metric-btn--active]="trendMetric() === 'mrr'"
+              type="button"
+              (click)="setTrendMetric('mrr')"
+            >MRR</button>
+            <button
+              class="sa-overview__metric-btn"
+              [class.sa-overview__metric-btn--active]="trendMetric() === 'gmv'"
+              type="button"
+              (click)="setTrendMetric('gmv')"
+            >GMV</button>
+            <button
+              class="sa-overview__metric-btn"
+              [class.sa-overview__metric-btn--active]="trendMetric() === 'commission'"
+              type="button"
+              (click)="setTrendMetric('commission')"
+            >{{ 'overview.commission_label' | translate }}</button>
+          </div>
+        </div>
+        <div class="sa-overview__canvas-wrap">
+          <canvas #trendChart></canvas>
+        </div>
+      </div>
+
+      <div class="sa-card sa-overview__chart-card">
+        <div class="sa-overview__chart-header">
+          <div>
+            <h3>{{ 'overview.chart.growth' | translate }}</h3>
+            <p>{{ 'overview.chart.growth_sub' | translate }}</p>
+          </div>
+        </div>
+        <div class="sa-overview__canvas-wrap">
+          <canvas #growthChart></canvas>
+        </div>
+      </div>
+
+      <div class="sa-card sa-overview__chart-card">
+        <div class="sa-overview__chart-header">
+          <div>
+            <h3>{{ 'overview.chart.types' | translate }}</h3>
+            <p>{{ 'overview.chart.types_sub' | translate }}</p>
+          </div>
+        </div>
+        <div class="sa-overview__canvas-wrap sa-overview__canvas-wrap--donut">
+          <canvas #donutChart></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="sa-card sa-overview__top">
+      <div class="sa-overview__chart-header">
+        <div>
+          <h3>{{ 'overview.top_tenants' | translate }}</h3>
+          <p>{{ 'overview.top_tenants_sub' | translate }}</p>
+        </div>
+      </div>
+      <div class="sa-table-wrap">
+        <table class="sa-table">
+          <thead>
+            <tr>
+              <th>{{ 'overview.col_tenant' | translate }}</th>
+              <th>{{ 'overview.col_type' | translate }}</th>
+              <th class="sa-table__num">{{ 'overview.col_gmv' | translate }}</th>
+              <th class="sa-table__num">{{ 'overview.col_orders' | translate }}</th>
+              <th>{{ 'overview.col_plan' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (t of d.topTenants; track t.tenantId) {
+              <tr>
+                <td>{{ t.businessNameEn }}</td>
+                <td>
+                  <span class="sa-badge sa-badge--accent">{{ t.businessType }}</span>
+                </td>
+                <td class="sa-table__num">KD {{ formatKwd(t.gmv) }}</td>
+                <td class="sa-table__num">{{ formatNumber(t.orderCount) }}</td>
+                <td>—</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="5" class="sa-overview__empty">{{ 'overview.no_top_tenants' | translate }}</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>
