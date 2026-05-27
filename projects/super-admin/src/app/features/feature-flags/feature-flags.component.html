@@ -1,0 +1,105 @@
+<div class="sa-flags">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'flags.title' | translate }}</h1>
+      <p>{{ 'flags.subtitle' | translate }}</p>
+    </div>
+    <button class="sa-btn sa-btn--primary" type="button" (click)="openCreate()">
+      + {{ 'flags.create' | translate }}
+    </button>
+  </div>
+  <div class="sa-card">
+    <div class="sa-flags__filters">
+      <input class="sa-input" type="search" [ngModel]="search()" (ngModelChange)="search.set($event)"
+        [placeholder]="'flags.search_placeholder' | translate" />
+      <select class="sa-input sa-input--select"
+        [ngModel]="categoryFilter()" (ngModelChange)="categoryFilter.set($event)">
+        <option value="">{{ 'flags.all_categories' | translate }}</option>
+        @for (c of categories; track c) { <option [value]="c">{{ c }}</option> }
+      </select>
+    </div>
+    @if (loading()) {
+      <span class="sa-skel" style="display: block; block-size: 6rem;"></span>
+    } @else {
+      <div class="sa-table-wrap">
+        <table class="sa-table">
+          <thead>
+            <tr>
+              <th>{{ 'flags.col.key' | translate }}</th>
+              <th>{{ 'flags.col.label' | translate }}</th>
+              <th>{{ 'flags.col.category' | translate }}</th>
+              <th>{{ 'flags.col.default' | translate }}</th>
+              <th class="sa-table__num">{{ 'flags.col.overrides' | translate }}</th>
+              <th>{{ 'flags.col.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (f of filtered(); track f.key) {
+              <tr>
+                <td>
+                  <div class="sa-flags__key">{{ f.key }}</div>
+                  <div class="sa-flags__desc">{{ f.description }}</div>
+                </td>
+                <td>{{ f.label }}</td>
+                <td><span class="sa-badge sa-badge--neutral">{{ f.category }}</span></td>
+                <td><span class="sa-badge" [class]="f.defaultValue ? 'sa-badge sa-badge--success' : 'sa-badge sa-badge--neutral'">{{ f.defaultValue ? 'On' : 'Off' }}</span></td>
+                <td class="sa-table__num">{{ f.tenantOverrideCount ?? 0 }}</td>
+                <td>
+                  <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button" (click)="openEdit(f)">
+                    {{ 'flags.actions.edit' | translate }}
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="6" class="sa-flags__empty">{{ 'flags.none' | translate }}</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  @if (showForm()) {
+    <div class="sa-modal-scrim" (click)="showForm.set(false)"></div>
+    <div class="sa-modal" role="dialog">
+      <h2>{{ editing() ? ('flags.edit_title' | translate) : ('flags.create_title' | translate) }}</h2>
+      <div class="sa-flags__form">
+        <label>
+          {{ 'flags.form.key' | translate }}
+          <input class="sa-input" type="text" [value]="form().key" [disabled]="!!editing()"
+            (input)="updateForm('key', $any($event.target).value)" placeholder="feature.example" />
+        </label>
+        <label>
+          {{ 'flags.form.label' | translate }}
+          <input class="sa-input" type="text" [value]="form().label"
+            (input)="updateForm('label', $any($event.target).value)" />
+        </label>
+        <label>
+          {{ 'flags.form.description' | translate }}
+          <textarea class="sa-input sa-input--textarea" rows="3" [value]="form().description"
+            (input)="updateForm('description', $any($event.target).value)"></textarea>
+        </label>
+        <label>
+          {{ 'flags.form.category' | translate }}
+          <select class="sa-input sa-input--select" [value]="form().category"
+            (change)="updateForm('category', $any($event.target).value)">
+            @for (c of categories; track c) { <option [value]="c">{{ c }}</option> }
+          </select>
+        </label>
+        <label class="sa-flags__check">
+          <input type="checkbox" [checked]="form().defaultValue"
+            (change)="updateForm('defaultValue', $any($event.target).checked)" />
+          {{ 'flags.form.default_on' | translate }}
+        </label>
+      </div>
+      <div class="sa-flags__modal-actions">
+        <button class="sa-btn sa-btn--secondary" type="button" (click)="showForm.set(false)">
+          {{ 'flags.cancel' | translate }}
+        </button>
+        <button class="sa-btn sa-btn--primary" type="button" (click)="save()">
+          {{ 'flags.save' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+</div>

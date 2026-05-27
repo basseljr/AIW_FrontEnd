@@ -1,0 +1,37 @@
+<div class="sa-provs">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'delivery.title' | translate }}</h1>
+      <p>{{ 'delivery.subtitle' | translate }}</p>
+    </div>
+  </div>
+  @if (loading()) {
+    <span class="sa-skel" style="display: block; block-size: 6rem;"></span>
+  } @else {
+    <div class="sa-provs__list">
+      @for (p of providers(); track p.key) {
+        <div class="sa-card sa-provs__row">
+          <div class="sa-provs__info">
+            <h3>🚚 {{ p.name }}</h3>
+            <p class="sa-provs__desc">{{ p.description }}</p>
+            <p class="sa-provs__meta">
+              <span class="sa-badge sa-badge--neutral">{{ p.key }}</span>
+              <span>· {{ p.tenantCount }} {{ 'delivery.tenants_using' | translate }}</span>
+            </p>
+          </div>
+          <button
+            class="sa-provs__toggle"
+            [class.sa-provs__toggle--on]="p.isEnabled"
+            type="button"
+            (click)="toggle(p)"
+          >
+            <span class="sa-provs__toggle-dot"></span>
+            <span>{{ p.isEnabled ? ('delivery.enabled' | translate) : ('delivery.disabled' | translate) }}</span>
+          </button>
+        </div>
+      } @empty {
+        <p class="sa-provs__empty">{{ 'delivery.none' | translate }}</p>
+      }
+    </div>
+  }
+</div>

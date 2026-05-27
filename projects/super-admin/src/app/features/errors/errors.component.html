@@ -1,0 +1,64 @@
+<div class="sa-errors">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'errors.title' | translate }}</h1>
+      <p>{{ 'errors.subtitle' | translate }}</p>
+    </div>
+  </div>
+  <div class="sa-card">
+    <div class="sa-errors__filters">
+      <select class="sa-input sa-input--select"
+        [ngModel]="severityFilter()" (ngModelChange)="severityFilter.set($event); load()">
+        <option value="">{{ 'errors.all_severity' | translate }}</option>
+        <option value="info">Info</option>
+        <option value="warning">Warning</option>
+        <option value="error">Error</option>
+        <option value="critical">Critical</option>
+      </select>
+      <input class="sa-input" type="text" [ngModel]="serviceFilter()"
+        (ngModelChange)="serviceFilter.set($event)" [placeholder]="'errors.service_filter' | translate" />
+      <input class="sa-input" type="date" [ngModel]="fromDate()" (ngModelChange)="fromDate.set($event)" />
+      <input class="sa-input" type="date" [ngModel]="toDate()" (ngModelChange)="toDate.set($event)" />
+      <button class="sa-btn sa-btn--primary" type="button" (click)="load()">
+        {{ 'errors.apply' | translate }}
+      </button>
+    </div>
+    @if (loading()) {
+      <span class="sa-skel" style="display: block; block-size: 6rem;"></span>
+    } @else {
+      <div class="sa-table-wrap">
+        <table class="sa-table">
+          <thead>
+            <tr>
+              <th>{{ 'errors.col.time' | translate }}</th>
+              <th>{{ 'errors.col.severity' | translate }}</th>
+              <th>{{ 'errors.col.service' | translate }}</th>
+              <th>{{ 'errors.col.message' | translate }}</th>
+              <th class="sa-table__num">{{ 'errors.col.count' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (e of errors(); track e.id) {
+              <tr class="sa-errors__row" (click)="toggle(e.id)">
+                <td>{{ e.timestamp | date: 'short' }}</td>
+                <td><span class="sa-badge" [class]="'sa-badge ' + badgeFor(e.severity)">{{ e.severity }}</span></td>
+                <td>{{ e.service }}</td>
+                <td class="sa-errors__msg">{{ e.message }}</td>
+                <td class="sa-table__num">{{ e.count }}</td>
+              </tr>
+              @if (expandedId() === e.id && e.stackTrace) {
+                <tr>
+                  <td colspan="5" class="sa-errors__stack">
+                    <pre>{{ e.stackTrace }}</pre>
+                  </td>
+                </tr>
+              }
+            } @empty {
+              <tr><td colspan="5" class="sa-errors__empty">{{ 'errors.none' | translate }}</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

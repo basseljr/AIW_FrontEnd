@@ -1,0 +1,108 @@
+<header class="sa-topbar">
+  <button
+    class="sa-topbar__menu-btn"
+    type="button"
+    [attr.aria-label]="'nav.open_sidebar' | translate"
+    (click)="menuToggle.emit()"
+  >
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <path d="M3 6h18M3 12h18M3 18h18" />
+    </svg>
+  </button>
+
+  <div class="sa-topbar__title">
+    <span class="sa-topbar__title-main">{{ 'topbar.title' | translate }}</span>
+    <span class="sa-topbar__title-chip">SUPER ADMIN</span>
+  </div>
+
+  <div class="sa-topbar__actions">
+    <button
+      class="sa-topbar__lang-btn"
+      type="button"
+      (click)="toggleLanguage()"
+    >
+      {{ langToggle.current() === 'ar' ? 'EN' : 'العربية' }}
+    </button>
+
+    <div class="sa-topbar__notif-wrap">
+      <button
+        class="sa-topbar__icon-btn"
+        type="button"
+        [attr.aria-label]="'topbar.notifications' | translate"
+        (click)="toggleNotifications()"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 01-3.46 0" />
+        </svg>
+        @if (unreadCount() > 0) {
+          <span class="sa-topbar__badge">{{ unreadCount() }}</span>
+        }
+      </button>
+      @if (notificationsOpen()) {
+        <div class="sa-topbar__popover sa-topbar__popover--notif" role="dialog">
+          <div class="sa-topbar__popover-header">
+            <h3>{{ 'topbar.notifications' | translate }}</h3>
+          </div>
+          <ul class="sa-topbar__notif-list">
+            <li class="sa-topbar__notif-item">
+              <span class="sa-topbar__notif-dot sa-topbar__notif-dot--warn"></span>
+              <div>
+                <p class="sa-topbar__notif-title">{{ 'topbar.notif.past_due' | translate }}</p>
+                <p class="sa-topbar__notif-meta">2h ago</p>
+              </div>
+            </li>
+            <li class="sa-topbar__notif-item">
+              <span class="sa-topbar__notif-dot sa-topbar__notif-dot--info"></span>
+              <div>
+                <p class="sa-topbar__notif-title">{{ 'topbar.notif.new_lead' | translate }}</p>
+                <p class="sa-topbar__notif-meta">5h ago</p>
+              </div>
+            </li>
+            <li class="sa-topbar__notif-item">
+              <span class="sa-topbar__notif-dot sa-topbar__notif-dot--success"></span>
+              <div>
+                <p class="sa-topbar__notif-title">{{ 'topbar.notif.commission_ready' | translate }}</p>
+                <p class="sa-topbar__notif-meta">1d ago</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      }
+    </div>
+
+    <div class="sa-topbar__user-wrap">
+      @if (currentUser()) {
+        <button
+          class="sa-topbar__user-btn"
+          type="button"
+          [attr.aria-label]="'topbar.user_menu' | translate"
+          (click)="toggleUserMenu()"
+        >
+          <span class="sa-topbar__user-avatar" aria-hidden="true">
+            {{ currentUser()!.email.charAt(0).toUpperCase() }}
+          </span>
+          <span class="sa-topbar__user-text">
+            <span class="sa-topbar__user-name">{{ currentUser()!.name || currentUser()!.email }}</span>
+            <span class="sa-topbar__user-role">{{ 'role.' + currentUser()!.role | translate }}</span>
+          </span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+      }
+      @if (userMenuOpen()) {
+        <div class="sa-topbar__popover sa-topbar__popover--user" role="menu">
+          <button class="sa-topbar__menu-item" type="button" (click)="logout()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            {{ 'topbar.sign_out' | translate }}
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</header>

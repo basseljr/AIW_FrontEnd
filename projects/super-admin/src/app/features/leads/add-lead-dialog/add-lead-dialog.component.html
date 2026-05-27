@@ -1,0 +1,154 @@
+<div class="sa-dialog-backdrop" (click)="onBackdropClick($event)" role="presentation">
+  <div
+    class="sa-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="add-lead-dialog-title"
+  >
+    <div class="sa-dialog__header">
+      <div>
+        <h2 class="sa-dialog__title" id="add-lead-dialog-title">
+          {{ 'leads.add_lead_title' | translate }}
+        </h2>
+        <p class="sa-dialog__subtitle">{{ 'leads.add_lead_subtitle' | translate }}</p>
+      </div>
+      <button
+        class="sa-dialog__close"
+        type="button"
+        [attr.aria-label]="'leads.add.cancel' | translate"
+        (click)="close.emit()"
+      >×</button>
+    </div>
+
+    <form class="sa-dialog__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="sa-dialog__row sa-dialog__row--2">
+        <div class="sa-field">
+          <label class="sa-label" for="add-business-name">
+            {{ 'leads.add.business_name' | translate }} *
+          </label>
+          <input
+            id="add-business-name"
+            class="sa-input"
+            type="text"
+            formControlName="businessName"
+          />
+          @if (form.controls.businessName.touched && form.controls.businessName.errors?.['required']) {
+            <p class="sa-field__error">{{ 'leads.add.required' | translate }}</p>
+          }
+        </div>
+        <div class="sa-field">
+          <label class="sa-label" for="add-contact-name">
+            {{ 'leads.add.contact_name' | translate }} *
+          </label>
+          <input
+            id="add-contact-name"
+            class="sa-input"
+            type="text"
+            formControlName="name"
+          />
+          @if (form.controls.name.touched && form.controls.name.errors?.['required']) {
+            <p class="sa-field__error">{{ 'leads.add.required' | translate }}</p>
+          }
+        </div>
+      </div>
+
+      <div class="sa-dialog__row sa-dialog__row--2">
+        <div class="sa-field">
+          <label class="sa-label" for="add-email">
+            {{ 'leads.add.contact_email' | translate }} *
+          </label>
+          <input
+            id="add-email"
+            class="sa-input"
+            type="email"
+            formControlName="email"
+            autocomplete="off"
+          />
+          @if (form.controls.email.touched) {
+            @if (form.controls.email.errors?.['required']) {
+              <p class="sa-field__error">{{ 'leads.add.required' | translate }}</p>
+            } @else if (form.controls.email.errors?.['email']) {
+              <p class="sa-field__error">{{ 'leads.add.invalid_email' | translate }}</p>
+            }
+          }
+        </div>
+        <div class="sa-field">
+          <label class="sa-label" for="add-phone">
+            {{ 'leads.add.contact_phone' | translate }}
+          </label>
+          <input
+            id="add-phone"
+            class="sa-input"
+            type="tel"
+            formControlName="phone"
+          />
+        </div>
+      </div>
+
+      <div class="sa-dialog__row sa-dialog__row--2">
+        <div class="sa-field">
+          <label class="sa-label" for="add-business-type">
+            {{ 'leads.add.business_type' | translate }} *
+          </label>
+          <select
+            id="add-business-type"
+            class="sa-input sa-input--select"
+            formControlName="businessType"
+          >
+            <option value="">{{ 'leads.add.choose' | translate }}</option>
+            <option value="restaurant">{{ 'leads.add.type_restaurant' | translate }}</option>
+            <option value="retail">{{ 'leads.add.type_retail' | translate }}</option>
+            <option value="service">{{ 'leads.add.type_service' | translate }}</option>
+          </select>
+          @if (form.controls.businessType.touched && form.controls.businessType.errors?.['required']) {
+            <p class="sa-field__error">{{ 'leads.add.required' | translate }}</p>
+          }
+        </div>
+        <div class="sa-field">
+          <label class="sa-label" for="add-source">
+            {{ 'leads.add.source' | translate }} *
+          </label>
+          <select
+            id="add-source"
+            class="sa-input sa-input--select"
+            formControlName="source"
+          >
+            <option value="">{{ 'leads.add.choose' | translate }}</option>
+            <option value="website">{{ 'leads.add.source_website' | translate }}</option>
+            <option value="referral">{{ 'leads.add.source_referral' | translate }}</option>
+            <option value="cold">{{ 'leads.add.source_cold' | translate }}</option>
+            <option value="event">{{ 'leads.add.source_event' | translate }}</option>
+          </select>
+          @if (form.controls.source.touched && form.controls.source.errors?.['required']) {
+            <p class="sa-field__error">{{ 'leads.add.required' | translate }}</p>
+          }
+        </div>
+      </div>
+
+      <div class="sa-field">
+        <label class="sa-label" for="add-notes">
+          {{ 'leads.add.notes' | translate }}
+        </label>
+        <textarea
+          id="add-notes"
+          class="sa-input sa-input--textarea"
+          formControlName="notes"
+          rows="3"
+        ></textarea>
+      </div>
+
+      @if (serverError()) {
+        <p class="sa-dialog__server-error">{{ 'leads.add.error' | translate }}</p>
+      }
+
+      <div class="sa-dialog__actions">
+        <button class="sa-btn sa-btn--ghost" type="button" (click)="close.emit()">
+          {{ 'leads.add.cancel' | translate }}
+        </button>
+        <button class="sa-btn sa-btn--primary" type="submit" [disabled]="saving()">
+          {{ (saving() ? 'leads.add.saving' : 'leads.add.save') | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

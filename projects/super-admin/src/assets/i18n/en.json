@@ -1,0 +1,745 @@
+{
+  "nav": {
+    "section_platform": "Platform",
+    "section_business": "Business",
+    "section_config": "Platform Config",
+    "section_monitoring": "Monitoring",
+    "section_admin": "Admin",
+    "overview": "Overview",
+    "leads": "Leads",
+    "tenants": "Tenants",
+    "subscriptions": "Subscriptions",
+    "billing": "Billing",
+    "commission": "Commission",
+    "invoices": "Invoices",
+    "feature_flags": "Feature Flags",
+    "templates": "Templates",
+    "plans": "Plans",
+    "delivery_providers": "Delivery Providers",
+    "payment_gateways": "Payment Gateways",
+    "comms_providers": "SMS / Email Providers",
+    "health": "System Health",
+    "audit_log": "Audit Log",
+    "jobs": "Background Jobs",
+    "errors": "Error Log",
+    "users": "Super Admin Users",
+    "settings": "Settings",
+    "close_sidebar": "Close sidebar",
+    "open_sidebar": "Open sidebar"
+  },
+  "topbar": {
+    "title": "Platform Console",
+    "notifications": "Notifications",
+    "user_menu": "User menu",
+    "sign_out": "Sign out",
+    "switch_to_en": "EN",
+    "switch_to_ar": "العربية",
+    "notif": {
+      "past_due": "3 tenants are past due on subscription payment",
+      "new_lead": "New lead from the marketing website",
+      "commission_ready": "Commission rollup ready to invoice"
+    }
+  },
+  "banner": {
+    "internal": "Internal Platform — Not accessible to tenants"
+  },
+  "role": {
+    "super_admin": "Super Admin",
+    "support_agent": "Support Agent",
+    "finance": "Finance",
+    "developer": "Developer"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Access the platform operator console.",
+      "mfa_title": "Two-factor required",
+      "mfa_subtitle": "Enter the 6-digit code from your authenticator app.",
+      "internal_warning": "RESTRICTED — Platform Operator Access Only",
+      "email_label": "Work email",
+      "email_placeholder": "you@ourplatform.com",
+      "password_label": "Password",
+      "password_placeholder": "Your password",
+      "remember_device": "Remember this device (skip 2FA for 30 days)",
+      "remember_device_30d": "Trust this device for 30 days",
+      "mfa_code_label": "Authenticator code",
+      "submit": "Continue",
+      "verify_mfa": "Verify and sign in",
+      "back": "← Back to password",
+      "signing_in": "Signing in…",
+      "verifying": "Verifying…",
+      "invalid_credentials": "Email or password is incorrect.",
+      "mfa_invalid": "That code didn't match. Try again.",
+      "mfa_invalid_format": "Enter the 6 digits from your authenticator.",
+      "account_locked": "Account locked — contact a Super Admin to unlock.",
+      "not_super_admin": "This account doesn't have super admin access.",
+      "generic_error": "Something went wrong. Try again.",
+      "failed_attempts": "{{count}} failed sign-in attempt(s) on this browser"
+    }
+  },
+  "overview": {
+    "title": "Platform Overview",
+    "subtitle": "Cross-tenant health and business snapshot.",
+    "this_month": "This Month",
+    "all_time": "All Time",
+    "vs_last_month": "vs last month",
+    "load_error": "Couldn't load overview data.",
+    "no_top_tenants": "No tenants to display yet.",
+    "commission_label": "Commission",
+    "gmv_meta": "Gross merchandise value across all tenants",
+    "mrr_meta": "From subscription plans",
+    "commission_meta": "Commission revenue, this month",
+    "customers_meta": "End-customer accounts across the platform",
+    "orders_meta": "Lifetime orders processed",
+    "active_meta": "Tenants with ≥1 order in last 30 days",
+    "kpi": {
+      "total_tenants": "Total Tenants",
+      "new_this_month": "New Tenants",
+      "gmv": "Gross Merchandise Value",
+      "mrr": "Monthly Recurring Revenue",
+      "commission": "Commission Earned",
+      "customers": "End Customers",
+      "orders": "Orders Processed",
+      "active_tenants": "Active Tenants (30d)"
+    },
+    "chart": {
+      "trend": "MRR / GMV / Commission trend",
+      "trend_sub": "Last 12 months",
+      "growth": "Tenant growth",
+      "growth_sub": "New tenants per month",
+      "types": "Business type distribution",
+      "types_sub": "Across all active tenants"
+    },
+    "top_tenants": "Top tenants this month",
+    "top_tenants_sub": "Sorted by GMV",
+    "col_tenant": "Tenant",
+    "col_type": "Type",
+    "col_gmv": "GMV",
+    "col_orders": "Orders",
+    "col_plan": "Plan"
+  },
+  "leads": {
+    "title": "Leads",
+    "subtitle": "Onboarding pipeline for prospective tenants.",
+    "view": {
+      "kanban": "Kanban",
+      "list": "List"
+    },
+    "search_placeholder": "Search by business, contact, or email…",
+    "load_error": "Couldn't load leads.",
+    "empty_col": "Drop a lead here",
+    "no_leads": "No leads match the current filters.",
+    "filter": {
+      "all_stages": "All stages",
+      "all_types": "All business types",
+      "all_sources": "All sources"
+    },
+    "stage": {
+      "new": "New",
+      "contacted": "Contacted",
+      "meeting_scheduled": "Demo Scheduled",
+      "building": "Building",
+      "preview_sent": "Proposal Sent",
+      "approved": "Approved",
+      "live": "Won",
+      "lost": "Lost"
+    },
+    "col": {
+      "business": "Business",
+      "contact": "Contact",
+      "type": "Type",
+      "source": "Source",
+      "stage": "Stage",
+      "assigned": "Assigned",
+      "created": "Created",
+      "actions": "Actions"
+    },
+    "actions": {
+      "view": "View"
+    },
+    "add_lead": "+ Add Lead",
+    "add_lead_title": "Add New Lead",
+    "add_lead_subtitle": "Capture a prospective tenant in the pipeline.",
+    "add_success": "Lead added successfully.",
+    "add": {
+      "business_name": "Business Name",
+      "contact_name": "Contact Name",
+      "contact_email": "Contact Email",
+      "contact_phone": "Contact Phone (optional)",
+      "business_type": "Business Type",
+      "source": "Source",
+      "notes": "Notes (optional)",
+      "choose": "Choose…",
+      "type_restaurant": "Restaurant",
+      "type_retail": "Retail",
+      "type_service": "Service",
+      "source_website": "Website",
+      "source_referral": "Referral",
+      "source_cold": "Cold Outreach",
+      "source_event": "Event",
+      "save": "Save Lead",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "error": "Failed to save lead. Please try again.",
+      "required": "This field is required.",
+      "invalid_email": "Enter a valid email address."
+    }
+  },
+  "lead": {
+    "back": "All leads",
+    "load_error": "Couldn't load this lead.",
+    "contact": "Contact Information",
+    "intake_notes": "Intake notes",
+    "advance_stage": "Advance stage",
+    "stage_history": "Stage history",
+    "from": "from",
+    "no_history": "No stage changes yet.",
+    "notes": "Internal notes",
+    "add_note_placeholder": "Add an internal note about this lead…",
+    "add_note": "Add note",
+    "adding": "Adding…",
+    "no_notes": "No notes yet — be the first to add one.",
+    "schedule_demo": "Schedule demo",
+    "mark_won": "Mark as Won",
+    "mark_lost": "Mark as Lost",
+    "convert_title": "Convert to Tenant",
+    "convert_subtitle": "Provision a new tenant for this lead.",
+    "convert": "Provision Tenant",
+    "converting": "Provisioning…",
+    "cancel": "Cancel",
+    "lost_title": "Mark as Lost",
+    "lost_subtitle": "Tell us why this opportunity didn't close.",
+    "lost_reason": "Reason",
+    "choose_reason": "Pick a reason…",
+    "confirm_lost": "Mark as Lost",
+    "reason": {
+      "price": "Price",
+      "competitor": "Lost to competitor",
+      "not_ready": "Not ready",
+      "no_response": "No response",
+      "other": "Other"
+    },
+    "field": {
+      "name": "Contact name",
+      "email": "Email",
+      "phone": "Phone",
+      "source": "Source",
+      "assigned": "Assigned to",
+      "created": "Created"
+    },
+    "convert": {
+      "subdomain": "Subdomain",
+      "plan": "Plan",
+      "choose_plan": "Choose a plan…",
+      "business_type": "Business type"
+    }
+  },
+  "tenants": {
+    "title": "Tenants",
+    "subtitle": "All tenant accounts on the platform.",
+    "search_placeholder": "Search by name or subdomain…",
+    "load_error": "Couldn't load tenants.",
+    "no_tenants": "No tenants match the current filters.",
+    "filter": {
+      "all_status": "All statuses",
+      "all_types": "All types",
+      "all_plans": "All plans",
+      "all_countries": "All countries"
+    },
+    "col": {
+      "business": "Business",
+      "subdomain": "Subdomain",
+      "type": "Type",
+      "plan": "Plan",
+      "status": "Status",
+      "gmv": "GMV (mo)",
+      "orders": "Orders (mo)",
+      "created": "Created",
+      "actions": "Actions"
+    },
+    "actions": {
+      "view": "View",
+      "impersonate": "Impersonate",
+      "suspend": "Suspend",
+      "reactivate": "Reactivate"
+    }
+  },
+  "tenant": {
+    "back": "All tenants",
+    "load_error": "Couldn't load this tenant.",
+    "tab": {
+      "overview": "Overview",
+      "config": "Configuration",
+      "flags": "Feature Flags",
+      "subscription": "Subscription",
+      "billing": "Billing",
+      "users": "Users",
+      "customers": "Customers",
+      "domains": "Domains"
+    },
+    "kpi": {
+      "gmv_all": "GMV (all-time)",
+      "gmv_month": "GMV (this month)",
+      "orders_all": "Orders (all-time)",
+      "orders_month": "Orders (this month)",
+      "customers": "End customers",
+      "staff": "Active staff users"
+    },
+    "revenue_chart": "Monthly revenue trend",
+    "no_revenue_data": "No revenue recorded yet.",
+    "config_title": "Tenant Configuration",
+    "field": {
+      "subdomain": "Subdomain",
+      "business_name_en": "Business name (EN)",
+      "business_name_ar": "Business name (AR)",
+      "business_type": "Business type",
+      "timezone": "Timezone",
+      "currency": "Currency",
+      "language": "Language",
+      "tax_rate": "Tax rate",
+      "tax_inclusive": "Tax inclusive",
+      "owner": "Owner",
+      "created": "Created"
+    },
+    "flags_title": "Per-tenant feature overrides",
+    "flags_hint": "Override platform defaults for this specific tenant. Every change is logged to the audit log.",
+    "flag": {
+      "key": "Flag",
+      "category": "Category",
+      "default": "Platform default",
+      "resolved": "Resolved",
+      "override": "Override",
+      "platform_default": "Default",
+      "force_on": "Force on",
+      "force_off": "Force off"
+    },
+    "no_flags": "No feature flags defined.",
+    "sub_title": "Current subscription",
+    "no_subscription": "This tenant doesn't have an active subscription.",
+    "sub": {
+      "plan": "Plan",
+      "status": "Status",
+      "cycle": "Billing cycle",
+      "amount": "Amount",
+      "period_end": "Current period ends",
+      "trial_end": "Trial ends",
+      "change_plan": "Change plan",
+      "cancel": "Cancel subscription"
+    },
+    "create_invoice": "+ Create manual invoice",
+    "no_invoices": "No invoices for this tenant yet.",
+    "users": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "last_login": "Last login",
+      "status": "Status",
+      "actions": "Actions",
+      "reset_pw": "Reset password"
+    },
+    "no_users": "No staff users found.",
+    "customers": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "orders": "Orders",
+      "spent": "Total spent"
+    },
+    "no_customers": "No end customers found.",
+    "no_domains": "No domains configured.",
+    "domain": {
+      "verified": "Verified",
+      "pending": "Pending",
+      "re_verify": "Re-verify"
+    }
+  },
+  "subscriptions": {
+    "title": "Subscriptions",
+    "subtitle": "All active subscriptions across the platform.",
+    "all": "All",
+    "view_past_due": "Filter past due",
+    "load_error": "Couldn't load subscriptions.",
+    "no_subs": "No subscriptions found.",
+    "avg_days_remaining": "avg. days remaining",
+    "metric": {
+      "active": "Active",
+      "trials": "Trials",
+      "mrr": "MRR",
+      "arr": "ARR (est.)",
+      "past_due": "Past Due",
+      "cancelled_month": "Cancelled (mo)"
+    },
+    "col": {
+      "tenant": "Tenant",
+      "plan": "Plan",
+      "cycle": "Cycle",
+      "amount": "Amount",
+      "status": "Status",
+      "next_billing": "Next billing",
+      "started": "Started",
+      "actions": "Actions"
+    },
+    "actions": {
+      "view": "View tenant"
+    }
+  },
+  "billing": {
+    "title": "Platform Billing",
+    "subtitle": "What tenants owe, what was collected, what's outstanding.",
+    "create_invoice": "Create invoice",
+    "cancel": "Cancel",
+    "generate": "Generate & send",
+    "past_due_title": "Past due tenants — follow up",
+    "search_placeholder": "Search by tenant or invoice #…",
+    "metric": {
+      "sub_revenue": "Subscription rev.",
+      "comm_revenue": "Commission rev.",
+      "total": "Total revenue",
+      "collected": "Collected",
+      "outstanding": "Outstanding",
+      "overdue": "Overdue (>30d)"
+    },
+    "past_due": {
+      "tenant": "Tenant",
+      "plan": "Plan",
+      "amount": "Amount due",
+      "invoices": "Invoices",
+      "oldest": "Oldest due"
+    },
+    "filter": {
+      "all_status": "All statuses",
+      "all_types": "All types"
+    },
+    "form": {
+      "tenant_id": "Tenant",
+      "type": "Type",
+      "due_date": "Due date",
+      "line_items": "Line items",
+      "tax": "Tax (KD)",
+      "total": "Total"
+    }
+  },
+  "invoices": {
+    "title": "Invoices",
+    "subtitle": "All invoices issued across tenants.",
+    "search_placeholder": "Search by tenant or invoice #…",
+    "download": "Download",
+    "no_invoices": "No invoices match the current filters.",
+    "filter": {
+      "all_status": "All statuses",
+      "all_types": "All types"
+    },
+    "col": {
+      "number": "Invoice #",
+      "tenant": "Tenant",
+      "type": "Type",
+      "period": "Period",
+      "amount": "Amount",
+      "due": "Due",
+      "status": "Status",
+      "pdf": "PDF",
+      "actions": "Actions"
+    },
+    "actions": {
+      "mark_paid": "Mark paid",
+      "write_off": "Write off",
+      "void": "Void"
+    }
+  },
+  "commission": {
+    "title": "Commission",
+    "subtitle": "Track commission for tenants on commission-based plans.",
+    "period": "Period",
+    "by_tenant": "Commission by tenant",
+    "generate_invoices": "Generate commission invoices",
+    "generating": "Generating…",
+    "no_rows": "No commission records for the selected period.",
+    "metric": {
+      "gmv": "Total GMV",
+      "earned": "Earned",
+      "collected": "Collected",
+      "pending": "Pending"
+    },
+    "col": {
+      "tenant": "Tenant",
+      "plan": "Plan",
+      "gmv": "GMV",
+      "rate": "Rate",
+      "amount": "Amount",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "actions": {
+      "generate": "Generate"
+    }
+  },
+  "flags": {
+    "title": "Feature Flags",
+    "subtitle": "Platform-wide feature flag definitions and defaults.",
+    "create": "Create flag",
+    "create_title": "New feature flag",
+    "edit_title": "Edit feature flag",
+    "cancel": "Cancel",
+    "save": "Save",
+    "search_placeholder": "Search flag key or description…",
+    "all_categories": "All categories",
+    "none": "No flags defined.",
+    "col": {
+      "key": "Flag",
+      "label": "Label",
+      "category": "Category",
+      "default": "Default",
+      "overrides": "Overrides",
+      "actions": "Actions"
+    },
+    "actions": {
+      "edit": "Edit"
+    },
+    "form": {
+      "key": "Key",
+      "label": "Display label",
+      "description": "Description",
+      "category": "Category",
+      "default_on": "Default to ON for new tenants"
+    }
+  },
+  "plans": {
+    "title": "Plans",
+    "subtitle": "Define and manage the subscription plans offered.",
+    "create": "Create plan",
+    "create_title": "New plan",
+    "edit_title": "Edit plan",
+    "cancel": "Cancel",
+    "save": "Save",
+    "none": "No plans defined yet.",
+    "col": {
+      "name": "Plan",
+      "monthly": "Monthly",
+      "annual": "Annual",
+      "commission": "Commission",
+      "tenants": "Tenants",
+      "visibility": "Visibility",
+      "actions": "Actions"
+    },
+    "actions": {
+      "edit": "Edit",
+      "archive": "Archive"
+    },
+    "form": {
+      "name": "Plan name",
+      "description": "Description",
+      "currency": "Currency",
+      "billing_model": "Billing model",
+      "trial": "Trial days",
+      "monthly": "Monthly price",
+      "annual": "Annual price",
+      "commission_rate": "Commission rate (0-1)",
+      "commission_threshold": "Commission threshold",
+      "max_branches": "Max branches",
+      "max_staff": "Max staff",
+      "max_products": "Max products",
+      "visible": "Visible on pricing page",
+      "highlight": "Highlight as 'Most Popular'",
+      "flags": "Included feature flags"
+    }
+  },
+  "templates": {
+    "title": "Templates",
+    "subtitle": "Storefront templates available to tenants.",
+    "tenants": "tenants",
+    "screenshots": "Screenshots",
+    "changelog": "Changelog",
+    "no_screens": "No screenshots yet.",
+    "no_changelog": "No changelog entries yet.",
+    "none": "No templates available."
+  },
+  "health": {
+    "title": "System Health",
+    "subtitle": "Live infrastructure health and performance.",
+    "checked_at": "Checked at",
+    "services_title": "Service Status",
+    "perf_title": "Performance (last 5 min)",
+    "jobs_title": "Background Jobs",
+    "perf": {
+      "api_p50": "API p50",
+      "api_p95": "API p95",
+      "api_p99": "API p99",
+      "rpm": "Requests / min",
+      "error_rate": "Error rate",
+      "signalr": "Active SignalR connections",
+      "redis_hit": "Redis hit rate",
+      "db_pool": "DB pool utilization"
+    },
+    "jobs": {
+      "queued": "Queued",
+      "processing": "Processing",
+      "succeeded": "Succeeded",
+      "failed": "Failed",
+      "view_all": "View all jobs"
+    }
+  },
+  "audit": {
+    "title": "Audit Log",
+    "subtitle": "Every admin action and significant tenant event.",
+    "export": "Export CSV",
+    "apply": "Apply filters",
+    "from": "From",
+    "to": "To",
+    "actor": "Actor",
+    "action": "Action",
+    "tenant": "Tenant ID",
+    "no_events": "No audit events match the current filters.",
+    "page_of": "Page {{page}} of {{total}}",
+    "events": "events",
+    "col": {
+      "time": "Time",
+      "actor": "Actor",
+      "action": "Action",
+      "target": "Target",
+      "ip": "IP"
+    }
+  },
+  "users": {
+    "title": "Super Admin Users",
+    "subtitle": "Who has access to the platform console.",
+    "invite": "Invite user",
+    "invite_title": "Invite a Super Admin",
+    "edit_title": "Edit user",
+    "invite_hint": "We'll send a setup link to complete sign-in and 2FA enrollment.",
+    "cancel": "Cancel",
+    "send_invite": "Send invite",
+    "save": "Save",
+    "none": "No users found.",
+    "col": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "mfa": "2FA",
+      "last_login": "Last login",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "actions": {
+      "edit": "Edit",
+      "reset_mfa": "Reset 2FA",
+      "force_logout": "Force logout"
+    },
+    "form": {
+      "name": "Full name",
+      "email": "Work email",
+      "role": "Role",
+      "status": "Status"
+    }
+  },
+  "settings": {
+    "title": "Platform Settings",
+    "subtitle": "Global configuration applied across the platform.",
+    "tab": {
+      "general": "General",
+      "email": "Email Templates",
+      "sms": "SMS Templates",
+      "broadcast": "Announcement"
+    },
+    "general_title": "General settings",
+    "email_title": "Transactional email templates",
+    "sms_title": "Transactional SMS templates",
+    "broadcast_title": "Send a platform-wide announcement",
+    "broadcast_hint": "Reaches tenant owners across all matching tenants.",
+    "save": "Save changes",
+    "saved": "Saved",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "no_templates": "No templates configured.",
+    "field": {
+      "platform_name": "Platform name",
+      "support_email": "Support email",
+      "support_whatsapp": "Support WhatsApp",
+      "currency": "Default currency",
+      "timezone": "Default timezone",
+      "maintenance": "Maintenance mode",
+      "maintenance_hint": "Shows a maintenance page on all storefronts and dashboards"
+    },
+    "broadcast": {
+      "subject_en": "Subject (EN)",
+      "subject_ar": "Subject (AR)",
+      "body_en": "Body (EN)",
+      "body_ar": "Body (AR)",
+      "channels": "Channels",
+      "email": "Email",
+      "dashboard": "Dashboard banner",
+      "audience": "Audience",
+      "send": "Send announcement"
+    },
+    "email": {
+      "subject_en": "Subject (EN)",
+      "subject_ar": "Subject (AR)",
+      "body_en": "Body (EN)",
+      "body_ar": "Body (AR)"
+    },
+    "sms": {
+      "body_en": "Body (EN)",
+      "body_ar": "Body (AR)"
+    }
+  },
+  "jobs": {
+    "title": "Background Jobs",
+    "subtitle": "Hangfire queue state and failed-job retries.",
+    "refresh": "Refresh",
+    "enqueued": "Enqueued",
+    "processing": "Processing",
+    "succeeded": "Succeeded",
+    "failed": "Failed",
+    "servers": "Servers",
+    "failed_title": "Recent failures",
+    "no_failed": "No failed jobs 🎉",
+    "col": {
+      "name": "Job",
+      "queue": "Queue",
+      "failed_at": "Failed at",
+      "error": "Error",
+      "actions": "Actions"
+    },
+    "actions": {
+      "retry": "Retry"
+    }
+  },
+  "errors": {
+    "title": "Error Log",
+    "subtitle": "Recent application errors across services.",
+    "all_severity": "All severities",
+    "service_filter": "Service",
+    "apply": "Apply filters",
+    "none": "No errors logged for the selected filters 🎉",
+    "col": {
+      "time": "Time",
+      "severity": "Severity",
+      "service": "Service",
+      "message": "Message",
+      "count": "Count"
+    }
+  },
+  "delivery": {
+    "title": "Delivery Providers",
+    "subtitle": "Configure 3rd-party delivery integrations available to tenants.",
+    "tenants_using": "tenants using",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "none": "No delivery providers configured."
+  },
+  "gateways": {
+    "title": "Payment Gateways",
+    "subtitle": "Payment gateway integrations available to tenants.",
+    "tenants_using": "tenants",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "none": "No payment gateways configured."
+  },
+  "comms": {
+    "title": "SMS / Email Providers",
+    "subtitle": "Transactional communications providers.",
+    "monthly_volume": "messages this month",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "none": "No providers configured."
+  }
+}

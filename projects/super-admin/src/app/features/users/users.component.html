@@ -1,0 +1,142 @@
+<div class="sa-users">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'users.title' | translate }}</h1>
+      <p>{{ 'users.subtitle' | translate }}</p>
+    </div>
+    <button class="sa-btn sa-btn--primary" type="button" (click)="showInvite.set(true)">
+      + {{ 'users.invite' | translate }}
+    </button>
+  </div>
+  <div class="sa-card">
+    @if (loading()) {
+      <span class="sa-skel" style="display: block; block-size: 6rem;"></span>
+    } @else {
+      <div class="sa-table-wrap">
+        <table class="sa-table">
+          <thead>
+            <tr>
+              <th>{{ 'users.col.name' | translate }}</th>
+              <th>{{ 'users.col.email' | translate }}</th>
+              <th>{{ 'users.col.role' | translate }}</th>
+              <th>{{ 'users.col.mfa' | translate }}</th>
+              <th>{{ 'users.col.last_login' | translate }}</th>
+              <th>{{ 'users.col.status' | translate }}</th>
+              <th>{{ 'users.col.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (u of users(); track u.id) {
+              <tr>
+                <td>{{ u.name }}</td>
+                <td>{{ u.email }}</td>
+                <td><span class="sa-badge sa-badge--accent">{{ 'role.' + u.role | translate }}</span></td>
+                <td>
+                  <span class="sa-badge" [class]="u.mfaEnabled ? 'sa-badge sa-badge--success' : 'sa-badge sa-badge--warning'">
+                    {{ u.mfaEnabled ? '✓ Enabled' : 'Not set up' }}
+                  </span>
+                </td>
+                <td>{{ u.lastLoginAt ? (u.lastLoginAt | date: 'short') : '—' }}</td>
+                <td>
+                  <span class="sa-badge" [class]="u.status === 'active' ? 'sa-badge sa-badge--success' : 'sa-badge sa-badge--danger'">
+                    {{ u.status }}
+                  </span>
+                </td>
+                <td>
+                  <div class="sa-users__actions">
+                    <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button" (click)="openEdit(u)">
+                      {{ 'users.actions.edit' | translate }}
+                    </button>
+                    @if (u.mfaEnabled) {
+                      <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button" (click)="resetMfa(u)">
+                        {{ 'users.actions.reset_mfa' | translate }}
+                      </button>
+                    }
+                    <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button" (click)="forceLogout(u)">
+                      {{ 'users.actions.force_logout' | translate }}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="7" class="sa-users__empty">{{ 'users.none' | translate }}</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  @if (showInvite()) {
+    <div class="sa-modal-scrim" (click)="showInvite.set(false)"></div>
+    <div class="sa-modal" role="dialog">
+      <h2>{{ 'users.invite_title' | translate }}</h2>
+      <p>{{ 'users.invite_hint' | translate }}</p>
+      <div class="sa-users__form">
+        <label>
+          {{ 'users.form.name' | translate }}
+          <input class="sa-input" type="text" [ngModel]="inviteName()" (ngModelChange)="inviteName.set($event)" />
+        </label>
+        <label>
+          {{ 'users.form.email' | translate }}
+          <input class="sa-input" type="email" [ngModel]="inviteEmail()" (ngModelChange)="inviteEmail.set($event)" />
+        </label>
+        <label>
+          {{ 'users.form.role' | translate }}
+          <select class="sa-input sa-input--select" [ngModel]="inviteRole()" (ngModelChange)="inviteRole.set($event)">
+            @for (r of roles; track r) { <option [value]="r">{{ 'role.' + r | translate }}</option> }
+          </select>
+        </label>
+      </div>
+      <div class="sa-users__modal-actions">
+        <button class="sa-btn sa-btn--secondary" type="button" (click)="showInvite.set(false)">
+          {{ 'users.cancel' | translate }}
+        </button>
+        <button class="sa-btn sa-btn--primary" type="button" (click)="sendInvite()">
+          {{ 'users.send_invite' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (editingUser(); as u) {
+    <div class="sa-modal-scrim" (click)="editingUser.set(null)"></div>
+    <div class="sa-modal" role="dialog">
+      <h2>{{ 'users.edit_title' | translate }}</h2>
+      <div class="sa-users__form">
+        <label>
+          {{ 'users.form.name' | translate }}
+          <input class="sa-input" type="text" [value]="u.name"
+            (input)="updateEditing('name', $any($event.target).value)" />
+        </label>
+        <label>
+          {{ 'users.form.email' | translate }}
+          <input class="sa-input" type="email" [value]="u.email" disabled />
+        </label>
+        <label>
+          {{ 'users.form.role' | translate }}
+          <select class="sa-input sa-input--select" [value]="u.role"
+            (change)="updateEditing('role', $any($event.target).value)">
+            @for (r of roles; track r) { <option [value]="r">{{ 'role.' + r | translate }}</option> }
+          </select>
+        </label>
+        <label>
+          {{ 'users.form.status' | translate }}
+          <select class="sa-input sa-input--select" [value]="u.status"
+            (change)="updateEditing('status', $any($event.target).value)">
+            <option value="active">Active</option>
+            <option value="suspended">Suspended</option>
+          </select>
+        </label>
+      </div>
+      <div class="sa-users__modal-actions">
+        <button class="sa-btn sa-btn--secondary" type="button" (click)="editingUser.set(null)">
+          {{ 'users.cancel' | translate }}
+        </button>
+        <button class="sa-btn sa-btn--primary" type="button" (click)="saveEdit()">
+          {{ 'users.save' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+</div>

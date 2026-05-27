@@ -1,0 +1,74 @@
+<div class="sa-jobs">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'jobs.title' | translate }}</h1>
+      <p>{{ 'jobs.subtitle' | translate }}</p>
+    </div>
+    <button class="sa-btn sa-btn--secondary" type="button" (click)="load()">
+      ↻ {{ 'jobs.refresh' | translate }}
+    </button>
+  </div>
+
+  @if (summary(); as s) {
+    <div class="sa-jobs__summary">
+      <div class="sa-card sa-jobs__metric">
+        <p class="sa-jobs__label">{{ 'jobs.enqueued' | translate }}</p>
+        <p class="sa-jobs__value">{{ s.enqueued }}</p>
+      </div>
+      <div class="sa-card sa-jobs__metric">
+        <p class="sa-jobs__label">{{ 'jobs.processing' | translate }}</p>
+        <p class="sa-jobs__value">{{ s.processing }}</p>
+      </div>
+      <div class="sa-card sa-jobs__metric sa-jobs__metric--success">
+        <p class="sa-jobs__label">{{ 'jobs.succeeded' | translate }}</p>
+        <p class="sa-jobs__value">{{ s.succeeded }}</p>
+      </div>
+      <div class="sa-card sa-jobs__metric sa-jobs__metric--danger">
+        <p class="sa-jobs__label">{{ 'jobs.failed' | translate }}</p>
+        <p class="sa-jobs__value">{{ s.failed }}</p>
+      </div>
+      <div class="sa-card sa-jobs__metric">
+        <p class="sa-jobs__label">{{ 'jobs.servers' | translate }}</p>
+        <p class="sa-jobs__value">{{ s.servers }}</p>
+      </div>
+    </div>
+  }
+
+  <div class="sa-card">
+    <h3>{{ 'jobs.failed_title' | translate }}</h3>
+    @if (loading()) {
+      <span class="sa-skel" style="display: block; block-size: 4rem;"></span>
+    } @else {
+      <div class="sa-table-wrap">
+        <table class="sa-table">
+          <thead>
+            <tr>
+              <th>{{ 'jobs.col.name' | translate }}</th>
+              <th>{{ 'jobs.col.queue' | translate }}</th>
+              <th>{{ 'jobs.col.failed_at' | translate }}</th>
+              <th>{{ 'jobs.col.error' | translate }}</th>
+              <th>{{ 'jobs.col.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (j of failed(); track j.id) {
+              <tr class="sa-jobs__row" (click)="toggle(j.id)">
+                <td><code class="sa-jobs__name">{{ j.name }}</code></td>
+                <td>{{ j.queue }}</td>
+                <td>{{ j.failedAt ? (j.failedAt | date: 'short') : '—' }}</td>
+                <td class="sa-jobs__err">{{ j.exceptionMessage }}</td>
+                <td>
+                  <button class="sa-btn sa-btn--ghost sa-btn--sm" type="button" (click)="$event.stopPropagation(); retry(j)">
+                    {{ 'jobs.actions.retry' | translate }}
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="5" class="sa-jobs__empty">{{ 'jobs.no_failed' | translate }}</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,70 @@
+<div class="sa-inv">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'invoices.title' | translate }}</h1>
+      <p>{{ 'invoices.subtitle' | translate }}</p>
+    </div>
+  </div>
+  <div class="sa-card">
+    <div class="sa-inv__filters">
+      <input class="sa-input" type="search"
+        [ngModel]="search()" (ngModelChange)="search.set($event)"
+        [placeholder]="'invoices.search_placeholder' | translate" />
+      <select class="sa-input sa-input--select"
+        [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event); load()">
+        <option value="">{{ 'invoices.filter.all_status' | translate }}</option>
+        <option value="paid">Paid</option>
+        <option value="pending">Pending</option>
+        <option value="overdue">Overdue</option>
+        <option value="void">Void</option>
+        <option value="written_off">Written off</option>
+      </select>
+      <select class="sa-input sa-input--select"
+        [ngModel]="typeFilter()" (ngModelChange)="typeFilter.set($event); load()">
+        <option value="">{{ 'invoices.filter.all_types' | translate }}</option>
+        <option value="subscription">Subscription</option>
+        <option value="commission">Commission</option>
+        <option value="setup_fee">Setup fee</option>
+        <option value="custom">Custom</option>
+      </select>
+    </div>
+    @if (loading()) {
+      <span class="sa-skel" style="display: block; block-size: 6rem;"></span>
+    } @else {
+      <div class="sa-table-wrap">
+        <table class="sa-table">
+          <thead>
+            <tr>
+              <th>{{ 'invoices.col.number' | translate }}</th>
+              <th>{{ 'invoices.col.tenant' | translate }}</th>
+              <th>{{ 'invoices.col.type' | translate }}</th>
+              <th class="sa-table__num">{{ 'invoices.col.amount' | translate }}</th>
+              <th>{{ 'invoices.col.due' | translate }}</th>
+              <th>{{ 'invoices.col.status' | translate }}</th>
+              <th>{{ 'invoices.col.pdf' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (inv of filtered(); track inv.id) {
+              <tr>
+                <td>{{ inv.invoiceNumber }}</td>
+                <td><a class="sa-inv__link" [routerLink]="['/tenants', inv.tenantId]">{{ inv.tenantName }}</a></td>
+                <td>{{ inv.type }}</td>
+                <td class="sa-table__num">KD {{ inv.total | number: '1.0-3' }}</td>
+                <td>{{ inv.dueDate | date: 'mediumDate' }}</td>
+                <td><span class="sa-badge" [class]="'sa-badge ' + badgeForStatus(inv.status)">{{ inv.status }}</span></td>
+                <td>
+                  @if (inv.pdfUrl) {
+                    <a class="sa-btn sa-btn--ghost sa-btn--sm" [href]="inv.pdfUrl" target="_blank" rel="noopener">{{ 'invoices.download' | translate }}</a>
+                  } @else { — }
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="7" class="sa-inv__empty">{{ 'invoices.no_invoices' | translate }}</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

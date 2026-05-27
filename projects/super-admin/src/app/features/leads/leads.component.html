@@ -1,0 +1,178 @@
+<div class="sa-leads">
+  <div class="sa-page-header">
+    <div>
+      <h1>{{ 'leads.title' | translate }}</h1>
+      <p>{{ 'leads.subtitle' | translate }}</p>
+    </div>
+    <div class="sa-leads__header-actions">
+      <div class="sa-leads__view-toggle">
+        <button
+          class="sa-leads__view-btn"
+          [class.sa-leads__view-btn--active]="view() === 'kanban'"
+          type="button"
+          (click)="setView('kanban')"
+        >
+          {{ 'leads.view.kanban' | translate }}
+        </button>
+        <button
+          class="sa-leads__view-btn"
+          [class.sa-leads__view-btn--active]="view() === 'list'"
+          type="button"
+          (click)="setView('list')"
+        >
+          {{ 'leads.view.list' | translate }}
+        </button>
+      </div>
+      <button class="sa-btn sa-btn--primary" type="button" (click)="addDialogOpen.set(true)">
+        {{ 'leads.add_lead' | translate }}
+      </button>
+    </div>
+  </div>
+
+  @if (showSuccess()) {
+    <div class="sa-leads__success" role="status" aria-live="polite">
+      {{ 'leads.add_success' | translate }}
+    </div>
+  }
+
+  <div class="sa-leads__filters">
+    <input
+      class="sa-input"
+      type="search"
+      [ngModel]="searchQuery()"
+      (ngModelChange)="searchQuery.set($event)"
+      [placeholder]="'leads.search_placeholder' | translate"
+    />
+    <select
+      class="sa-input sa-input--select"
+      [ngModel]="stageFilter()"
+      (ngModelChange)="stageFilter.set($event)"
+    >
+      <option value="">{{ 'leads.filter.all_stages' | translate }}</option>
+      @for (s of stages; track s.stage) {
+        <option [value]="s.stage">{{ s.titleKey | translate }}</option>
+      }
+    </select>
+    <select
+      class="sa-input sa-input--select"
+      [ngModel]="businessTypeFilter()"
+      (ngModelChange)="businessTypeFilter.set($event)"
+    >
+      <option value="">{{ 'leads.filter.all_types' | translate }}</option>
+      <option value="restaurant">Restaurant</option>
+      <option value="retail">Retail</option>
+      <option value="service">Service</option>
+    </select>
+    <select
+      class="sa-input sa-input--select"
+      [ngModel]="sourceFilter()"
+      (ngModelChange)="sourceFilter.set($event)"
+    >
+      <option value="">{{ 'leads.filter.all_sources' | translate }}</option>
+      <option value="website">Website</option>
+      <option value="referral">Referral</option>
+      <option value="cold">Cold outreach</option>
+      <option value="event">Event</option>
+    </select>
+  </div>
+
+  @if (loading()) {
+    <div class="sa-leads__loading">
+      <span class="sa-skel" style="block-size: 2rem; inline-size: 100%;"></span>
+      <span class="sa-skel" style="block-size: 6rem; inline-size: 100%;"></span>
+    </div>
+  } @else if (error()) {
+    <div class="sa-leads__error">⚠ {{ 'leads.load_error' | translate }}</div>
+  } @else if (view() === 'kanban') {
+    <div cdkDropListGroup class="sa-leads__kanban">
+      @for (col of columns(); track col.stage) {
+        <div class="sa-leads__col">
+          <div class="sa-leads__col-header">
+            <span class="sa-leads__col-title">{{ col.titleKey | translate }}</span>
+            <span class="sa-leads__col-count">{{ col.items.length }}</span>
+          </div>
+          <div
+            class="sa-leads__col-body"
+            cdkDropList
+            [id]="'col-' + col.stage"
+            [cdkDropListData]="col.items"
+            [cdkDropListConnectedTo]="stageIds"
+            (cdkDropListDropped)="onDrop($event, col.stage)"
+          >
+            @for (lead of col.items; track lead.id) {
+              <a
+                class="sa-leads__card"
+                cdkDrag
+                [routerLink]="['/leads', lead.id]"
+              >
+                <div class="sa-leads__card-top">
+                  <span class="sa-leads__card-type" aria-hidden="true">{{ iconForType(lead.businessType) }}</span>
+                  <span class="sa-leads__card-business">{{ lead.businessName }}</span>
+                </div>
+                <p class="sa-leads__card-contact">{{ lead.name }}</p>
+                <div class="sa-leads__card-meta">
+                  <span class="sa-badge" [class]="'sa-badge ' + badgeForSource(lead.source)">{{ lead.source }}</span>
+                  <span class="sa-leads__card-days">{{ lead.daysInStage }}d</span>
+                </div>
+                @if (lead.assignedToName) {
+                  <p class="sa-leads__card-agent">👤 {{ lead.assignedToName }}</p>
+                }
+              </a>
+            } @empty {
+              <p class="sa-leads__col-empty">{{ 'leads.empty_col' | translate }}</p>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="sa-table-wrap">
+      <table class="sa-table">
+        <thead>
+          <tr>
+            <th>{{ 'leads.col.business' | translate }}</th>
+            <th>{{ 'leads.col.contact' | translate }}</th>
+            <th>{{ 'leads.col.type' | translate }}</th>
+            <th>{{ 'leads.col.source' | translate }}</th>
+            <th>{{ 'leads.col.stage' | translate }}</th>
+            <th>{{ 'leads.col.assigned' | translate }}</th>
+            <th>{{ 'leads.col.created' | translate }}</th>
+            <th>{{ 'leads.col.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (l of filteredList(); track l.id) {
+            <tr>
+              <td>
+                <a class="sa-leads__row-link" [routerLink]="['/leads', l.id]">{{ l.businessName }}</a>
+              </td>
+              <td>
+                <div>{{ l.name }}</div>
+                <div class="sa-leads__row-sub">{{ l.email }}</div>
+              </td>
+              <td>{{ l.businessType }}</td>
+              <td><span class="sa-badge" [class]="'sa-badge ' + badgeForSource(l.source)">{{ l.source }}</span></td>
+              <td><span class="sa-badge sa-badge--neutral">{{ 'leads.stage.' + l.status | translate }}</span></td>
+              <td>{{ l.assignedToName ?? '—' }}</td>
+              <td>{{ l.createdAt | date: 'mediumDate' }}</td>
+              <td>
+                <a class="sa-btn sa-btn--ghost sa-btn--sm" [routerLink]="['/leads', l.id]">
+                  {{ 'leads.actions.view' | translate }}
+                </a>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="8" class="sa-leads__empty">{{ 'leads.no_leads' | translate }}</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+@if (addDialogOpen()) {
+  <sa-add-lead-dialog
+    (saved)="onLeadCreated($event)"
+    (close)="addDialogOpen.set(false)"
+  />
+}
