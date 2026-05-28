@@ -19,6 +19,7 @@ import { CartService } from '../../../../../core/services/cart.service';
 import { Category, CatalogItem } from '../../../../../core/models/catalog.model';
 import { RestaurantCategoryTabsComponent } from '../../components/category-tabs/restaurant-category-tabs.component';
 import { RestaurantMenuItemCardComponent } from '../../components/menu-item-card/restaurant-menu-item-card.component';
+import { SearchAutocompleteComponent } from '../../../../shared-catalog/search-autocomplete/search-autocomplete.component';
 
 type ViewMode = 'grid' | 'list';
 const VIEW_STORAGE_KEY = 'sf-menu-view';
@@ -40,6 +41,7 @@ interface CategorySection {
     EmptyStateComponent,
     RestaurantCategoryTabsComponent,
     RestaurantMenuItemCardComponent,
+    SearchAutocompleteComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -48,6 +50,11 @@ interface CategorySection {
       <div class="sf-menu__page-header-inner">
         <h1 class="sf-menu__page-title">{{ 'catalog.our_menu' | translate }}</h1>
         <p class="sf-menu__page-sub">{{ 'catalog.our_menu_subtitle' | translate }}</p>
+        <div class="sf-menu__search-wrap">
+          <sf-search-autocomplete
+            (search)="onSearch($event)"
+          />
+        </div>
       </div>
     </div>
 
@@ -192,6 +199,12 @@ interface CategorySection {
         font-size: 1rem;
         color: var(--color-on-surface-variant, #514534);
         margin: 0;
+      }
+
+      .sf-menu__search-wrap {
+        max-inline-size: 30rem;
+        margin-inline: auto;
+        margin-block-start: 1.5rem;
       }
 
       .sf-menu__content {
@@ -385,6 +398,12 @@ export class RestaurantMenuComponent implements OnInit {
           },
         });
     });
+  }
+
+  onSearch(query: string): void {
+    if (query.trim()) {
+      this.router.navigate(['/', this.lang(), 'search'], { queryParams: { q: query.trim() } });
+    }
   }
 
   onCategorySelected(cat: Category): void {

@@ -2,6 +2,7 @@ import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
+import { PLATFORM_ID } from '@angular/core';
 
 import { CustomersService } from '../../core/services/customers.service';
 import { CustomersComponent } from './customers.component';
@@ -19,9 +20,11 @@ const MOCK_RESULT = {
   pageSize: 25,
 };
 
-function buildFixture() {
+function buildFixture(serviceOverrides?: Partial<CustomersService>) {
   const mockCustomers = {
     getCustomers: jasmine.createSpy('getCustomers').and.returnValue(of(MOCK_RESULT)),
+    exportCsv: jasmine.createSpy('exportCsv').and.returnValue(of(new Blob(['Name,Email'], { type: 'text/csv' }))),
+    ...serviceOverrides,
   };
 
   TestBed.configureTestingModule({
@@ -32,6 +35,7 @@ function buildFixture() {
     ],
     providers: [
       { provide: CustomersService, useValue: mockCustomers },
+      { provide: PLATFORM_ID, useValue: 'browser' },
     ],
   });
 
@@ -73,4 +77,20 @@ describe('CustomersComponent', () => {
     fixture.detectChanges();
     expect(fixture.componentInstance.formatAmount(1.5)).toBe('1.500 KD');
   });
+
+  it('exportCsv() calls service.exportCsv()', fakeAsync(() => {
+    const { fixture, mockCustomers } = buildFixture();
+    fixture.detectChanges();
+    tick();
+
+    spyOn(URL, 'createObjectURL').and.returnValue('blob:fake');
+    spyOn(URL, 'revokeObjectURL');
+    const createElementSpy = spyOn(document, 'createElement').and.callThrough();
+
+    fixture.componentInstance.exportCsv();
+    tick();
+
+    expect(mockCustomers.exportCsv).toHaveBeenCalled();
+    expect(createElementSpy).toHaveBeenCalledWith('a');
+  }));
 });

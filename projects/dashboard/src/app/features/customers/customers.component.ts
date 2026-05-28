@@ -590,7 +590,16 @@ export class CustomersComponent implements OnInit, OnDestroy {
   }
 
   exportCsv(): void {
-    alert('CSV export coming soon.');
+    this.customersService.exportCsv().subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `customers_${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+      },
+    });
   }
 
   initials(name: string): string {

@@ -134,6 +134,12 @@ const NAV_SECTIONS: NavSection[] = [
         roles: ['owner', 'manager'],
       },
       {
+        labelKey: 'nav.branches',
+        route: '/branches',
+        icon: '🏪',
+        roles: ['owner', 'manager'],
+      },
+      {
         labelKey: 'nav.customers',
         route: '/customers',
         icon: '👥',
@@ -173,6 +179,12 @@ const NAV_SECTIONS: NavSection[] = [
         route: '/billing',
         icon: '💳',
         roles: ['owner'],
+      },
+      {
+        labelKey: 'nav.payments',
+        route: '/payments',
+        icon: '💰',
+        roles: ['owner', 'accountant'],
       },
     ],
   },

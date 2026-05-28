@@ -133,6 +133,13 @@ export const routes: Routes = [
             (m) => m.RegisterComponent,
           ),
       },
+      {
+        path: 'forgot-password',
+        loadComponent: () =>
+          import('./features/auth/forgot-password/forgot-password.component').then(
+            (m) => m.ForgotPasswordComponent,
+          ),
+      },
       // Customer account (guarded)
       {
         path: 'account',
@@ -182,6 +189,13 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/account/loyalty/account-loyalty.component').then(
                 (m) => m.AccountLoyaltyComponent,
+              ),
+          },
+          {
+            path: 'returns',
+            loadComponent: () =>
+              import('./features/account/returns/account-returns.component').then(
+                (m) => m.AccountReturnsComponent,
               ),
           },
           {

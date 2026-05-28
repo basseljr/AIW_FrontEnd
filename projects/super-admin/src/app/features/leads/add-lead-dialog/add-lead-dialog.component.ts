@@ -34,7 +34,7 @@ export class AddLeadDialogComponent {
     businessName: ['', Validators.required],
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    phone: [''],
+    phone: ['', Validators.required],
     businessType: ['', Validators.required],
     source: ['', Validators.required],
     notes: [''],

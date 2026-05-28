@@ -629,7 +629,11 @@
       "email": "Work email",
       "role": "Role",
       "status": "Status"
-    }
+    },
+    "mfa_enabled": "✓ Enabled",
+    "mfa_not_set": "Not set up",
+    "status_active": "Active",
+    "status_suspended": "Suspended"
   },
   "settings": {
     "title": "Platform Settings",

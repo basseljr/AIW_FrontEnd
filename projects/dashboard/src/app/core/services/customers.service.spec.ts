@@ -70,4 +70,12 @@ describe('CustomersService', () => {
     expect(req.request.method).toBe('DELETE');
     req.flush(null, { status: 204, statusText: 'No Content' });
   });
+
+  it('exportCsv() calls GET /tenant-admin/customers/export with responseType blob', () => {
+    service.exportCsv().subscribe();
+    const req = httpMock.expectOne(`${BASE}/tenant-admin/customers/export`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.responseType).toBe('blob');
+    req.flush(new Blob(['Name,Email'], { type: 'text/csv' }));
+  });
 });

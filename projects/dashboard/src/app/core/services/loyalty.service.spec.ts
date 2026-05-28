@@ -31,7 +31,7 @@ describe('LoyaltyService', () => {
   });
 
   it('updateSettings() calls PUT /tenant-admin/loyalty/settings with body', () => {
-    const body = { earnRate: 10, redeemRate: 100, minRedeemPoints: 50 };
+    const body = { isEnabled: true, pointsName: 'Points', earnRate: 10, redeemRate: 100, minRedeemPoints: 50 };
     service.updateSettings(body).subscribe();
     const req = httpMock.expectOne(`${BASE}/tenant-admin/loyalty/settings`);
     expect(req.request.method).toBe('PUT');

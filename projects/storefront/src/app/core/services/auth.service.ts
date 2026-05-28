@@ -99,6 +99,17 @@ export class AuthService {
       );
   }
 
+  forgotPassword(email: string): Observable<void> {
+    const resetBaseUrl = isPlatformBrowser(this.platformId)
+      ? `${window.location.origin}/${this.lang.current()}/reset-password`
+      : '';
+    return this.http.post<void>(
+      `${this.baseUrl}/storefront/auth/forgot-password`,
+      { email, resetBaseUrl },
+      { withCredentials: true },
+    );
+  }
+
   logout(): Observable<void> {
     return this.http
       .post<void>(`${this.baseUrl}/storefront/auth/logout`, {}, { withCredentials: true })

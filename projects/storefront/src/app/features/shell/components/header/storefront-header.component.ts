@@ -16,6 +16,7 @@ import { TenantConfigService } from '../../../../core/services/tenant-cconfig.se
 import { TenantConfig } from '../../../../core/models/tenant-cconfig.model';
 import { CartService } from '../../../../core/services/cart.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { SearchAutocompleteComponent } from '../../../shared-catalog/search-autocomplete/search-autocomplete.component';
 
 /**
  * Storefront header — matches the restaurant prototype exactly.
@@ -40,7 +41,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 @Component({
   selector: 'sf-storefront-header',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, TranslateModule, NgClass],
+  imports: [RouterLink, RouterLinkActive, TranslateModule, NgClass, SearchAutocompleteComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <!-- Skip-to-content link for accessibility -->
@@ -91,6 +92,13 @@ import { AuthService } from '../../../../core/services/auth.service';
               </li>
             }
           </ul>
+
+          <!-- Search bar (desktop) -->
+          <div class="sf-nav__search-wrap">
+            <sf-search-autocomplete
+              (search)="onSearch($event)"
+            />
+          </div>
 
           <!-- Right actions -->
           <div class="sf-nav__actions">
@@ -607,6 +615,18 @@ import { AuthService } from '../../../../core/services/auth.service';
         }
       }
 
+      /* Search wrap — hidden on mobile, shown on desktop */
+      .sf-nav__search-wrap {
+        display: none;
+        flex: 1;
+        max-inline-size: 22rem;
+      }
+      @media (min-width: 768px) {
+        .sf-nav__search-wrap {
+          display: block;
+        }
+      }
+
       /* Hamburger (mobile only) */
       .sf-nav__hamburger {
         display: inline-flex;
@@ -815,6 +835,12 @@ export class StorefrontHeaderComponent implements OnInit {
       next: () => this.router.navigate(['/', this.activeLang()]),
       error: () => this.router.navigate(['/', this.activeLang()]),
     });
+  }
+
+  onSearch(query: string): void {
+    if (query.trim()) {
+      this.router.navigate(['/', this.activeLang(), 'search'], { queryParams: { q: query.trim() } });
+    }
   }
 
   @HostListener('window:scroll')

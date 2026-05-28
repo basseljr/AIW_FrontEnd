@@ -1,0 +1,15 @@
+{
+  "/api": {
+    "target": "http://localhost:5182",
+    "secure": false,
+    "changeOrigin": true,
+    "headers": { "Host": "retail-test.localhost" }
+  },
+  "/hubs": {
+    "target": "http://localhost:5182",
+    "secure": false,
+    "changeOrigin": true,
+    "ws": true,
+    "headers": { "Host": "retail-test.localhost" }
+  }
+}

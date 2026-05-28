@@ -74,7 +74,7 @@
         </div>
         <div class="sa-field">
           <label class="sa-label" for="add-phone">
-            {{ 'leads.add.contact_phone' | translate }}
+            {{ 'leads.add.contact_phone' | translate }} *
           </label>
           <input
             id="add-phone"
@@ -82,6 +82,9 @@
             type="tel"
             formControlName="phone"
           />
+          @if (form.controls.phone.touched && form.controls.phone.errors?.['required']) {
+            <p class="sa-field__error">{{ 'leads.add.required' | translate }}</p>
+          }
         </div>
       </div>
 

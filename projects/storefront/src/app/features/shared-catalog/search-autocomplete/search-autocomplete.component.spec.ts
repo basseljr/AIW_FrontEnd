@@ -2,6 +2,7 @@ import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { signal } from '@angular/core';
 import { of, throwError } from 'rxjs';
+import { provideRouter, Router } from '@angular/router';
 
 import { LanguageToggleService } from '@shared/i18n';
 import { SearchService } from '../../../core/services/search.service';
@@ -41,6 +42,7 @@ function buildFixture(searchServiceOverride?: Partial<SearchService>) {
       TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: MockLoader } }),
     ],
     providers: [
+      provideRouter([]),
       { provide: SearchService, useValue: mockSearchService },
       { provide: LanguageToggleService, useValue: mockLangToggle },
     ],
@@ -122,6 +124,32 @@ describe('SearchAutocompleteComponent', () => {
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     fixture.detectChanges();
 
+    expect(fixture.componentInstance.showDropdown()).toBeFalse();
+  }));
+
+  it('selectSuggestion() navigates to item detail when slug and categorySlug are present', fakeAsync(() => {
+    const { fixture } = buildFixture();
+    const router = TestBed.inject(Router);
+    const navigateSpy = spyOn(router, 'navigate');
+
+    fixture.componentInstance.selectSuggestion(mockSuggestions[0]);
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'en', 'menu', 'mains', 'shawarma']);
+    expect(fixture.componentInstance.showDropdown()).toBeFalse();
+  }));
+
+  it('selectSuggestion() emits search event when slug is missing', fakeAsync(() => {
+    const { fixture } = buildFixture();
+    const router = TestBed.inject(Router);
+    const navigateSpy = spyOn(router, 'navigate');
+    const searchSpy = jasmine.createSpy('search');
+    fixture.componentInstance.search.subscribe(searchSpy);
+
+    const noSlugSug: SearchSuggestion = { id: '2', slug: undefined, categorySlug: undefined, nameEn: 'Burger', nameAr: 'برغر', price: 3 };
+    fixture.componentInstance.selectSuggestion(noSlugSug);
+
+    expect(navigateSpy).not.toHaveBeenCalled();
+    expect(searchSpy).toHaveBeenCalledWith('Burger');
     expect(fixture.componentInstance.showDropdown()).toBeFalse();
   }));
 });
