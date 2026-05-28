@@ -22,4 +22,11 @@ export const serviceRoutes: Routes = [
         (m) => m.ServiceDetailComponent,
       ),
   },
+  {
+    path: 'book/:serviceSlug',
+    loadComponent: () =>
+      import('./pages/booking/service-booking.component').then(
+        (m) => m.ServiceBookingComponent,
+      ),
+  },
 ];

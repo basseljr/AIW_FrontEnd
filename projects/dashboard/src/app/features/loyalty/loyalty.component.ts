@@ -73,6 +73,37 @@ import { LoyaltySettings } from '../../core/models/settings.model';
             </div>
           }
 
+          <!-- Enable toggle -->
+          <div class="db-loy__field db-loy__field--toggle">
+            <label class="db-loy__label" for="is-enabled">{{ 'loyalty.field_is_enabled' | translate }}</label>
+            <button
+              id="is-enabled"
+              class="db-loy__toggle"
+              type="button"
+              role="switch"
+              [attr.aria-checked]="isEnabled"
+              [class.db-loy__toggle--on]="isEnabled"
+              (click)="isEnabled = !isEnabled"
+            >
+              <span class="db-loy__toggle-thumb"></span>
+            </button>
+            <span class="db-loy__toggle-hint">{{ 'loyalty.field_is_enabled_hint' | translate }}</span>
+          </div>
+
+          <!-- Points name -->
+          <div class="db-loy__field">
+            <label class="db-loy__label" for="points-name">{{ 'loyalty.field_points_name' | translate }}</label>
+            <input
+              id="points-name"
+              class="db-loy__input"
+              type="text"
+              maxlength="100"
+              [ngModel]="pointsName"
+              (ngModelChange)="pointsName = $event"
+              [placeholder]="'loyalty.field_points_name_placeholder' | translate"
+            />
+          </div>
+
           <div class="db-loy__field">
             <label class="db-loy__label" for="earn-rate">{{ 'loyalty.field_earn_rate' | translate }}</label>
             <input
@@ -243,6 +274,48 @@ import { LoyaltySettings } from '../../core/models/settings.model';
 
     .db-loy__field { display: flex; flex-direction: column; gap: 0.375rem; }
 
+    .db-loy__field--toggle {
+      flex-direction: row;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .db-loy__toggle {
+      position: relative;
+      inline-size: 2.75rem;
+      block-size: 1.5rem;
+      background: var(--border-strong, #cbd5e1);
+      border: none;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    .db-loy__toggle--on { background: var(--accent, #0ea5e9); }
+
+    .db-loy__toggle-thumb {
+      position: absolute;
+      inset-block-start: 2px;
+      inset-inline-start: 2px;
+      inline-size: 1.25rem;
+      block-size: 1.25rem;
+      border-radius: 50%;
+      background: #fff;
+      transition: inset-inline-start 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .db-loy__toggle--on .db-loy__toggle-thumb { inset-inline-start: calc(100% - 1.375rem); }
+
+    .db-loy__toggle-hint {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      flex-basis: 100%;
+    }
+
     .db-loy__label { font-size: 0.875rem; font-weight: 600; color: var(--text); }
 
     .db-loy__input {
@@ -310,6 +383,8 @@ export class LoyaltyComponent implements OnInit {
   readonly successMsg = signal(false);
   readonly saveError = signal<string | null>(null);
 
+  isEnabled = true;
+  pointsName = 'Points';
   earnRate = 0;
   redeemRate = 0;
   minRedeemPoints = 0;
@@ -324,6 +399,8 @@ export class LoyaltyComponent implements OnInit {
 
     this.loyaltyService.getSettings().subscribe({
       next: (data) => {
+        this.isEnabled = data.isEnabled ?? true;
+        this.pointsName = data.pointsName ?? 'Points';
         this.earnRate = data.earnRate;
         this.redeemRate = data.redeemRate;
         this.minRedeemPoints = data.minRedeemPoints;
@@ -348,6 +425,8 @@ export class LoyaltyComponent implements OnInit {
     this.successMsg.set(false);
 
     const body: LoyaltySettings = {
+      isEnabled: this.isEnabled,
+      pointsName: this.pointsName || 'Points',
       earnRate: this.earnRate,
       redeemRate: this.redeemRate,
       minRedeemPoints: this.minRedeemPoints,
@@ -355,6 +434,8 @@ export class LoyaltyComponent implements OnInit {
 
     this.loyaltyService.updateSettings(body).subscribe({
       next: (data) => {
+        this.isEnabled = data.isEnabled ?? true;
+        this.pointsName = data.pointsName ?? 'Points';
         this.earnRate = data.earnRate;
         this.redeemRate = data.redeemRate;
         this.minRedeemPoints = data.minRedeemPoints;

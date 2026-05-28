@@ -105,6 +105,21 @@ import { TenantConfigService } from '../../core/services/tenant-config.service';
                 {{ 'account.loyalty_section' | translate }}
               </a>
             </li>
+            @if (isRetail()) {
+              <li>
+                <a
+                  class="acct-shell__nav-link"
+                  [routerLink]="['/', activeLang(), 'account', 'returns']"
+                  routerLinkActive="acct-shell__nav-link--active"
+                >
+                  <svg class="acct-shell__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="9 14 4 9 9 4"/>
+                    <path d="M20 20v-7a4 4 0 0 0-4-4H4"/>
+                  </svg>
+                  {{ 'account.returns_nav' | translate }}
+                </a>
+              </li>
+            }
             <li>
               <a
                 class="acct-shell__nav-link"
@@ -159,6 +174,11 @@ import { TenantConfigService } from '../../core/services/tenant-config.service';
         <a class="acct-shell__tab" [routerLink]="['/', activeLang(), 'account', 'loyalty']" routerLinkActive="acct-shell__tab--active">
           {{ 'account.loyalty_section' | translate }}
         </a>
+        @if (isRetail()) {
+          <a class="acct-shell__tab" [routerLink]="['/', activeLang(), 'account', 'returns']" routerLinkActive="acct-shell__tab--active">
+            {{ 'account.returns_nav' | translate }}
+          </a>
+        }
         <a class="acct-shell__tab" [routerLink]="['/', activeLang(), 'account', 'settings']" routerLinkActive="acct-shell__tab--active">
           {{ 'account.settings_section' | translate }}
         </a>

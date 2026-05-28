@@ -27,6 +27,9 @@ export interface SeoSettings {
   metaDescriptionEn: string | null;
   metaDescriptionAr: string | null;
   keywords: string | null;
+  googleAnalyticsId: string | null;
+  facebookPixelId: string | null;
+  canonicalUrl: string | null;
 }
 
 // ── Social Links ───────────────────────────────────────────────────────────────
@@ -49,10 +52,62 @@ export interface BrandingSettings {
   headerFooterColor: string | null;
 }
 
+// ── Order Settings ─────────────────────────────────────────────────────────────
+
+export interface OrderSettings {
+  autoConfirmOrders: boolean;
+  allowDelivery: boolean;
+  allowPickup: boolean;
+  allowDineIn: boolean;
+  orderNumberPrefix: string | null;
+  schedulingEnabled: boolean;
+}
+
 // ── Loyalty ────────────────────────────────────────────────────────────────────
 
 export interface LoyaltySettings {
+  isEnabled: boolean;
+  pointsName: string;
   earnRate: number;
   redeemRate: number;
   minRedeemPoints: number;
+}
+
+// ── Tax Settings ────────────────────────────────────────────────────────────────
+
+export interface TaxSettings {
+  isEnabled: boolean;
+  taxNameEn: string | null;
+  taxNameAr: string | null;
+  taxRate: number;
+  taxInclusive: boolean;
+  registrationNumber: string | null;
+}
+
+// ── Notification Settings ──────────────────────────────────────────────────────
+
+export interface NotificationChannelSettings {
+  email: boolean;
+  sms: boolean;
+  push: boolean;
+}
+
+export interface NotificationSettings {
+  newOrder: NotificationChannelSettings;
+  orderStatusUpdate: NotificationChannelSettings;
+  newCustomer: NotificationChannelSettings;
+  lowStock: NotificationChannelSettings;
+  paymentReceived: NotificationChannelSettings;
+  orderCancelled: NotificationChannelSettings;
+}
+
+// ── Payment Settings ───────────────────────────────────────────────────────────
+
+export interface PaymentMethod {
+  key: string;
+  isEnabled: boolean;
+}
+
+export interface PaymentSettings {
+  methods: PaymentMethod[];
 }

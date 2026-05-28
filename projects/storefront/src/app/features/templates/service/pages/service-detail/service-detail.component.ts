@@ -5,7 +5,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { DecimalPipe } from '@angular/common';
 
@@ -159,6 +159,7 @@ import { ImageGalleryComponent } from '../../../../shared-catalog/image-gallery/
 })
 export class ServiceDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly catalogService = inject(CatalogService);
   private readonly langToggle = inject(LanguageToggleService);
 
@@ -177,7 +178,13 @@ export class ServiceDetailComponent implements OnInit {
   }
 
   onBookNow(): void {
-    this.toastVisible.set(true);
-    setTimeout(() => this.toastVisible.set(false), 3000);
+    const slug = this.item()?.slug;
+    if (slug) {
+      this.router.navigate(['/', this.lang(), 'book', slug]);
+    } else {
+      // Fallback: show toast if service slug is not yet loaded
+      this.toastVisible.set(true);
+      setTimeout(() => this.toastVisible.set(false), 3000);
+    }
   }
 }

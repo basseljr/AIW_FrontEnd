@@ -33,7 +33,7 @@
                 <td><span class="sa-badge sa-badge--accent">{{ 'role.' + u.role | translate }}</span></td>
                 <td>
                   <span class="sa-badge" [class]="u.mfaEnabled ? 'sa-badge sa-badge--success' : 'sa-badge sa-badge--warning'">
-                    {{ u.mfaEnabled ? '✓ Enabled' : 'Not set up' }}
+                    {{ (u.mfaEnabled ? 'users.mfa_enabled' : 'users.mfa_not_set') | translate }}
                   </span>
                 </td>
                 <td>{{ u.lastLoginAt ? (u.lastLoginAt | date: 'short') : '—' }}</td>
@@ -124,8 +124,8 @@
           {{ 'users.form.status' | translate }}
           <select class="sa-input sa-input--select" [value]="u.status"
             (change)="updateEditing('status', $any($event.target).value)">
-            <option value="active">Active</option>
-            <option value="suspended">Suspended</option>
+            <option value="active">{{ 'users.status_active' | translate }}</option>
+            <option value="suspended">{{ 'users.status_suspended' | translate }}</option>
           </select>
         </label>
       </div>

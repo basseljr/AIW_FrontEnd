@@ -7,6 +7,8 @@
     "start": "ng serve storefront",
     "start:dashboard": "ng serve dashboard",
     "start:super-admin": "ng serve super-admin",
+    "serve-retail": "ng serve storefront --proxy-config projects/storefront/proxy.conf.retail.json --port 4202",
+    "serve-service": "ng serve storefront --proxy-config projects/storefront/proxy.conf.service.json --port 4203",
     "build": "ng build storefront --configuration=development && ng build dashboard --configuration=development && ng build super-admin --configuration=development",
     "build:prod": "ng build storefront --configuration=production && ng build dashboard --configuration=production && ng build super-admin --configuration=production",
     "build:storefront": "ng build storefront",

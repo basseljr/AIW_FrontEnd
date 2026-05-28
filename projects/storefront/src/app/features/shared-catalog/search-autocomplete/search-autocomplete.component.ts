@@ -10,6 +10,7 @@ import {
   signal,
 } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
 
@@ -241,6 +242,7 @@ export class SearchAutocompleteComponent implements OnInit, OnDestroy {
 
   private readonly searchService = inject(SearchService);
   private readonly langToggle = inject(LanguageToggleService);
+  private readonly router = inject(Router);
 
   readonly lang = this.langToggle.current;
   readonly query = signal('');
@@ -330,8 +332,14 @@ export class SearchAutocompleteComponent implements OnInit, OnDestroy {
   }
 
   selectSuggestion(sug: SearchSuggestion): void {
-    this.query.set(this.lang() === 'ar' ? sug.nameAr : sug.nameEn);
     this.showDropdown.set(false);
-    this.search.emit(this.query());
+    if (sug.slug && sug.categorySlug) {
+      const lang = this.lang();
+      this.router.navigate(['/', lang, 'menu', sug.categorySlug, sug.slug]);
+    } else {
+      const name = this.lang() === 'ar' ? sug.nameAr : sug.nameEn;
+      this.query.set(name);
+      this.search.emit(name);
+    }
   }
 }

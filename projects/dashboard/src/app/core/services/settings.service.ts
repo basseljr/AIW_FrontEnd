@@ -9,6 +9,10 @@ import {
   SeoSettings,
   SocialLinks,
   BrandingSettings,
+  OrderSettings,
+  NotificationSettings,
+  TaxSettings,
+  PaymentSettings,
 } from '../models/settings.model';
 
 @Injectable({ providedIn: 'root' })
@@ -86,6 +90,66 @@ export class SettingsService {
   updateBranding(body: BrandingSettings): Observable<BrandingSettings> {
     return this.http.put<BrandingSettings>(
       `${this.baseUrl}/tenant-admin/settings/branding`,
+      body,
+      { withCredentials: true },
+    );
+  }
+
+  getOrders(): Observable<OrderSettings> {
+    return this.http.get<OrderSettings>(
+      `${this.baseUrl}/tenant-admin/settings/orders`,
+      { withCredentials: true },
+    );
+  }
+
+  updateOrders(body: OrderSettings): Observable<OrderSettings> {
+    return this.http.put<OrderSettings>(
+      `${this.baseUrl}/tenant-admin/settings/orders`,
+      body,
+      { withCredentials: true },
+    );
+  }
+
+  getNotifications(): Observable<NotificationSettings> {
+    return this.http.get<NotificationSettings>(
+      `${this.baseUrl}/tenant-admin/settings/notifications`,
+      { withCredentials: true },
+    );
+  }
+
+  updateNotifications(body: NotificationSettings): Observable<NotificationSettings> {
+    return this.http.put<NotificationSettings>(
+      `${this.baseUrl}/tenant-admin/settings/notifications`,
+      body,
+      { withCredentials: true },
+    );
+  }
+
+  getTax(): Observable<TaxSettings> {
+    return this.http.get<TaxSettings>(
+      `${this.baseUrl}/tenant-admin/settings/tax`,
+      { withCredentials: true },
+    );
+  }
+
+  updateTax(body: TaxSettings): Observable<TaxSettings> {
+    return this.http.put<TaxSettings>(
+      `${this.baseUrl}/tenant-admin/settings/tax`,
+      body,
+      { withCredentials: true },
+    );
+  }
+
+  getPaymentMethods(): Observable<PaymentSettings> {
+    return this.http.get<PaymentSettings>(
+      `${this.baseUrl}/tenant-admin/settings/payment-methods`,
+      { withCredentials: true },
+    );
+  }
+
+  updatePaymentMethods(body: PaymentSettings): Observable<PaymentSettings> {
+    return this.http.put<PaymentSettings>(
+      `${this.baseUrl}/tenant-admin/settings/payment-methods`,
       body,
       { withCredentials: true },
     );

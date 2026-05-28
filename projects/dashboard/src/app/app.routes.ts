@@ -66,6 +66,11 @@ export const routes: Routes = [
           import('./features/categories/categories.component').then((m) => m.CategoriesComponent),
       },
       {
+        path: 'branches',
+        loadComponent: () =>
+          import('./features/branches/branches.component').then((m) => m.BranchesComponent),
+      },
+      {
         path: 'customers',
         loadComponent: () =>
           import('./features/customers/customers.component').then((m) => m.CustomersComponent),
@@ -103,9 +108,26 @@ export const routes: Routes = [
           import('./features/analytics/analytics.component').then((m) => m.AnalyticsComponent),
       },
       {
+        path: 'staff',
+        loadComponent: () =>
+          import('./features/staff/staff.component').then((m) => m.StaffComponent),
+      },
+      {
         path: 'billing',
         loadComponent: () =>
           import('./features/billing/billing.component').then((m) => m.BillingComponent),
+      },
+      {
+        path: 'payments',
+        loadComponent: () =>
+          import('./features/payments/payments.component').then((m) => m.PaymentsComponent),
+      },
+      {
+        path: 'reservations',
+        loadComponent: () =>
+          import('./features/reservations/reservations.component').then(
+            (m) => m.ReservationsComponent,
+          ),
       },
     ],
   },

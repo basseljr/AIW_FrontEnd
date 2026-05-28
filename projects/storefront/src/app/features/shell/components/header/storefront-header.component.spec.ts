@@ -9,6 +9,7 @@ import { LanguageToggleService, SupportedLang } from '@shared/i18n';
 import { TenantConfigService } from '../../../../core/services/tenant-cconfig.service';
 import { CartService } from '../../../../core/services/cart.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { SearchService } from '../../../../core/services/search.service';
 import { DEFAULT_DEV_TENANT } from '../../../../core/models/tenant-config.model';
 import { StorefrontHeaderComponent } from './storefront-header.component';
 
@@ -77,6 +78,7 @@ function buildFixture(cartCountVal = 0) {
       { provide: TenantConfigService, useValue: mockTenantConfig },
       { provide: CartService, useValue: mockCartService },
       { provide: AuthService, useValue: { currentUser: signal(null), isAuthenticated: signal(false), logout: jasmine.createSpy('logout').and.returnValue(of({})) } },
+      { provide: SearchService, useValue: { getSuggestions: jasmine.createSpy('getSuggestions').and.returnValue(of([])) } },
     ],
   });
 

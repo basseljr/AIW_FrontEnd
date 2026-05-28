@@ -70,4 +70,11 @@ export class CustomersService {
       { withCredentials: true },
     );
   }
+
+  exportCsv(): Observable<Blob> {
+    return this.http.get(
+      `${this.baseUrl}/tenant-admin/customers/export`,
+      { withCredentials: true, responseType: 'blob' },
+    );
+  }
 }
